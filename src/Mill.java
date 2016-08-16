@@ -2,7 +2,7 @@
  * Created by Max on 16/08/2016.
  */
 import java.util.*;
-public final class Mühle {
+public final class Mill {
     public static void main(final String[] args) {
         Board boardObject = new Board();
         Playfield board[][];
