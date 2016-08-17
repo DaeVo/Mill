@@ -4,10 +4,9 @@
 import java.util.*;
 public final class Mill {
     public static void main(final String[] args) {
-        Board boardObject = new Board();
         Playfield board[][];
 
-        board = boardObject.createBoard();
+        board = BoardFactory.createBoard();
         Gamestate gamestateObject = new Gamestate(board);
         gamestateObject.createPieces();
 
@@ -18,7 +17,6 @@ public final class Mill {
 
         int i = 0;
         while(i < 3) {  // todo: replace with  < 18 later and move to another class
-
                 Scanner sc = new Scanner(System.in);
                 System.out.println("zahl 0-8");
                 String tmp = sc.next();
@@ -33,7 +31,7 @@ public final class Mill {
 
 
 
-        boardObject.printPieces();
+        BoardFactory.printPieces(gamestateObject);
         board[1][1].move(board[1][2]);
         board[1][1].move(board[0][1]);
         board[3][1].move(board[3][2]);
@@ -42,7 +40,7 @@ public final class Mill {
 
         System.out.println("---- . ----");
 
-        boardObject.printPieces();
+        BoardFactory.printPieces(gamestateObject);
 
     }
 
