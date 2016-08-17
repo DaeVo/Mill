@@ -15,9 +15,9 @@ public class Gamestate {
         this.board = board;
     }
 
-    public static int pieceCountWhite = 9;
-    public static int pieceCountBlack = 9;
-    public static int turnsNoMill = 0; // resets if mill happens, if >49 => tie
+    public int pieceCountWhite = 9;
+    public int pieceCountBlack = 9;
+    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
 
 
