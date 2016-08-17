@@ -1,8 +1,14 @@
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
+
+import java.util.HashSet;
+import java.lang.Object;
+
 /**
  * Created by Max on 16/08/2016.
  */
 public class Gamestate {
 
+    private HashSet<Pieces> millPieces= new HashSet<Pieces>();
     Playfield[][] board = new Playfield[8][3];
 
     public Gamestate(Playfield[][] board) {
@@ -12,6 +18,9 @@ public class Gamestate {
     public static int pieceCountWhite = 9;
     public static int pieceCountBlack = 9;
     public static int turnsNoMill = 0; // resets if mill happens, if >49 => tie
+
+
+
 
     public static Pieces[] currentPieces = new Pieces[18];
 
@@ -27,49 +36,31 @@ public class Gamestate {
 
 
 
+    private String millType;
+    private int millCount = 0;
+    private int currentMillCount = 0;
 
-    public Integer millCount = 0;  // number of pieces currently inside a mill (first index of currentMills)
-    String millType;
-    Integer[][] currentMills = new Integer[18][2];   //maximum theoretical amount of pieces in mills = 18
-    private void currentPiecesMill(int i, int j) {  //array of indices for fields in mill.
-        int t = 0;
-        int z = 0;
-        switch (millType) {
-            case "inward":
-                for (t = 0; t < 3; t++) {
-                    currentMills[millCount][0] = i;
-                    currentMills[millCount][1] = t;
-                    board[i][t].piece.millCount = millCount;
-                    millCount++;;
-                }
-                break;
-            case "up": z = 0;
-                break;
-            case "right": z = 2;
-                break;
-            case "down": z = 4;
-                for (t = z; t < z + 3; t++) {
-                    currentMills[millCount][0] = t;
-                    currentMills[millCount][1] = j;
-                    board[t][j].piece.millCount = millCount;
-                    millCount++;
-                }
-                break;
-            case "left": z = 6;
-                for (t = z; t < z + 2; t++) {
-                    currentMills[millCount][0] = t;
-                    currentMills[millCount][1] = j;
-                    board[t][j].piece.millCount = millCount;
-                    millCount++;
-                }
-                currentMills[millCount][0] = 0;
-                currentMills[millCount][1] = j;
-                board[t][j].piece.millCount = millCount;
-                millCount++;
-                break;
+        private void piecesMillSet(int i, int j) {   //indices for fields in mill.
+            int t = 0;
+            int z = 0;
+            switch (millType) {
+                case "inward":
+                    break;
+                case "up":
+                    break;
+                case "right":
+                    break;
+                case "down":
 
+                    break;
+                case "left":
+                    break;
+
+                default:
+                    break;
+            }
         }
-    }
+
 
 
     public boolean millCheck() {

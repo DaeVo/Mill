@@ -11,10 +11,13 @@ public final class Mill {
         Gamestate gamestateObject = new Gamestate(board);
         gamestateObject.createPieces();
 
-        board[1][1].addPiece(Gamestate.currentPieces[0]);
 
-      /*  int i = 0;
-        while(i < 3) {  // todo: replace with  < 18 later
+
+
+        board[1][1].addPiece(Gamestate.currentPieces[4]);
+
+        int i = 0;
+        while(i < 3) {  // todo: replace with  < 18 later and move to another class
 
                 Scanner sc = new Scanner(System.in);
                 System.out.println("zahl 0-8");
@@ -27,15 +30,20 @@ public final class Mill {
             Gamestate.currentPieces[i].number = i;
             i++;
         }
-        */
 
-        boardObject.printBoard(board);
+
+
         boardObject.printPieces();
         board[1][1].move(board[1][2]);
-     /*   System.out.println("---- . ----");
-        boardObject.printBoard(board);
+        board[1][1].move(board[0][1]);
+        board[3][1].move(board[3][2]);
+        board[4][0].move(board[4][2]);
+        board[4][2].move(board[4][1]);
+
+        System.out.println("---- . ----");
+
         boardObject.printPieces();
-        */
+
     }
 
 }

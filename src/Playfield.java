@@ -28,30 +28,39 @@ public class Playfield {
          }
          else if (this.x == 7 && dst.x == 0 && dst.y == this.y || dst.x == 7 && this.x == 0 && this.y == dst.y) return true; //special case if this.x or dst.x == 7
          else if (Math.abs(this.x - dst.x) == 1 && this.y == dst.y) return true;  //on the same level within 1 range of each other
-         else return false;
+         else {
+             System.out.println("no Neighbour"); //remove after testing
+             return false;
+         }
          return false;
      }
 
 
 
-
+    /*
+    if the field whose piece is to be moved must not be empty, destination must be empty, destination must be a direct
+     "allowed" neighbour of the field whose piece is to be moved.
+     */
     public void move (Playfield dst) {
-        if (this.isNeighbour(dst) && dst.empty) {
+            if (this.isNeighbour(dst) && dst.empty && !this.empty) {
             System.out.println(this + "succesfully moved to" + dst);
-            if (this.piece.millCount != null) {
-
-            }
             this.conquerField(dst);
         }
+        else System.out.println(this + "to "+ dst +  " is no legit move (either moving empty field, or dst isnt empty");
     }
 
-
+    /*
+    assigns the piece of one field to another field while resetting the original field
+     */
     public void conquerField(Playfield dst){
         dst.addPiece(this.piece);
         this.empty = true;
         this.piece = null;
     }
 
+    /*
+    ensures that piece is known to the field and vice versa
+     */
     public void addPiece (Pieces piece) {
         this.piece = piece;
         piece.addPlayfield(this);

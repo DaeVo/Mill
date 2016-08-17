@@ -18,5 +18,4 @@ public class Pieces {
     enum Color {
         white, black
     }
-
 }
