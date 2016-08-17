@@ -1,10 +1,6 @@
-/**
+package model; /**
  * Created by Max on 16/08/2016.
  */
-import java.awt.*;
-import java.util.LinkedList;
-import java.util.*;
-import java.util.List;
 
 public class Playfield {
 

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Created by Max on 16/08/2016.
  * create or print a board.
@@ -5,7 +7,7 @@
 public class BoardFactory {
     public BoardFactory(){}
     /*
-    creating the BoardFactory as 8x3 fields
+    creating the model.BoardFactory as 8x3 fields
      */
     public static Playfield[][] createBoard(){
         Playfield[][] board = new Playfield[8][3];

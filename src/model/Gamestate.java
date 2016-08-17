@@ -1,7 +1,6 @@
-import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
+package model;
 
 import java.util.HashSet;
-import java.lang.Object;
 
 /**
  * Created by Max on 16/08/2016.
@@ -24,7 +23,7 @@ public class Gamestate {
 
     public static Pieces[] currentPieces = new Pieces[18];
 
-    public void createPieces() {  //initializes 18 starting Pieces
+    public void createPieces() {  //initializes 18 starting model.Pieces
         for (int i = 0; i < 18; i++) {
             Pieces.Color color;
             if (i % 2 == 1) color = Pieces.Color.black;
