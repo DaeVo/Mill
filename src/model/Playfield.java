@@ -1,4 +1,8 @@
-package model; /**
+package model;
+
+import java.awt.*;
+
+/**
  * Created by Max on 16/08/2016.
  */
 
@@ -67,7 +71,7 @@ public class Playfield {
         String color;
         if (this.empty) color = " field is empty";
         else{
-            if(piece.color == Pieces.Color.black) color = " - black";
+            if(piece.color == Color.black) color = " - black";
             else color = "- white";
         }
 

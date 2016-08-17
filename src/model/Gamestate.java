@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.*;
 import java.util.HashSet;
 
 /**
@@ -7,8 +8,8 @@ import java.util.HashSet;
  */
 public class Gamestate {
 
-    private HashSet<Pieces> millPieces= new HashSet<Pieces>();
-    Playfield[][] board = new Playfield[8][3];
+    public HashSet<Pieces> millPieces= new HashSet<Pieces>();
+    public Playfield[][] board = new Playfield[8][3];
 
     public Gamestate(Playfield[][] board) {
         this.board = board;
@@ -18,16 +19,15 @@ public class Gamestate {
     public int pieceCountBlack = 9;
     public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
-
-
-
-    public static Pieces[] currentPieces = new Pieces[18];
+    public Pieces[] currentPieces = new Pieces[18];
 
     public void createPieces() {  //initializes 18 starting model.Pieces
         for (int i = 0; i < 18; i++) {
-            Pieces.Color color;
-            if (i % 2 == 1) color = Pieces.Color.black;
-            else color = Pieces.Color.white;
+            Color color;
+            if (i % 2 == 1)
+                color = Color.black;
+            else
+                color = Color.white;
             currentPieces[i] = new Pieces(color);
         }
     }
@@ -66,7 +66,7 @@ public class Gamestate {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
                 if (!board[i][j].empty) {
-                    Pieces.Color color = board[i][j].piece.color;
+                    Color color = board[i][j].piece.color;
                     if (i % 2 == 1) {   //to check if its one of the four legit outwards to inward rows
                         if ((board[i][0].piece.color == board[i][1].piece.color) // 3pieces of the same color from outwards to inwards
                                 && (board[i][0].piece.color == board[i][2].piece.color)){

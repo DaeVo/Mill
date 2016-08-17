@@ -1,6 +1,7 @@
 /*
  * Created by Max on 16/08/2016.
  */
+
 import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
@@ -14,10 +15,7 @@ public final class Mill {
         Gamestate gamestateObject = new Gamestate(board);
         gamestateObject.createPieces();
 
-
-
-
-        board[1][1].addPiece(Gamestate.currentPieces[4]);
+        board[1][1].addPiece(gamestateObject.currentPieces[4]);
 
         int i = 0;
         while(i < 3) {  // todo: replace with  < 18 later and move to another class
@@ -28,12 +26,10 @@ public final class Mill {
                 System.out.println("zahl 0-3");
                 tmp = sc.next();
                 Integer y = Integer.parseInt(tmp);
-            board[x][y].addPiece(Gamestate.currentPieces[i]);
-            Gamestate.currentPieces[i].number = i;
+            board[x][y].addPiece(gamestateObject.currentPieces[i]);
+            gamestateObject.currentPieces[i].number = i;
             i++;
         }
-
-
 
         BoardFactory.printPieces(gamestateObject);
         board[1][1].move(board[1][2]);
