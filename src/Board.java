@@ -14,7 +14,6 @@ public class Board {
                 board[i][j] = new Playfield(true);
                 board[i][j].x = i;
                 board[i][j].y = j;
-
             }
         }return board;
     }

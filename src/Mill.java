@@ -11,7 +11,9 @@ public final class Mill {
         Gamestate gamestateObject = new Gamestate(board);
         gamestateObject.createPieces();
 
-        int i = 0;
+        board[1][1].addPiece(Gamestate.currentPieces[0]);
+
+      /*  int i = 0;
         while(i < 3) {  // todo: replace with  < 18 later
 
                 Scanner sc = new Scanner(System.in);
@@ -22,10 +24,18 @@ public final class Mill {
                 tmp = sc.next();
                 Integer y = Integer.parseInt(tmp);
             board[x][y].addPiece(Gamestate.currentPieces[i]);
+            Gamestate.currentPieces[i].number = i;
             i++;
         }
+        */
+
         boardObject.printBoard(board);
         boardObject.printPieces();
+        board[1][1].move(board[1][2]);
+     /*   System.out.println("---- . ----");
+        boardObject.printBoard(board);
+        boardObject.printPieces();
+        */
     }
 
 }

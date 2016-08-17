@@ -1,6 +1,11 @@
 /**
  * Created by Max on 16/08/2016.
  */
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.*;
+import java.util.List;
+
 public class Playfield {
 
     public boolean empty;
@@ -13,6 +18,38 @@ public class Playfield {
 
     public Playfield(boolean empty) {
         this.empty = empty;
+    }
+
+
+     public boolean isNeighbour (Playfield dst){
+
+         if(this.x  % 2 == 1) {
+             if (Math.abs(this.y - dst.y) == 1 && this.x == dst.x) return true;  // from outside to inside neighbours without diagonals
+         }
+         else if (this.x == 7 && dst.x == 0 && dst.y == this.y || dst.x == 7 && this.x == 0 && this.y == dst.y) return true; //special case if this.x or dst.x == 7
+         else if (Math.abs(this.x - dst.x) == 1 && this.y == dst.y) return true;  //on the same level within 1 range of each other
+         else return false;
+         return false;
+     }
+
+
+
+
+    public void move (Playfield dst) {
+        if (this.isNeighbour(dst) && dst.empty) {
+            System.out.println(this + "succesfully moved to" + dst);
+            if (this.piece.millCount != null) {
+
+            }
+            this.conquerField(dst);
+        }
+    }
+
+
+    public void conquerField(Playfield dst){
+        dst.addPiece(this.piece);
+        this.empty = true;
+        this.piece = null;
     }
 
     public void addPiece (Pieces piece) {

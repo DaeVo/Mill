@@ -5,6 +5,7 @@ public class Pieces {
 
     public Playfield field;
     public Color color;
+    public Integer millCount = null;
     int number;
     public Pieces(Color color){
         this.color = color;
@@ -17,4 +18,5 @@ public class Pieces {
     enum Color {
         white, black
     }
+
 }
