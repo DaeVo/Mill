@@ -5,7 +5,8 @@ import model.Playfield;
 import view.AbstractPlayer;
 
 import java.awt.*;
-
+import java.util.LinkedList;
+import java.util.List;
 
 public class StupidAi extends AbstractPlayer {
 	@Override
@@ -48,8 +49,11 @@ public class StupidAi extends AbstractPlayer {
 	}
 
 	private void removeStone(){
-        for (Pieces p : millController.getState().currentPieces) {
+        System.out.println("Ki: Trying to remove");
+        List<Pieces> listCopy = new LinkedList<>(millController.getState().currentPieces);
+        for (Pieces p : listCopy) {
             if (p.color != myColor) {
+                System.out.println("Ki: Trying to remove " + p.field);
                 millController.removeStone(p.field.getPoint());
             }
         }
