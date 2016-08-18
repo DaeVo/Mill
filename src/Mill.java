@@ -17,8 +17,11 @@ public final class Mill {
 
         board[1][1].addPiece(gamestateObject.currentPieces[4]);
 
+        gamestateObject.millPositionsInitializer();
+
+
         int i = 0;
-        while(i < 3) {  // todo: replace with  < 18 later and move to another class
+        while(i < 7) {  // todo: replace with  < 18 later and move to another class
                 Scanner sc = new Scanner(System.in);
                 System.out.println("zahl 0-8");
                 String tmp = sc.next();
@@ -28,6 +31,9 @@ public final class Mill {
                 Integer y = Integer.parseInt(tmp);
             board[x][y].addPiece(gamestateObject.currentPieces[i]);
             gamestateObject.currentPieces[i].number = i;
+            gamestateObject.millToInt();
+            gamestateObject.millCheck();
+            gamestateObject.clearMillList();
             i++;
         }
 

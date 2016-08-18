@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.*;
+import java.util.HashSet;
 
 /**
  * Created by Max on 16/08/2016.
@@ -58,6 +59,8 @@ public class Playfield {
         this.piece = null;
     }
 
+
+
     /*
     ensures that piece is known to the field and vice versa
      */
@@ -65,6 +68,7 @@ public class Playfield {
         this.piece = piece;
         piece.addPlayfield(this);
         this.empty = false;
+       // System.out.println("current pieces: " + addPieceSet);
     }
     @Override
     public String toString() {

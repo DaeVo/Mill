@@ -7,24 +7,27 @@ import java.util.*;
  */
 public class Gamestate {
 
-
     public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be emptied after every turn
+    /*
+    saves which of the 16 possible mills is currently active
+     */
     public boolean[] millPositions = new boolean[16];
+
+    /*
+    arrays to help calculating if a new mill has been created in this turn
+     */
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
+
+    public int pieceCountWhite = 0;
+    public int pieceCountBlack = 0;
     public Playfield[][] board = new Playfield[8][3];
+    public Pieces[] currentPieces = new Pieces[18];
+    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
     public Gamestate(Playfield[][] board) {
         this.board = board;
     }
-
-    public int pieceCountWhite = 0;
-    public int pieceCountBlack = 0;
-    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
-
-    public Pieces[] currentPieces = new Pieces[18];
-
-
 
     /*
     create 18 pieces and updates the piece count for each player
@@ -76,10 +79,15 @@ public class Gamestate {
                 currentMillPieces.add(playfield1.piece);
                 currentMillPieces.add(playfield2.piece);
                 currentMillPieces.add(playfield3.piece);
+                System.out.println("LISTE: " + currentMillPieces);
                 return true;
             }
         }
         return false;
+    }
+
+    public void clearMillList() {
+        currentMillPieces.clear();
     }
 
     /*
@@ -105,9 +113,6 @@ public class Gamestate {
         oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
         return false;
     }
-
-
-
 
     /*
     easier to read and understand than dyamic statements to check for mills
