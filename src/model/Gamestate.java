@@ -78,6 +78,9 @@ public class Gamestate {
         }
     }
 
+    /*
+    compares the old mill situation to the new one and figures out if a new mill has been created or not.
+     */
     public boolean millCheckCompare() {
         millToInt();
         int oldMillCheckCount = getMillCheckCount(oldMillCheck);
@@ -101,6 +104,7 @@ public class Gamestate {
 
     /*
     easier to read and understand than dyamic statements to check for mills
+    sets a booleana to 1 if a mill position happens.
      */
     public void millCheck(){
 
