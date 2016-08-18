@@ -1,6 +1,9 @@
 package model;
 
+
 import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Max on 16/08/2016.
@@ -38,7 +41,6 @@ public class Playfield {
      }
 
 
-
     /*
     if the field whose piece is to be moved must not be empty, destination must be empty, destination must be a direct
      "allowed" neighbour of the field whose piece is to be moved.
@@ -57,7 +59,7 @@ public class Playfield {
             this.conquerField(dst);
             return true;
         }
-        System.out.println(this + "to "+ dst +  " is no legit move (either moving empty field, or dst isnt empty");
+        System.out.println(this + " to "+ dst +  " is no legit move (either moving empty field, or dst isnt empty");
         return false;
     }
 

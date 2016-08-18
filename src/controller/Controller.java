@@ -27,8 +27,8 @@ public class Controller {
 		//notfiy first playwer
 		blackPlayer = bp;
 		whitePlayer = wp;
-		blackPlayer.create(this, );
-		whitePlayer.create(this, );
+		blackPlayer.create(this, Color.black);
+		whitePlayer.create(this, Color.white);
 		
 		turn = 1;
 		turnColor = Color.black;
@@ -49,32 +49,43 @@ public class Controller {
 	}
 	
 	
-	public void move(Point src, Point dst){
-		gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
+	public boolean move(Point src, Point dst){
+		boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
 
-		endTurn();
+		if(success)
+			endTurn();
+		return success;
 	}
 
-	public void moveFreely(Point src, Point dst){
-		gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
+	public boolean moveFreely(Point src, Point dst){
+		boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
 
-		endTurn();
+		if(success)
+			endTurn();
+		return success;
 	}
 
-	public void removeStone(Point p){
+	public boolean removeStone(Point p){
 		Pieces oldPiece = gameBoard.board[p.x][p.y].piece;
+
+		if (oldPiece == null || oldPiece.color == turnColor)
+			return false;
+		//TODO: IN MILL CHECK
+
 		gameBoard.currentPieces.remove(oldPiece);
 		gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
 		gameState = oldState;
 		endTurn();
+		return true;
 	}
 	
 	
 	private void endTurn(){
 		Thread toStart = null;
 
-		if (gameBoard.millCheck()){
+		//if (gameBoard.millCheck()){
+		if (0 == 1){
 			//the turncolor got a new mill
 			//turn is not ended
 			oldState = gameState;
@@ -111,9 +122,12 @@ public class Controller {
 	}
 	
 	private void printTurnInfo(){
-		System.out.println("Turn " + turn);
-		System.out.println("Next Player " + turnColor);
 		BoardFactory.printBoard(gameBoard.board);
+		System.out.println(" ======================================== Turn " + turn);
+		if (turnColor == Color.black)
+			System.out.println("Next Player Black");
+		else
+			System.out.println("Next Player White");
 		System.out.println();
 	}
 }

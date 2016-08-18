@@ -1,16 +1,17 @@
 package view.ai;
 
 import model.Pieces;
+import model.Playfield;
 import view.AbstractPlayer;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Observable;
 
 
 import static controller.GamePhase.*;
 
 
-public class SimpleAi extends AbstractPlayer {
+public class StupidAi extends AbstractPlayer {
 	@Override
 	public void run() {
 		System.out.println("Ki: run()");
@@ -19,12 +20,15 @@ public class SimpleAi extends AbstractPlayer {
 			place();
 			break;
 		case Moving:
-			break;
 		case Endgame:
+		    moving();
 			break;
+
 		case RemovingStone:
 			break;
 		}
+
+        System.out.println("");
 	}
 
 	private void place(){
@@ -37,11 +41,20 @@ public class SimpleAi extends AbstractPlayer {
 		for (Pieces p : millController.getState().currentPieces) {
 			if (p.color == myColor){
                 System.out.println("Ki: Trying to move " + p.field);
-
+                for (Playfield toMove : millController.getState().getNeighbors(p.field)){
+                    System.out.println("Ki: Target " + toMove);
+                    if (millController.move(p.field.getPoint(), toMove.getPoint()))
+                        return;
+                }
             }
 		}
-
-
-
 	}
+
+	private void removeStone(){
+        for (Pieces p : millController.getState().currentPieces) {
+            if (p.color != myColor) {
+                millController.removeStone(p.field.getPoint());
+            }
+        }
+    }
 }

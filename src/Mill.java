@@ -7,9 +7,8 @@ import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
 import view.IPlayer;
-import view.ai.SimpleAi;
+import view.ai.StupidAi;
 
-import java.util.*;
 public final class Mill {
     public static void main(final String[] args) {
         Playfield board[][] = BoardFactory.createBoard();
@@ -17,8 +16,8 @@ public final class Mill {
         Controller c = new Controller(gamestate);
 
         try {
-            IPlayer p1 = new SimpleAi();
-            IPlayer p2 = new SimpleAi();
+            IPlayer p1 = new StupidAi();
+            IPlayer p2 = new StupidAi();
 
             c.startGame(p1, p2);
 

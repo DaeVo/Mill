@@ -1,8 +1,7 @@
 package model;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -13,19 +12,17 @@ public class Gamestate {
     public HashSet<Pieces> millPieces= new HashSet<Pieces>();
     public Playfield[][] board = new Playfield[8][3];
 
-    public Gamestate(Playfield[][] board) {
-        this.board = board;
-    }
-
-    public int pieceCountWhite = 9;
-    public int pieceCountBlack = 9;
-    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
-
     public List<Pieces> currentPieces = new LinkedList<>();
+    public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
 
     private String millType;
     private int millCount = 0;
     private int currentMillCount = 0;
+
+    public Gamestate(Playfield[][] board) {
+        this.board = board;
+        createNeighbors();
+    }
 
     private void piecesMillSet(int i, int j) {   //indices for fields in mill.
             int t = 0;
@@ -100,6 +97,33 @@ public class Gamestate {
             }
         }
         return null;
+    }
+
+
+    private void createNeighbors(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                Playfield base = board[i][j];
+
+                for (int i2 = 0; i2 < 8; i2++) {
+                    for (int j2 = 0; j2 < 3; j2++) {
+                        Playfield toCompare = board[i2][j2];
+                        if (base.isNeighbour(toCompare)) {
+                            if (!playfieldNeighbors.containsKey(base))
+                                playfieldNeighbors.put(base, new LinkedList<>());
+
+                            playfieldNeighbors.get(base).add(toCompare);
+                        }
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    public List<Playfield> getNeighbors(Playfield field){
+        return playfieldNeighbors.get(field);
     }
 
     public int getPieceCount(){
