@@ -1,12 +1,14 @@
 package model;
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Created by Max on 16/08/2016.
  */
 public class Gamestate {
 
+
+    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be emptied after every turn
     public boolean[] millPositions = new boolean[16];
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
@@ -16,42 +18,31 @@ public class Gamestate {
         this.board = board;
     }
 
-    public int pieceCountWhite = 9;
-    public int pieceCountBlack = 9;
+    public int pieceCountWhite = 0;
+    public int pieceCountBlack = 0;
     public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
     public Pieces[] currentPieces = new Pieces[18];
 
-    public void createPieces() {  //initializes 18 starting model.Pieces
+
+
+    /*
+    create 18 pieces and updates the piece count for each player
+     */
+    public void createPieces() {
         for (int i = 0; i < 18; i++) {
             Color color;
-            if (i % 2 == 1)
+            if (i % 2 == 1) {
                 color = Color.black;
-            else
+                pieceCountBlack++;
+            }
+            else {
                 color = Color.white;
+                pieceCountWhite++;
+            }
             currentPieces[i] = new Pieces(color);
         }
     }
-
-
-
-
-    private String millType;
-    private int millCount = 0;
-    private int currentMillCount = 0;
-
-
-
-
-    public boolean isMill(Playfield playfield1, Playfield playfield2, Playfield playfield3) {
-        if (!playfield1.empty && !playfield2.empty && !playfield3.empty) {
-            if (playfield1.piece.color == playfield2.piece.color && playfield1.piece.color == playfield3.piece.color)
-                return true;
-        }
-        return false;
-    }
-
-
 
     /*
     initializes the array so no mills occur before the game starts
@@ -78,6 +69,19 @@ public class Gamestate {
         }
     }
 
+
+    public boolean isMill(Playfield playfield1, Playfield playfield2, Playfield playfield3) {
+        if (!playfield1.empty && !playfield2.empty && !playfield3.empty) {
+            if (playfield1.piece.color == playfield2.piece.color && playfield1.piece.color == playfield3.piece.color) {
+                currentMillPieces.add(playfield1.piece);
+                currentMillPieces.add(playfield2.piece);
+                currentMillPieces.add(playfield3.piece);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
     compares the old mill situation to the new one and figures out if a new mill has been created or not.
      */
@@ -86,7 +90,7 @@ public class Gamestate {
         int oldMillCheckCount = getMillCheckCount(oldMillCheck);
         int newMillCheckCount = getMillCheckCount(newMillCheck);
 
-        if(oldMillCheckCount > newMillCheckCount){
+        if(newMillCheckCount > oldMillCheckCount){
             oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
             return true; //a mill got created by using a piece that wasn't in a mill before
         }
@@ -102,9 +106,13 @@ public class Gamestate {
         return false;
     }
 
+
+
+
     /*
     easier to read and understand than dyamic statements to check for mills
     sets a booleana to 1 if a mill position happens.
+
      */
     public void millCheck(){
 
