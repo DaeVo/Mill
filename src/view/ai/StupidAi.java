@@ -5,10 +5,6 @@ import model.Playfield;
 import view.AbstractPlayer;
 
 import java.awt.*;
-import java.util.Observable;
-
-
-import static controller.GamePhase.*;
 
 
 public class StupidAi extends AbstractPlayer {
@@ -41,7 +37,7 @@ public class StupidAi extends AbstractPlayer {
 		for (Pieces p : millController.getState().currentPieces) {
 			if (p.color == myColor){
                 System.out.println("Ki: Trying to move " + p.field);
-                for (Playfield toMove : millController.getState().getNeighbors(p.field)){
+                for (Playfield toMove : millController.getState().getNeighbours(p.field)){
                     System.out.println("Ki: Target " + toMove);
                     if (millController.move(p.field.getPoint(), toMove.getPoint()))
                         return;

@@ -86,7 +86,7 @@ public class Controller {
 	private void endTurn(){
 		Thread toStart = null;
 
-		if (gamePhase != Placing && gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3){
+		if (gamePhase != Placing && (gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)){
 			System.out.println("Game end!");
 			return;
 		}

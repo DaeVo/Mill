@@ -64,7 +64,7 @@ public class Gamestate {
                 currentMillPieces.add(playfield1.piece);
                 currentMillPieces.add(playfield2.piece);
                 currentMillPieces.add(playfield3.piece);
-                System.out.println("LISTE: " + currentMillPieces);
+                System.out.println("MillList:: " + currentMillPieces);
                 return true;
             }
         }
@@ -79,6 +79,7 @@ public class Gamestate {
     compares the old mill situation to the new one and figures out if a new mill has been created or not.
      */
     public boolean millCheckCompare() {
+        millCheck();
         millToInt();
         int oldMillCheckCount = getMillCheckCount(oldMillCheck);
         int newMillCheckCount = getMillCheckCount(newMillCheck);
@@ -161,7 +162,7 @@ public class Gamestate {
         }
     }
 
-    public List<Playfield> getNeighbors(Playfield field){
+    public List<Playfield> getNeighbours(Playfield field){
         return playfieldNeighbors.get(field);
     }
 
