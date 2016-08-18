@@ -83,8 +83,6 @@ public class Gamestate {
         millPositions[14] = isMill(board[3][0], board[3][1], board[3][2]);
         millPositions[15] = isMill(board[1][0], board[1][1], board[1][2]);
     }
-}
-
 
 
     public Point findFreePlayfield(){
