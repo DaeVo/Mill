@@ -1,5 +1,6 @@
 package model;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by Max on 16/08/2016.
@@ -7,6 +8,8 @@ import java.awt.*;
 public class Gamestate {
 
     public boolean[] millPositions = new boolean[16];
+    public int[] newMillCheck = new int[16];
+    public int[] oldMillCheck = new int[16];
     public Playfield[][] board = new Playfield[8][3];
 
     public Gamestate(Playfield[][] board) {
@@ -49,14 +52,59 @@ public class Gamestate {
     }
 
 
+
+    /*
+    initializes the array so no mills occur before the game starts
+     */
+    public void millPositionsInitializer() {  // call at gamestart
+        for (int i = 0; i < 16; i++) {
+            newMillCheck[i] = 0;
+            oldMillCheck[i] = 0;
+            millPositions[i] = false;
+        }
+    }
+
+    public int getMillCheckCount(int[] count) {
+        int m = 0;
+        for(int i = 0; i < 16; i++){
+            m += count[i];
+        }return m;
+    }
+
+    public void millToInt(){
+        for(int i = 0; i < 16; i++){
+            if(millPositions[i]) newMillCheck[i] = 1;
+            else newMillCheck[i] = 0;
+        }
+    }
+
+    public boolean millCheckCompare() {
+        millToInt();
+        int oldMillCheckCount = getMillCheckCount(oldMillCheck);
+        int newMillCheckCount = getMillCheckCount(newMillCheck);
+
+        if(oldMillCheckCount > newMillCheckCount){
+            oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
+            return true; //a mill got created by using a piece that wasn't in a mill before
+        }
+        else if (oldMillCheckCount == newMillCheckCount){ //same amount of mills, but different distribution, meaning a piece left a mill and entered a new mill
+            for (int i = 0; i < 16; i++) {
+                if (!millPositions[i] && oldMillCheck[i] == 1 || millPositions[i] && oldMillCheck[i] == 0){
+                    oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
+                    return true;
+                }
+            }
+        }
+        oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
+        return false;
+    }
+
     /*
     easier to read and understand than dyamic statements to check for mills
      */
     public void millCheck(){
-        //top and left side mills
-        for(int i = 0; i < 16; i++) {
 
-        }
+        //top and left side mills
         millPositions[0] = isMill(board[0][0], board[1][0], board[2][0]);
         millPositions[1] = isMill(board[0][0], board[6][0], board[7][0]);
         millPositions[2] = isMill(board[0][1], board[1][1], board[2][1]);
