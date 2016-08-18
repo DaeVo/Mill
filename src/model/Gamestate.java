@@ -20,34 +20,17 @@ public class Gamestate {
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 
-    public int pieceCountWhite = 0;
-    public int pieceCountBlack = 0;
     public Playfield[][] board = new Playfield[8][3];
     public List<Pieces> currentPieces = new LinkedList<>();
-    public Map<Playfield, List<Playfield>> playfieldNeighb
+    public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
     public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
     public Gamestate(Playfield[][] board) {
         this.board = board;
+        millPositionsInitializer();
+        createNeighbors();
     }
 
-    /*
-    create 18 pieces and updates the piece count for each player
-     */
-    public void createPieces() {
-        for (int i = 0; i < 18; i++) {
-            Color color;
-            if (i % 2 == 1) {
-                color = Color.black;
-                pieceCountBlack++;
-            }
-            else {
-                color = Color.white;
-                pieceCountWhite++;
-            }
-            currentPieces[i] = new Pieces(color);
-        }
-    }
 
     /*
     initializes the array so no mills occur before the game starts
@@ -144,6 +127,55 @@ public class Gamestate {
         millPositions[13] = isMill(board[5][0], board[5][1], board[5][2]);
         millPositions[14] = isMill(board[3][0], board[3][1], board[3][2]);
         millPositions[15] = isMill(board[1][0], board[1][1], board[1][2]);
+    }
+
+
+    public Point findFreePlayfield(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j].empty)
+                    return new Point(i, j);
+            }
+        }
+        return null;
+    }
+
+
+    private void createNeighbors(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                Playfield base = board[i][j];
+
+                for (int i2 = 0; i2 < 8; i2++) {
+                    for (int j2 = 0; j2 < 3; j2++) {
+                        Playfield toCompare = board[i2][j2];
+                        if (base.isNeighbour(toCompare)) {
+                            if (!playfieldNeighbors.containsKey(base))
+                                playfieldNeighbors.put(base, new LinkedList<>());
+
+                            playfieldNeighbors.get(base).add(toCompare);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Playfield> getNeighbors(Playfield field){
+        return playfieldNeighbors.get(field);
+    }
+
+    public int getPieceCount(){
+        return getPieceCount(Color.black) + getPieceCount(Color.white);
+    }
+
+    public int getPieceCount(Color color){
+        int count = 0;
+        for (Pieces p : currentPieces) {
+            if (p.field != null && p.color == color)
+                count++;
+        }
+        return count;
     }
 }
 

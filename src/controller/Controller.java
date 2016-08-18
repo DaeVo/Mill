@@ -8,6 +8,8 @@ import view.IPlayer;
 
 import java.awt.*;
 
+import static controller.GamePhase.Placing;
+
 public class Controller {
 	private IPlayer blackPlayer;
 	private IPlayer whitePlayer;
@@ -15,7 +17,7 @@ public class Controller {
 	
 	private int turn;
 	private Color turnColor;
-	private GamePhase gameState;
+	private GamePhase gamePhase;
 	private GamePhase oldState;
 
 	
@@ -32,7 +34,7 @@ public class Controller {
 		
 		turn = 1;
 		turnColor = Color.black;
-		gameState = GamePhase.Placing;
+		gamePhase = Placing;
 		printTurnInfo();
 		
 		new Thread(blackPlayer).start();
@@ -44,7 +46,7 @@ public class Controller {
 		gameBoard.board[p.x][p.y].addPiece(piece);
 
 		if (gameBoard.getPieceCount() == 18)
-			gameState = GamePhase.Moving;
+			gamePhase = GamePhase.Moving;
 		endTurn();
 	}
 	
@@ -75,7 +77,7 @@ public class Controller {
 		gameBoard.currentPieces.remove(oldPiece);
 		gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
-		gameState = oldState;
+		gamePhase = oldState;
 		endTurn();
 		return true;
 	}
@@ -84,12 +86,15 @@ public class Controller {
 	private void endTurn(){
 		Thread toStart = null;
 
-		//if (gameBoard.millCheck()){
-		if (0 == 1){
+		if (gamePhase != Placing && gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3){
+			System.out.println("Game end!");
+			return;
+		}
+		if (gameBoard.millCheckCompare()){
 			//the turncolor got a new mill
 			//turn is not ended
-			oldState = gameState;
-			gameState = GamePhase.RemovingStone;
+			oldState = gamePhase;
+			gamePhase = GamePhase.RemovingStone;
 			return;
 		} else {
 
@@ -109,12 +114,15 @@ public class Controller {
 		} else {
 			toStart = new Thread(whitePlayer);
 		}
+
+
+
 		toStart.start();
 	}
 
 	
 	public GamePhase getGamePhase(){
-		return gameState;
+		return gamePhase;
 	}
 	
 	public Gamestate getState(){
