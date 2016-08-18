@@ -28,12 +28,15 @@ public class ConsoleView extends AbstractPlayer {
 	}
 
 	private void place(){
-		System.out.println("Place a stone");
-		millController.place(readCords());
+		boolean validMove = false;
+		while (!validMove) {
+			System.out.println("Place a stone");
+			validMove = millController.place(readCords());
+		}
 	}
 
 	private void remove(){
-		System.out.println("Remove a enemy stone");
+		System.out.println("Remove an enemy stone");
 		millController.removeStone(readCords());
 	}
 	private void move(){

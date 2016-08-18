@@ -40,14 +40,20 @@ public class Controller {
 		new Thread(blackPlayer).start();
 	}
 	
-	public void place(Point p){
+	public boolean place(Point p){
+
 		Pieces piece = new Pieces(turnColor);
+		if(!gameBoard.board[p.x][p.y].empty) {
+			System.out.println("please enter a field that is not occupied by another piece, yet4.");
+			return false;
+		}
 		gameBoard.currentPieces.add(piece);
 		gameBoard.board[p.x][p.y].addPiece(piece);
 
 		if (gameBoard.getPieceCount() == 18)
 			gamePhase = GamePhase.Moving;
 		endTurn();
+		return true;
 	}
 	
 	
@@ -95,7 +101,6 @@ public class Controller {
 			//turn is not ended
 			oldState = gamePhase;
 			gamePhase = GamePhase.RemovingStone;
-			return;
 		} else {
 
 			turn++;
