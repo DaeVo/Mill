@@ -36,8 +36,11 @@ public class ConsoleView extends AbstractPlayer {
 	}
 
 	private void remove(){
-		System.out.println("Remove an enemy stone");
-		millController.removeStone(readCords());
+		boolean validRemove = false;
+		while (!validRemove) {
+			System.out.println("Remove an enemy stone");
+			validRemove = millController.removeStone(readCords());
+		}
 	}
 	private void move(){
 
