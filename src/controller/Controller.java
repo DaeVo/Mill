@@ -44,7 +44,7 @@ public class Controller {
 
 		Pieces piece = new Pieces(turnColor);
 		if(!gameBoard.board[p.x][p.y].empty) {
-			System.out.println("please enter a field that is not occupied by another piece, yet4.");
+			System.out.println("please enter a field that is not occupied by another piece, yet.");
 			return false;
 		}
 		gameBoard.currentPieces.add(piece);

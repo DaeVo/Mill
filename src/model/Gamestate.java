@@ -100,7 +100,6 @@ public class Gamestate {
         oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
         return false;
     }
-
     /*
     easier to read and understand than dyamic statements to check for mills
     sets a booleana to 1 if a mill position happens.

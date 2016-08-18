@@ -40,15 +40,19 @@ public class ConsoleView extends AbstractPlayer {
 		millController.removeStone(readCords());
 	}
 	private void move(){
-		System.out.println("Move a stone. Source Place:");
-		Point src = readCords();
-		System.out.println("Destation Place:");
-		Point dst = readCords();
 
-		if (millController.getGamePhase() == GamePhase.Moving)
-			millController.move(src, dst);
-		else
-			millController.moveFreely(src, dst);
+		boolean validMove = false;
+		while (!validMove) {
+			System.out.println("Move a stone. Source Place:");
+			Point src = readCords();
+			System.out.println("Destation Place:");
+			Point dst = readCords();
+
+			if (millController.getGamePhase() == GamePhase.Moving)
+				validMove = millController.move(src, dst);
+			else
+				validMove = millController.moveFreely(src, dst);
+		}
 
 	}
 	private Point readCords(){

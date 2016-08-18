@@ -38,6 +38,7 @@ public class Playfield {
              System.out.println("no Neighbour"); //remove after testing
              return false;
          }
+         System.out.println("default isNeighbour = false");
          return false;
      }
 

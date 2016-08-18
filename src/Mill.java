@@ -18,7 +18,7 @@ public final class Mill {
 
         try {
             IPlayer p1 = new ConsoleView();
-            IPlayer p2 = new StupidAi();
+            IPlayer p2 = new ConsoleView();
 
             c.startGame(p1, p2);
 

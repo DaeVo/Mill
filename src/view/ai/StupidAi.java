@@ -48,6 +48,7 @@ public class StupidAi extends AbstractPlayer {
 	}
 
 	private void removeStone(){
+		System.out.println("ich bin dumm und scheiße und kann keinen stein removen weil ich ne dumme ki bin");
         for (Pieces p : millController.getState().currentPieces) {
             if (p.color != myColor) {
                 millController.removeStone(p.field.getPoint());
