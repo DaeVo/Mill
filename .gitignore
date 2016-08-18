@@ -48,5 +48,6 @@ Temporary Items
 
 *.class
 
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
 out/
