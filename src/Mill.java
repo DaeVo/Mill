@@ -58,7 +58,6 @@ public final class Mill {
         BoardFactory.printPieces(gamestate);
         */
     }
-
-}
+} //maxbranch
 
 
