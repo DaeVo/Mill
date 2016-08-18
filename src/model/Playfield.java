@@ -90,18 +90,26 @@ public class Playfield {
         return new Point(x, y);
     }
 
+    public String shortString() {
+        if (this.empty)
+            return " ";
+        else if (piece.color == Color.black)
+            return "B";
+        else
+            return "W";
+    }
+
     @Override
     public String toString() {
         String color;
-        if (this.empty) color = " field is empty";
+        if (this.empty)
+            color = " field is empty";
         else{
             if(piece.color == Color.black) color = " - black";
             else color = "- white";
         }
 
-        return"("+x +
-            ", "+y + ") "+
-             color;
+        return String.format("(%d, %d) %s", x, y, color);
     }
 }
 

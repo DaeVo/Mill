@@ -16,6 +16,7 @@ public class Controller {
 	private Gamestate gameBoard;
 	
 	private int turn;
+	private int toPlace = 2 * 9;
 	private Color turnColor;
 	private GamePhase gamePhase;
 	private GamePhase oldState;
@@ -50,7 +51,8 @@ public class Controller {
 		gameBoard.currentPieces.add(piece);
 		gameBoard.board[p.x][p.y].addPiece(piece);
 
-		if (gameBoard.getPieceCount() == 18)
+		toPlace--;
+		if (toPlace == 0)
 			gamePhase = GamePhase.Moving;
 		endTurn();
 		return true;
