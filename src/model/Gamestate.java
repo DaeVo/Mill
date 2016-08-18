@@ -92,6 +92,16 @@ public class Gamestate {
         return false;
     }
 
+    public Point findFreePlayfield(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j].empty)
+                    return new Point(i, j);
+            }
+        }
+        return null;
+    }
+
     public int getPieceCount(){
         int count = 0;
         for (Pieces p : currentPieces) {

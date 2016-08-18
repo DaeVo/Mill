@@ -2,19 +2,36 @@
  * Created by Max on 16/08/2016.
  */
 
+import controller.Controller;
 import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
+import view.IPlayer;
+import view.ai.SimpleAi;
 
 import java.util.*;
 public final class Mill {
     public static void main(final String[] args) {
-        Playfield board[][];
+        Playfield board[][] = BoardFactory.createBoard();
+        Gamestate gamestate = new Gamestate(board);
+        Controller c = new Controller(gamestate);
 
-        board = BoardFactory.createBoard();
-        Gamestate gamestateObject = new Gamestate(board);
+        try {
+            IPlayer p1 = new SimpleAi();
+            IPlayer p2 = new SimpleAi();
 
-        board[1][1].addPiece(gamestateObject.currentPieces[4]);
+            c.startGame(p1, p2);
+
+            while (true) {
+                Thread.sleep(1000);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*
+        board[1][1].addPiece(gamestate.currentPieces[4]);
 
         int i = 0;
         while(i < 3) {  // todo: replace with  < 18 later and move to another class
@@ -25,12 +42,12 @@ public final class Mill {
                 System.out.println("zahl 0-3");
                 tmp = sc.next();
                 Integer y = Integer.parseInt(tmp);
-            board[x][y].addPiece(gamestateObject.currentPieces[i]);
-            gamestateObject.currentPieces[i].number = i;
+            board[x][y].addPiece(gamestate.currentPieces[i]);
+            gamestate.currentPieces[i].number = i;
             i++;
         }
 
-        BoardFactory.printPieces(gamestateObject);
+        BoardFactory.printPieces(gamestate);
         board[1][1].move(board[1][2]);
         board[1][1].move(board[0][1]);
         board[3][1].move(board[3][2]);
@@ -39,8 +56,8 @@ public final class Mill {
 
         System.out.println("---- . ----");
 
-        BoardFactory.printPieces(gamestateObject);
-
+        BoardFactory.printPieces(gamestate);
+        */
     }
 
 }

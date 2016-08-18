@@ -3,11 +3,15 @@ package view;
 
 import controller.Controller;
 
+import java.awt.*;
+
 public abstract class AbstractPlayer implements IPlayer {
 	protected Controller millController;
+	protected Color myColor;
 	
 	@Override
-	public void setController(Controller cont) {
-		millController = cont;	
+	public void create(Controller cont, Color playerColor) {
+		millController = cont;
+		myColor = playerColor;
 	}
 }

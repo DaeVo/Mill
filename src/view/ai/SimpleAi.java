@@ -1,5 +1,6 @@
 package view.ai;
 
+import model.Pieces;
 import view.AbstractPlayer;
 
 import java.awt.Point;
@@ -26,11 +27,21 @@ public class SimpleAi extends AbstractPlayer {
 		}
 	}
 
-	
 	private void place(){
-		//Point toPlace = millController.getBoard().findFreeNode();
-		//System.out.println("Ki: Placing on " + toPlace);
-		//millController.place(toPlace);
+		Point toPlace = millController.getState().findFreePlayfield();
+		System.out.println("Ki: Placing on " + toPlace);
+		millController.place(toPlace);
 	}
-	
+
+	private void moving(){
+		for (Pieces p : millController.getState().currentPieces) {
+			if (p.color == myColor){
+                System.out.println("Ki: Trying to move " + p.field);
+
+            }
+		}
+
+
+
+	}
 }

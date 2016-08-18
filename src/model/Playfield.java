@@ -22,12 +22,14 @@ public class Playfield {
 
 
      public boolean isNeighbour (Playfield dst){
-
          if(this.x  % 2 == 1) {
-             if (Math.abs(this.y - dst.y) == 1 && this.x == dst.x) return true;  // from outside to inside neighbours without diagonals
+             if (Math.abs(this.y - dst.y) == 1 && this.x == dst.x)
+                 return true;  // from outside to inside neighbours without diagonals
          }
-         else if (this.x == 7 && dst.x == 0 && dst.y == this.y || dst.x == 7 && this.x == 0 && this.y == dst.y) return true; //special case if this.x or dst.x == 7
-         else if (Math.abs(this.x - dst.x) == 1 && this.y == dst.y) return true;  //on the same level within 1 range of each other
+         else if (this.x == 7 && dst.x == 0 && dst.y == this.y || dst.x == 7 && this.x == 0 && this.y == dst.y)
+             return true; //special case if this.x or dst.x == 7
+         else if (Math.abs(this.x - dst.x) == 1 && this.y == dst.y)
+             return true;  //on the same level within 1 range of each other
          else {
              System.out.println("no Neighbour"); //remove after testing
              return false;
@@ -78,6 +80,11 @@ public class Playfield {
         piece.addPlayfield(this);
         this.empty = false;
     }
+
+    public Point getPoint(){
+        return new Point(x, y);
+    }
+
     @Override
     public String toString() {
         String color;

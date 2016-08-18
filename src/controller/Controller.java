@@ -7,7 +7,6 @@ import model.Playfield;
 import view.IPlayer;
 
 import java.awt.*;
-import java.util.List;
 
 public class Controller {
 	private IPlayer blackPlayer;
@@ -28,8 +27,8 @@ public class Controller {
 		//notfiy first playwer
 		blackPlayer = bp;
 		whitePlayer = wp;
-		blackPlayer.setController(this);
-		whitePlayer.setController(this);
+		blackPlayer.create(this, );
+		whitePlayer.create(this, );
 		
 		turn = 1;
 		turnColor = Color.black;
@@ -92,16 +91,13 @@ public class Controller {
 			}
 		}
 
-
-
-
+		printTurnInfo();
 
 		if (turnColor == Color.black) {
 			toStart = new Thread(blackPlayer);
 		} else {
 			toStart = new Thread(whitePlayer);
 		}
-		printTurnInfo();
 		toStart.start();
 	}
 
