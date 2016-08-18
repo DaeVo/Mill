@@ -49,7 +49,7 @@ public class StupidAi extends AbstractPlayer {
 	}
 
 	private void removeStone(){
-        System.out.println("Ki: Trying to remove");
+        System.out.println("Ki: Trying to remove ich");
         List<Pieces> listCopy = new LinkedList<>(millController.getState().currentPieces);
         for (Pieces p : listCopy) {
             if (p.color != myColor) {

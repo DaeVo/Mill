@@ -8,7 +8,6 @@ import model.Gamestate;
 import model.Playfield;
 import view.IPlayer;
 import view.ai.StupidAi;
-import view.human.ConsoleView;
 
 public final class Mill {
     public static void main(final String[] args) {
@@ -17,8 +16,8 @@ public final class Mill {
         Controller c = new Controller(gamestate);
 
         try {
-            IPlayer p1 = new ConsoleView();
-            IPlayer p2 = new ConsoleView();
+            IPlayer p1 = new StupidAi();
+            IPlayer p2 = new StupidAi();
 
             c.startGame(p1, p2);
 
@@ -55,7 +54,6 @@ public final class Mill {
         board[4][2].move(board[4][1]);
 
         System.out.println("---- . ----");
-
         BoardFactory.printPieces(gamestate);
         */
     }
