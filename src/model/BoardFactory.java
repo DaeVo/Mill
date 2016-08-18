@@ -28,9 +28,8 @@ public class BoardFactory {
         }
     }
     public static void printPieces(Gamestate gs){
-        for (int j = 0; j < 18; j++) {
-           if(gs.currentPieces[j].field != null)
-                System.out.println(gs.currentPieces[j].field);
+        for (Pieces p : gs.currentPieces){
+            System.out.println(p.field);
         }
     }
 }

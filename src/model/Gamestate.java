@@ -2,6 +2,8 @@ package model;
 
 import java.awt.*;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Max on 16/08/2016.
@@ -19,27 +21,13 @@ public class Gamestate {
     public int pieceCountBlack = 9;
     public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
 
-    public Pieces[] currentPieces = new Pieces[18];
-
-    public void createPieces() {  //initializes 18 starting model.Pieces
-        for (int i = 0; i < 18; i++) {
-            Color color;
-            if (i % 2 == 1)
-                color = Color.black;
-            else
-                color = Color.white;
-            currentPieces[i] = new Pieces(color);
-        }
-    }
-
-
-
+    public List<Pieces> currentPieces = new LinkedList<>();
 
     private String millType;
     private int millCount = 0;
     private int currentMillCount = 0;
 
-        private void piecesMillSet(int i, int j) {   //indices for fields in mill.
+    private void piecesMillSet(int i, int j) {   //indices for fields in mill.
             int t = 0;
             int z = 0;
             switch (millType) {
@@ -100,7 +88,17 @@ public class Gamestate {
                     }
                 }
             }
-        }return false;
+        }
+        return false;
+    }
+
+    public int getPieceCount(){
+        int count = 0;
+        for (Pieces p : currentPieces) {
+            if (p.field != null)
+                count++;
+        }
+        return count;
     }
 }
 

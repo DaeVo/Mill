@@ -1,6 +1,9 @@
 package controller;
 
+import model.BoardFactory;
 import model.Gamestate;
+import model.Pieces;
+import model.Playfield;
 import view.IPlayer;
 
 import java.awt.*;
@@ -37,54 +40,67 @@ public class Controller {
 	}
 	
 	public void place(Point p){
-		/*
-		gameBoard.modifyNode(turnColor, p);
-		
-		if (gameBoard.getNodeCount() == 18)
+		Pieces piece = new Pieces(turnColor);
+		gameBoard.currentPieces.add(piece);
+		gameBoard.board[p.x][p.y].addPiece(piece);
+
+		if (gameBoard.getPieceCount() == 18)
 			gameState = GamePhase.Moving;
-			*/
 		endTurn();
 	}
 	
 	
 	public void move(Point src, Point dst){
-		//gameBoard.move(src, dst);
-		
+		gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
 
-		
 		endTurn();
 	}
-	
+
+	public void moveFreely(Point src, Point dst){
+		gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
+
+		endTurn();
+	}
+
 	public void removeStone(Point p){
-		//gameBoard.modifyNode(NodeStatus.Free, p);
+		Pieces oldPiece = gameBoard.board[p.x][p.y].piece;
+		gameBoard.currentPieces.remove(oldPiece);
+		gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
+
 		gameState = oldState;
 		endTurn();
 	}
 	
 	
 	private void endTurn(){
-		/*
-		List<MillInfo> newMills = gameBoard.getMills();
-		if (oldMills.size() != newMills.size()){
+		Thread toStart = null;
+
+		if (gameBoard.millCheck()){
 			//the turncolor got a new mill
 			//turn is not ended
 			oldState = gameState;
 			gameState = GamePhase.RemovingStone;
 			return;
-		}
-		*/
-		
-		
-		turn++;
-		Thread toStart = null;
-		if (turnColor == Color.black) {
-			turnColor = Color.white;
-			toStart = new Thread(whitePlayer);
 		} else {
-			turnColor = Color.black;
-			toStart = new Thread(blackPlayer);
+
+			turn++;
+
+			if (turnColor == Color.black) {
+				turnColor = Color.white;
+			} else {
+				turnColor = Color.black;
+			}
 		}
-		
+
+
+
+
+
+		if (turnColor == Color.black) {
+			toStart = new Thread(blackPlayer);
+		} else {
+			toStart = new Thread(whitePlayer);
+		}
 		printTurnInfo();
 		toStart.start();
 	}
@@ -101,7 +117,7 @@ public class Controller {
 	private void printTurnInfo(){
 		System.out.println("Turn " + turn);
 		System.out.println("Next Player " + turnColor);
-		System.out.println(gameBoard);
+		BoardFactory.printBoard(gameBoard.board);
 		System.out.println();
 	}
 }

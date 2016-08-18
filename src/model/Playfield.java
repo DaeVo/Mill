@@ -41,13 +41,25 @@ public class Playfield {
     if the field whose piece is to be moved must not be empty, destination must be empty, destination must be a direct
      "allowed" neighbour of the field whose piece is to be moved.
      */
-    public void move (Playfield dst) {
-            if (this.isNeighbour(dst) && dst.empty && !this.empty) {
+
+    public boolean move (Playfield dst) {
+        if (this.isNeighbour(dst)){
+            return moveFreely(dst);
+        }
+        return false;
+    }
+
+    public boolean moveFreely (Playfield dst) {
+        if (dst.empty && !this.empty) {
             System.out.println(this + "succesfully moved to" + dst);
             this.conquerField(dst);
+            return true;
         }
-        else System.out.println(this + "to "+ dst +  " is no legit move (either moving empty field, or dst isnt empty");
+        System.out.println(this + "to "+ dst +  " is no legit move (either moving empty field, or dst isnt empty");
+        return false;
     }
+
+
 
     /*
     assigns the piece of one field to another field while resetting the original field

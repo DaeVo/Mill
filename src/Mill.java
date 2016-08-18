@@ -13,7 +13,6 @@ public final class Mill {
 
         board = BoardFactory.createBoard();
         Gamestate gamestateObject = new Gamestate(board);
-        gamestateObject.createPieces();
 
         board[1][1].addPiece(gamestateObject.currentPieces[4]);
 
