@@ -105,7 +105,7 @@ public class Controller {
 
 			turn++;
 
-			if (turnColor == Color.black) {
+		if (turnColor == Color.black) {
 				turnColor = Color.white;
 			} else {
 				turnColor = Color.black;
