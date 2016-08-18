@@ -95,12 +95,11 @@ public class Controller {
 			//turn is not ended
 			oldState = gamePhase;
 			gamePhase = GamePhase.RemovingStone;
-			return;
 		} else {
 
 			turn++;
 
-			if (turnColor == Color.black) {
+		if (turnColor == Color.black) {
 				turnColor = Color.white;
 			} else {
 				turnColor = Color.black;

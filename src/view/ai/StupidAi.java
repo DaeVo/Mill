@@ -21,6 +21,7 @@ public class StupidAi extends AbstractPlayer {
 			break;
 
 		case RemovingStone:
+			removeStone();
 			break;
 		}
 
