@@ -17,4 +17,9 @@ public class Pieces {
     public void addPlayfield(Playfield field){
         this.field = field;
     }
+
+    @Override
+    public String toString() {
+        return "" + this.field;
+    }
 }

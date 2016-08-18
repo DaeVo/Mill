@@ -4,6 +4,7 @@ package model;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashSet;
 
 /**
  * Created by Max on 16/08/2016.
@@ -81,6 +82,7 @@ public class Playfield {
         this.piece = piece;
         piece.addPlayfield(this);
         this.empty = false;
+       // System.out.println("current pieces: " + addPieceSet);
     }
 
     public Point getPoint(){
