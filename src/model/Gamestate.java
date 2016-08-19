@@ -10,7 +10,7 @@ public class Gamestate {
 
     public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be emptied after every turn
     /*
-    saves which of the 16 possible mills is currently active
+    stores which of the 16 possible mills is currently active
      */
     public boolean[] millPositions = new boolean[16];
 
@@ -31,7 +31,6 @@ public class Gamestate {
         createNeighbors();
     }
 
-
     /*
     initializes the array so no mills occur before the game starts
      */
@@ -45,14 +44,15 @@ public class Gamestate {
 
     public int getMillCheckCount(int[] count) {
         int m = 0;
-        for(int i = 0; i < 16; i++){
+        for (int i = 0; i < 16; i++) {
             m += count[i];
-        }return m;
+        }
+        return m;
     }
 
-    public void millToInt(){
-        for(int i = 0; i < 16; i++){
-            if(millPositions[i]) newMillCheck[i] = 1;
+    public void millToInt() {
+        for (int i = 0; i < 16; i++) {
+            if (millPositions[i]) newMillCheck[i] = 1;
             else newMillCheck[i] = 0;
         }
     }
@@ -85,13 +85,12 @@ public class Gamestate {
         int oldMillCheckCount = getMillCheckCount(oldMillCheck);
         int newMillCheckCount = getMillCheckCount(newMillCheck);
 
-        if(newMillCheckCount > oldMillCheckCount){
+        if (newMillCheckCount > oldMillCheckCount) {
             oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
             return true; //a mill got created by using a piece that wasn't in a mill before
-        }
-        else if (oldMillCheckCount == newMillCheckCount){ //same amount of mills, but different distribution, meaning a piece left a mill and entered a new mill
+        } else if (oldMillCheckCount == newMillCheckCount) { //same amount of mills, but different distribution, meaning a piece left a mill and entered a new mill
             for (int i = 0; i < 16; i++) {
-                if (!millPositions[i] && oldMillCheck[i] == 1 || millPositions[i] && oldMillCheck[i] == 0){
+                if (!millPositions[i] && oldMillCheck[i] == 1 || millPositions[i] && oldMillCheck[i] == 0) {
                     oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
                     return true;
                 }
@@ -100,12 +99,13 @@ public class Gamestate {
         oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
         return false;
     }
+
     /*
     easier to read and understand than dyamic statements to check for mills
     sets a booleana to 1 if a mill position happens.
 
      */
-    public void millCheck(){
+    public void millCheck() {
 
         //top and left side mills
         millPositions[0] = isMill(board[0][0], board[1][0], board[2][0]);
@@ -131,7 +131,7 @@ public class Gamestate {
     }
 
 
-    public Point findFreePlayfield(){
+    public Point findFreePlayfield() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j].empty)
@@ -142,7 +142,7 @@ public class Gamestate {
     }
 
 
-    private void createNeighbors(){
+    private void createNeighbors() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
                 Playfield base = board[i][j];
@@ -162,15 +162,15 @@ public class Gamestate {
         }
     }
 
-    public List<Playfield> getNeighbours(Playfield field){
+    public List<Playfield> getNeighbours(Playfield field) {
         return playfieldNeighbors.get(field);
     }
 
-    public int getPieceCount(){
+    public int getPieceCount() {
         return getPieceCount(Color.black) + getPieceCount(Color.white);
     }
 
-    public int getPieceCount(Color color){
+    public int getPieceCount(Color color) {
         int count = 0;
         for (Pieces p : currentPieces) {
             if (p.field != null && p.color == color)
@@ -178,6 +178,17 @@ public class Gamestate {
         }
         return count;
     }
+
+    public void allLegitMoves() {
+      LinkedList<Point> legitMovesList = new LinkedList<Point>();
+        Point tmp = new Point();
+        Playfield test;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                tmp.setLocation(i, j);
+                //if pieceCount > 3  check neighbours and check empty and repeat for all remaining pieces -> legit moves
+                //if pieceCount == 3 check all fields for empty and repeat for all remaining pieces -> legit moves0
+            }
+        }
+    }
 }
-
-

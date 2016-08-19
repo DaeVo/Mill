@@ -1,10 +1,7 @@
 package model;
 
-
 import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashSet;
+
 
 /**
  * Created by Max on 16/08/2016.
