@@ -7,14 +7,15 @@ public class MCTS {
 
     //todo: deep copy of controller (or maybe pieces + board + playfields?)
 
-    public Node root = new Node(); //global Root Node
+
+    public Node root; //global Root Node
     //public Node createTree(){}
 
 
     /*
-    resets the tree
+    initializes the tree
      */
     public void initializeMCTS(){
-           root = new Node();
+        root = new Node();
     }
 }
