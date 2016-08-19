@@ -13,21 +13,21 @@ import view.human.ConsoleView;
 public final class Mill {
     public static void main(final String[] args) {
         Playfield board[][] = BoardFactory.createBoard();
-        Gamestate gamestate = new Gamestate(board);
-        Controller c = new Controller(gamestate);
+            Gamestate gamestate = new Gamestate(board);
+            Controller c = new Controller(gamestate);
 
-        try {
-            IPlayer p1 = new ConsoleView();
-            IPlayer p2 = new StupidAi();
+            try {
+                IPlayer p1 = new ConsoleView();
+                IPlayer p2 = new StupidAi();
 
-            c.startGame(p1, p2);
+                c.startGame(p1, p2);
 
-            while (true) {
-                Thread.sleep(1000);
-            }
+                while (true) {
+                    Thread.sleep(1000);
+                }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
         }
 
         /*

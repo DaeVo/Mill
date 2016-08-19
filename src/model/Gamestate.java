@@ -103,7 +103,6 @@ public class Gamestate {
     /*
     easier to read and understand than dyamic statements to check for mills
     sets a booleana to 1 if a mill position happens.
-
      */
     public void millCheck() {
 
@@ -140,8 +139,7 @@ public class Gamestate {
         }
         return null;
     }
-
-
+    
     private void createNeighbors() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {

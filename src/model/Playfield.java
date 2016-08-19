@@ -101,7 +101,6 @@ public class Playfield {
             if(piece.color == Color.black) color = " - black";
             else color = "- white";
         }
-
         return String.format("(%d, %d) %s", x, y, color);
     }
 }
