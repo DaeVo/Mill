@@ -177,10 +177,9 @@ public class Gamestate {
         return count;
     }
 
-    public void allLegitMoves() {
-      LinkedList<Point> legitMovesList = new LinkedList<Point>();
+    public void allLegalMoves() {
+      LinkedList<Point> legalMoveList = new LinkedList<Point>();
         Point tmp = new Point();
-        Playfield test;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
                 tmp.setLocation(i, j);
@@ -189,4 +188,5 @@ public class Gamestate {
             }
         }
     }
+
 }
