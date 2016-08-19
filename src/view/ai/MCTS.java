@@ -9,8 +9,6 @@ public class MCTS {
 
 
     public Node root; //global Root Node
-    //public Node createTree(){}
-
 
     /*
     initializes the tree

@@ -8,9 +8,9 @@ import java.awt.Point;
  */
 class Node {
     public Node() {}
-    double winCount;
-    double playCount;
-    Point src;
+    double winCount;   //if ai wins the simulated playout  - winCount++;
+    double playCount;  //if simulated game ends -  playCount++
+    Point src;  // in placing phase = null;
     Point dst;
     LinkedList<Node>  listOfChildren = new LinkedList<Node>();
 }
