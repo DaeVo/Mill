@@ -10,7 +10,6 @@ class Node {
     public Node() {}
     double winCount;   //if ai wins the simulated playout  - winCount++;
     double playCount;  //if simulated game ends -  playCount++
-    Point src;  // in placing phase = null;
-    Point dst;
+    Move move;
     LinkedList<Node>  listOfChildren = new LinkedList<Node>();
 }
