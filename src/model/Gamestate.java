@@ -23,7 +23,7 @@ public class Gamestate {
     public Playfield[][] board = new Playfield[8][3];
     public List<Pieces> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
-    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
+    public List<String> turnHistory = new LinkedList<>();
 
     public Gamestate(Playfield[][] board) {
         this.board = board;
