@@ -1,4 +1,5 @@
 package view.ai;
+
 import java.util.LinkedList;
 import java.awt.Point;
 
@@ -7,9 +8,11 @@ import java.awt.Point;
  * Nodes for the MCTS
  */
 class Node {
-    public Node() {}
+    public Node() {
+    }
+
     double winCount;   //if ai  wins the simulated playout  - winCount++;
     double playCount;  //if simulated game ends -  playCount++
     Move move;
-    LinkedList<Node>  listOfChildren = new LinkedList<Node>(); //legalMoves = children
-        }
+    LinkedList<Node> listOfChildren = new LinkedList<Node>(); //legalMoves = children
+}

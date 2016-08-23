@@ -1,4 +1,5 @@
 package model;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -135,7 +136,7 @@ public class Gamestate implements java.io.Serializable {
         }
         return null;
     }
-    
+
     private void createNeighbors() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
@@ -155,6 +156,7 @@ public class Gamestate implements java.io.Serializable {
             }
         }
     }
+
     public List<Playfield> getNeighbours(Playfield field) {
         return playfieldNeighbors.get(field);
     }
@@ -178,9 +180,9 @@ public class Gamestate implements java.io.Serializable {
     public void createLegalMoves() { // clear HashMap every turn.
         for (Pieces p : currentPieces) {
             LinkedList<Point> legalMoveList = new LinkedList<Point>();
-             Playfield tmpField = p.field;
+            Playfield tmpField = p.field;
             for (Playfield neighbourfield : getNeighbours(tmpField)) {
-                if(neighbourfield.empty) {
+                if (neighbourfield.empty) {
                     Point tmpPoint = new Point(neighbourfield.x, neighbourfield.y);
                     legalMoveList.add(tmpPoint);
                 }
@@ -193,16 +195,16 @@ public class Gamestate implements java.io.Serializable {
     method to update all legal moves if there are less than 4 pieces for the player that is moving
     and store them in a HashMap
      */
-    public void freeMovementLegalMoves (){ //
+    public void freeMovementLegalMoves() { //
         LinkedList<Point> legalMoveList = new LinkedList<Point>();
         for (Pieces p : currentPieces) {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 3; j++) {
                     Playfield tmpField = board[i][j];
-                   if (!tmpField.empty) {
-                       Point tmp = new Point(tmpField.x, tmpField.y);
-                       legalMoveList.add(tmp);
-                   }
+                    if (!tmpField.empty) {
+                        Point tmp = new Point(tmpField.x, tmpField.y);
+                        legalMoveList.add(tmp);
+                    }
                 }
             }
             legalMoves.put(p.field, legalMoveList);
