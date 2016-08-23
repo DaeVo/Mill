@@ -175,7 +175,7 @@ public class Controller implements java.io.Serializable {
         System.out.println();
     }
 
-    private Controller deepCopy () {
+    public Controller deepCopy () {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
