@@ -68,6 +68,10 @@ public class Gamestate implements java.io.Serializable {
         return false;
     }
 
+    public boolean isInMill(Pieces piece){
+        return (currentMillPieces.contains(piece));
+    }
+
     public void clearMillList() {
         currentMillPieces.clear();
     }
