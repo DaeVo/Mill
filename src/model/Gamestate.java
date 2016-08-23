@@ -192,14 +192,18 @@ public class Gamestate implements java.io.Serializable {
 
 
 
-
-    public void freeMovementLegalMoves (){ // < than 4 pieces.
+    /*
+    method to update all legal moves if there are less than 4 pieces for the player that is moving
+    and store them in a HashMap
+     */
+    public void freeMovementLegalMoves (){ //
         LinkedList<Point> legalMoveList = new LinkedList<Point>();
         for (Pieces p : currentPieces) {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 3; j++) {
-                   if (board[i][j].empty) {
-                       Point tmp = new Point((board[i][j].x, board[i][j].y);
+                    Playfield tmpField = board[i][j];
+                   if (!tmpField.empty) {
+                       Point tmp = new Point(tmpField.x, tmpField.y);
                        legalMoveList.add(tmp);
                    }
                 }
