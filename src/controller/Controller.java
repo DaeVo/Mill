@@ -7,6 +7,7 @@ import model.Playfield;
 import view.IPlayer;
 
 import java.awt.*;
+import java.io.*;
 
 import static controller.GamePhase.Placing;
 
@@ -173,4 +174,22 @@ public class Controller implements java.io.Serializable {
             System.out.println("Next Player White");
         System.out.println();
     }
+
+    private Controller deepCopy () {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (Controller) ois.readObject();
+        } catch (IOException e) {
+            return null;
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
 }
+
+

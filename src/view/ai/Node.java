@@ -12,4 +12,4 @@ class Node {
     double playCount;  //if simulated game ends -  playCount++
     Move move;
     LinkedList<Node>  listOfChildren = new LinkedList<Node>(); //legalMoves = children
-}
+        }
