@@ -1,5 +1,6 @@
 package view.ai;
 
+import controller.Controller;
 import model.Pieces;
 import model.Playfield;
 import view.AbstractPlayer;
@@ -30,6 +31,18 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void place(){
+        //Copy State
+        Controller copyCont = millController.deepCopy();
+        if (myColor == Color.black)
+            copyCont.setWhitePlayer(new DummyPlayer());
+        else
+            copyCont.setBlackPlayer(new DummyPlayer());
+
+        //init mtcs
+
+        //simulate
+
+        //make real call to controller
     }
 
     private void moving(){
