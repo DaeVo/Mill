@@ -9,14 +9,9 @@ import java.util.List;
 public class Gamestate implements java.io.Serializable {
 
     public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
-    /*
-    stores which of the 16 possible mills is currently active
-     */
     public boolean[] millPositions = new boolean[16];
 
-    /*
-    arrays to help calculating if a new mill has been created in this turn
-     */
+
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 
@@ -103,7 +98,7 @@ public class Gamestate implements java.io.Serializable {
 
     /*
     easier to read and understand than dyamic statements to check for mills
-    sets a booleana to 1 if a mill position happens.
+    stores which of the possible 16 mill positions are currently active.
      */
     public void millCheck() {
 
@@ -199,6 +194,17 @@ public class Gamestate implements java.io.Serializable {
 
 
     public void freeMovementLegalMoves (){ // < than 4 pieces.
-
+        LinkedList<Point> legalMoveList = new LinkedList<Point>();
+        for (Pieces p : currentPieces) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 3; j++) {
+                   if (board[i][j].empty) {
+                       Point tmp = new Point((board[i][j].x, board[i][j].y);
+                       legalMoveList.add(tmp);
+                   }
+                }
+            }
+            legalMoves.put(p.field, legalMoveList);
+        }
     }
 }
