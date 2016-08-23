@@ -10,7 +10,7 @@ import java.awt.*;
 
 import static controller.GamePhase.Placing;
 
-public class Controller {
+public class Controller implements java.io.Serializable {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private Gamestate gameBoard;

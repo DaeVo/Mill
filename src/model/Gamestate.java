@@ -6,9 +6,9 @@ import java.util.List;
 /**
  * Created by Max on 16/08/2016.
  */
-public class Gamestate {
+public class Gamestate implements java.io.Serializable {
 
-    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be emptied after every turn
+    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
     /*
     stores which of the 16 possible mills is currently active
      */
@@ -23,6 +23,7 @@ public class Gamestate {
     public Playfield[][] board = new Playfield[8][3];
     public List<Pieces> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
+    public Map<Playfield, List<Point>> legalMoves = new HashMap<>();
     public List<String> turnHistory = new LinkedList<>();
 
     public Gamestate(Playfield[][] board) {
@@ -159,7 +160,6 @@ public class Gamestate {
             }
         }
     }
-
     public List<Playfield> getNeighbours(Playfield field) {
         return playfieldNeighbors.get(field);
     }
@@ -177,15 +177,29 @@ public class Gamestate {
         return count;
     }
 
-    public void allLegalMoves() {
-      LinkedList<Point> legalMoveList = new LinkedList<Point>();
-        Point tmp = new Point();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 3; j++) {
-                tmp.setLocation(i, j);
-                //if pieceCount > 3  check neighbours and check empty and repeat for all remaining pieces -> legit moves
-                //if pieceCount == 3 check all fields for empty and repeat for all remaining pieces -> legit moves0
+    /*
+    updates the hashmap to store all legal moves for each playfield on the board.
+     */
+    public void createLegalMoves() { // clear HashMap every turn.
+        for (Pieces p : currentPieces) {
+            LinkedList<Point> legalMoveList = new LinkedList<Point>();
+             Playfield tmpField = p.field;
+            for (Playfield neighbourfield : getNeighbours(tmpField)) {
+                if(neighbourfield.empty) {
+                    Point tmpPoint = new Point(neighbourfield.x, neighbourfield.y);
+                    legalMoveList.add(tmpPoint);
+                }
             }
+            if(!legalMoves.containsKey(p)) legalMoves.put(p.field, new LinkedList<>());
+            legalMoves.put(p.field, legalMoveList);
         }
+    }
+
+
+
+
+
+    public void freeMovementLegalMoves (){ // < than 4 pieces.
+
     }
 }

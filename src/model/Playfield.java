@@ -7,7 +7,7 @@ import java.awt.*;
  * Created by Max on 16/08/2016.
  */
 
-public class Playfield {
+public class Playfield implements java.io.Serializable{
 
     public boolean empty;
     public Pieces piece;

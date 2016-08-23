@@ -8,7 +8,7 @@ import java.awt.Point;
  */
 class Node {
     public Node() {}
-    double winCount;   //if ai wins the simulated playout  - winCount++;
+    double winCount;   //if ai  wins the simulated playout  - winCount++;
     double playCount;  //if simulated game ends -  playCount++
     Move move;
     LinkedList<Node>  listOfChildren = new LinkedList<Node>();

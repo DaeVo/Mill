@@ -4,7 +4,7 @@ package model;
  * Created by Max on 16/08/2016.
  * create or print a board.
  */
-public class BoardFactory {
+public class BoardFactory implements java.io.Serializable{
     public BoardFactory(){}
     /*
     creating the model.BoardFactory as 8x3 fields

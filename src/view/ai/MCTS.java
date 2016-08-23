@@ -6,10 +6,7 @@ package view.ai;
  */
 public class MCTS {
 
-    //todo: deep copy of controller (or maybe pieces + board + playfields?)
-
-
-    public Node root; //global Root Node
+    public Node root; //global root Node
 
     /*
     initializes the tree

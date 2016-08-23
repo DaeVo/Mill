@@ -5,7 +5,7 @@ package model;
 /**
  * Created by Max on 16/08/2016.
  */
-public class Pieces {
+public class Pieces implements java.io.Serializable {
     public Playfield field;
     public Color color;
     public Integer millCount = null;
