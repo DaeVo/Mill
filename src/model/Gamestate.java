@@ -190,7 +190,6 @@ public class Gamestate implements java.io.Serializable {
                     legalMoveList.add(tmpPoint);
                 }
             }
-            if(!legalMoves.containsKey(p)) legalMoves.put(p.field, new LinkedList<>());
             legalMoves.put(p.field, legalMoveList);
         }
     }
