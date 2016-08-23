@@ -81,7 +81,8 @@ public class Controller implements java.io.Serializable {
 
         if (oldPiece == null || oldPiece.color == turnColor)
             return false;
-        //TODO: IN MILL CHECK
+        if (gameBoard.isInMill(oldPiece))
+            return false;
 
         gameBoard.currentPieces.remove(oldPiece);
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
