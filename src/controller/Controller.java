@@ -30,10 +30,8 @@ public class Controller implements java.io.Serializable {
 
     public void startGame(IPlayer bp, IPlayer wp) {
         //notfiy first playwer
-        blackPlayer = bp;
-        whitePlayer = wp;
-        blackPlayer.create(this, Color.black);
-        whitePlayer.create(this, Color.white);
+        setBlackPlayer(bp);
+        setWhitePlayer(wp);
 
         turn = 1;
         turnColor = Color.black;
@@ -41,6 +39,16 @@ public class Controller implements java.io.Serializable {
         printTurnInfo();
 
         new Thread(blackPlayer).start();
+    }
+
+    public void setBlackPlayer(IPlayer bp){
+        blackPlayer = bp;
+        blackPlayer.create(this, Color.black);
+    }
+
+    public void setWhitePlayer(IPlayer wp){
+        whitePlayer = wp;
+        whitePlayer.create(this, Color.white);
     }
 
     public boolean place(Point p) {
