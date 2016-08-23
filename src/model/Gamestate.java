@@ -189,9 +189,6 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
-
-
-
     /*
     method to update all legal moves if there are less than 4 pieces for the player that is moving
     and store them in a HashMap
