@@ -16,7 +16,7 @@ public class Gamestate implements java.io.Serializable {
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 
-    List<Point> legalPlacing = new LinkedList<Point>();
+    public List<Point> legalPlacing = new LinkedList<Point>();
     public Playfield[][] board = new Playfield[8][3];
     public List<Pieces> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
