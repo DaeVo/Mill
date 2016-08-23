@@ -16,6 +16,7 @@ public class Gamestate implements java.io.Serializable {
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 
+    List<Point> legalPlacing = new LinkedList<Point>();
     public Playfield[][] board = new Playfield[8][3];
     public List<Pieces> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
@@ -212,6 +213,20 @@ public class Gamestate implements java.io.Serializable {
                 }
             }
             legalMoves.put(p.field, legalMoveList);
+        }
+    }
+
+
+    public void createLegalPlacing() {
+        Playfield tmpField = new Playfield(false);
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 3; j++) {
+                tmpField = board[i][j];
+                if (tmpField.empty) {
+                    Point tmpPoint = new Point(tmpField.x, tmpField.y);
+                    legalPlacing.add(tmpPoint);
+                }
+            }
         }
     }
 }

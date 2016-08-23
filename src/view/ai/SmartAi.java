@@ -12,7 +12,7 @@ public class SmartAi extends AbstractPlayer {
     @Override
     public void run() {
         System.out.println("Ki: run()");
-        switch (millController.getGamePhase())	{
+        switch (millController.getGamePhase()) {
             case Placing:
                 place();
                 break;
@@ -29,12 +29,13 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("");
     }
 
-    private void place(){
+    private void place() {
+
     }
 
-    private void moving(){
+    private void moving() {
     }
 
-    private void removeStone(){
+    private void removeStone() {
     }
 }
