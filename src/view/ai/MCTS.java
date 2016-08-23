@@ -29,8 +29,7 @@ public class MCTS {
         return rn.nextInt();
     }
 
-    private Point randomMoveSource (Color color) { //gets a random piece to move this roun
-        d
+    private Point randomMoveSource (Color color) { //gets a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
         for (model.Pieces p : gametateObject.currentPieces) {
             if (color == p.color) {
