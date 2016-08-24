@@ -30,7 +30,7 @@ public class SmartAi extends AbstractPlayer {
                 break;
         }
 
-        System.out.println("");
+        System.out.println("smartAI: exit");
     }
 
     private void updateLists() {
@@ -76,8 +76,8 @@ public class SmartAi extends AbstractPlayer {
     private Point randomMoveSource () { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
         for (Pieces p : millController.getState().currentPieces) {
-            if (myColor == p.color && millController.getState().legalMoves.containsKey(p)) {
-                if (millController.getState().legalMoves.get(p).size() > 0) {
+            if (myColor == p.color && millController.getState().legalMoves.containsKey(p.field)) {
+                if (millController.getState().legalMoves.get(p.field).size() > 0) {
                     Point tmpPoint = new Point(p.field.x, p.field.y);
                     tmpList.add(tmpPoint);
                 }

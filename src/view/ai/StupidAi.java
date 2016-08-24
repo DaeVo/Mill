@@ -26,7 +26,7 @@ public class StupidAi extends AbstractPlayer {
 			break;
 		}
 
-        System.out.println("");
+		System.out.println("Ki: exit");
 	}
 
 	private void place(){
