@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
+import java.math.*;
 
 public class SmartAi extends AbstractPlayer {
 
@@ -16,6 +16,9 @@ public class SmartAi extends AbstractPlayer {
 
     @Override
     public void run() {
+        millController.getState().updateFreeMovementLegalMoves();
+        millController.getState().updateLegalMoves();
+        millController.getState().updateLegalPlacing();
         System.out.println("Ki: run()");
         switch (millController.getGamePhase())	{
             case Placing:
@@ -36,12 +39,12 @@ public class SmartAi extends AbstractPlayer {
 
     private void place(){
         //Copy State
-        Controller copyCont = millController.deepCopy();
+      /*  Controller copyCont = millController.deepCopy();
         if (myColor == Color.black)
             copyCont.setWhitePlayer(new DummyPlayer());
         else
             copyCont.setBlackPlayer(new DummyPlayer());
-
+*/
         millController.place(selectRandomPlacing());
         //init mtcs
 
@@ -63,7 +66,7 @@ public class SmartAi extends AbstractPlayer {
 
     public int getRandomNumber(){
         Random rn = new Random();
-        return rn.nextInt();
+        return Math.abs(rn.nextInt());
     }
 
     private Point randomMoveSource () { //selects a random piece to move this round

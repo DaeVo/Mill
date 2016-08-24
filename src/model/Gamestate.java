@@ -182,7 +182,7 @@ public class Gamestate implements java.io.Serializable {
     /*
     updates the hashmap to store all legal moves for each playfield on the board.
      */
-    public void createLegalMoves() { // clear HashMap every turn.
+    public void updateLegalMoves() { // clear HashMap every turn.
         for (Pieces p : currentPieces) {
             LinkedList<Point> legalMoveList = new LinkedList<Point>();
             Playfield tmpField = p.field;
@@ -200,7 +200,7 @@ public class Gamestate implements java.io.Serializable {
     method to update all legal moves if there are less than 4 pieces for the player that is moving
     and store them in a HashMap
      */
-    public void freeMovementLegalMoves() { //
+    public void updateFreeMovementLegalMoves() { //
         LinkedList<Point> legalMoveList = new LinkedList<Point>();
         for (Pieces p : currentPieces) {
             for (int i = 0; i < 8; i++) {
@@ -217,7 +217,7 @@ public class Gamestate implements java.io.Serializable {
     }
 
 
-    public void createLegalPlacing() {
+    public void updateLegalPlacing() {
         Playfield tmpField = new Playfield(false);
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 3; j++) {
