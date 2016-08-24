@@ -76,18 +76,18 @@ public class SmartAi extends AbstractPlayer {
     private Point randomMoveSource () { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
         for (Pieces p : millController.getState().currentPieces) {
-            if (myColor == p.color) {
-                Point tmpPoint = new Point (p.field.x, p.field.y);
-                tmpList.add(tmpPoint);
+            if (myColor == p.color && millController.getState().legalMoves.containsKey(p)) {
+                if (millController.getState().legalMoves.get(p).size() > 0) {
+                    Point tmpPoint = new Point(p.field.x, p.field.y);
+                    tmpList.add(tmpPoint);
+                }
             }
         }
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
     private Point selectRandomPlacing() { //random move while placing Pieces todo: replace Point with Move
-        Point tmpPoint =  millController.getState().legalPlacing.get(getRandomNumber() % millController.getState().legalPlacing.size());
-        millController.place(tmpPoint);
-        return tmpPoint;
+        return millController.getState().legalPlacing.get(getRandomNumber() % millController.getState().legalPlacing.size());
     }
 
     private Move selectRandomMove() { //random move while moving with more than 3 Pieces.
@@ -95,7 +95,6 @@ public class SmartAi extends AbstractPlayer {
         Point tmpPoint = new Point(millController.getState().board[tmpSrc.x][tmpSrc.y].x, millController.getState().board[tmpSrc.x][tmpSrc.y].y);
         List<Point> dstList = millController.getState().legalMoves.get(millController.getState().board[tmpPoint.x][tmpPoint.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
-        millController.move(tmpSrc, tmpDst);
         return new Move(tmpSrc, tmpDst);
     }
 
@@ -107,8 +106,6 @@ public class SmartAi extends AbstractPlayer {
                 enemyPieces.add(tmpPoint);
             }
         }
-        Point tmpPoint = new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
-        millController.removeStone(tmpPoint);
-        return tmpPoint;
+        return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
     }
 }
