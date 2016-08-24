@@ -109,7 +109,6 @@ public class Controller implements java.io.Serializable {
 
 
     private void endTurn() {
-        Thread toStart = null;
 
         if (gamePhase != Placing && (gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)) {
             System.out.println("Game ends with a victory!");
@@ -142,20 +141,30 @@ public class Controller implements java.io.Serializable {
 
         printTurnInfo();
 
-        if (turnColor == Color.black) {
-            toStart = new Thread(blackPlayer);
-        } else {
-            toStart = new Thread(whitePlayer);
-        }
 
-        try {
-            oldThread.join();
-            toStart.start();
-            oldThread = toStart;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                //Wait for last turn to finish
+                oldThread.join();
+                //Set actual turn as last turn
+                oldThread = Thread.currentThread();
+
+                //Start actual turn
+                if (turnColor == Color.black) {
+                    blackPlayer.run();
+                } else {
+                    whitePlayer.run();
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+
+
+
     }
+
 
     private boolean drawCheck() {
         //Abbort rule 50 round no mill

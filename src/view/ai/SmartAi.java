@@ -30,7 +30,7 @@ public class SmartAi extends AbstractPlayer {
                 break;
         }
 
-        System.out.println("");
+        System.out.println("smartAI: exit");
     }
 
     private void updateLists() {
