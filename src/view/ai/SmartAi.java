@@ -19,7 +19,7 @@ public class SmartAi extends AbstractPlayer {
         millController.getState().updateFreeMovementLegalMoves();
         millController.getState().updateLegalMoves();
         millController.getState().updateLegalPlacing();
-        System.out.println("Ki: run()");
+        System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{
             case Placing:
                 place();
