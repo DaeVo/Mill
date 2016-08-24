@@ -12,13 +12,9 @@ import java.math.*;
 
 public class SmartAi extends AbstractPlayer {
 
-
-
     @Override
     public void run() {
-        millController.getState().updateFreeMovementLegalMoves();
-        millController.getState().updateLegalMoves();
-        millController.getState().updateLegalPlacing();
+        updateLists();
         System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{
             case Placing:
@@ -35,6 +31,14 @@ public class SmartAi extends AbstractPlayer {
         }
 
         System.out.println("");
+    }
+
+    private void updateLists() {
+        millController.getState().legalPlacing.clear();
+        millController.getState().legalMoves.clear();
+        millController.getState().updateFreeMovementLegalMoves();
+        millController.getState().updateLegalMoves();
+        millController.getState().updateLegalPlacing();
     }
 
     private void place(){
@@ -81,7 +85,7 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private Point selectRandomPlacing() { //random move while placing Pieces todo: replace Point with Move
-       Point tmpPoint =  millController.getState().legalPlacing.get(getRandomNumber() % millController.getState().legalPlacing.size());
+        Point tmpPoint =  millController.getState().legalPlacing.get(getRandomNumber() % millController.getState().legalPlacing.size());
         millController.place(tmpPoint);
         return tmpPoint;
     }
