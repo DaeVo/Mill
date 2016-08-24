@@ -14,11 +14,7 @@ public class SmartAi extends AbstractPlayer {
 
     @Override
     public void run() {
-        millController.getState().legalPlacing.clear();
-        millController.getState().legalMoves.clear();
-        millController.getState().updateFreeMovementLegalMoves();
-        millController.getState().updateLegalMoves();
-        millController.getState().updateLegalPlacing();
+        updateLists();
         System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{
             case Placing:
@@ -35,6 +31,14 @@ public class SmartAi extends AbstractPlayer {
         }
 
         System.out.println("");
+    }
+
+    private void updateLists() {
+        millController.getState().legalPlacing.clear();
+        millController.getState().legalMoves.clear();
+        millController.getState().updateFreeMovementLegalMoves();
+        millController.getState().updateLegalMoves();
+        millController.getState().updateLegalPlacing();
     }
 
     private void place(){
