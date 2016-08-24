@@ -6,6 +6,7 @@ import view.IPlayer;
 import java.awt.*;
 import java.io.*;
 
+import static controller.GamePhase.Exit;
 import static controller.GamePhase.Placing;
 
 public class Controller implements java.io.Serializable {
@@ -112,12 +113,14 @@ public class Controller implements java.io.Serializable {
 
         if (gamePhase != Placing && (gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)) {
             System.out.println("Game ends with a victory!");
-            System.out.printf("Remaining pices: Black %d, White %d", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            gamePhase = Exit;
             return;
         }
         if (drawCheck()) {
             System.out.println("Game ends with a draw!");
-            System.out.printf("Remaining pices: Black %d, White %d", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            gamePhase = Exit;
             return;
         }
 

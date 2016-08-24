@@ -3,6 +3,7 @@
  */
 
 import controller.Controller;
+import controller.GamePhase;
 import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
@@ -18,12 +19,12 @@ public final class Mill {
             Controller c = new Controller(gamestate);
 
             try {
-                IPlayer p1 = new StupidAi();
-                IPlayer p2 = new SmartAi();
+                IPlayer p1 = new SmartAi();
+                IPlayer p2 = new StupidAi();
 
                 c.startGame(p1, p2);
 
-                while (true) {
+                while (c.getGamePhase() != GamePhase.Exit) {
                     Thread.sleep(1000);
                 }
 
