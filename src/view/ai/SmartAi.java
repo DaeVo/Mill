@@ -36,7 +36,7 @@ public class SmartAi extends AbstractPlayer {
     private void updateLists() {
         millController.getState().legalPlacing.clear();
         millController.getState().legalMoves.clear();
-        millController.getState().updateFreeMovementLegalMoves();
+        //millController.getState().updateFreeMovementLegalMoves();
         millController.getState().updateLegalMoves();
         millController.getState().updateLegalPlacing();
     }
@@ -92,7 +92,8 @@ public class SmartAi extends AbstractPlayer {
 
     private Move selectRandomMove() { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource();
-        List<Point> dstList = millController.getState().legalMoves.get(tmpSrc);
+        Point tmpPoint = new Point(millController.getState().board[tmpSrc.x][tmpSrc.y].x, millController.getState().board[tmpSrc.x][tmpSrc.y].y);
+        List<Point> dstList = millController.getState().legalMoves.get(millController.getState().board[tmpPoint.x][tmpPoint.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
         millController.move(tmpSrc, tmpDst);
         return new Move(tmpSrc, tmpDst);
