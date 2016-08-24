@@ -19,15 +19,15 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("Ki: run()");
         switch (millController.getGamePhase())	{
             case Placing:
-                place();
+                selectRandomPlacing();
                 break;
             case Moving:
             case Endgame:
-                moving();
+                selectRandomMove();
                 break;
 
             case RemovingStone:
-                removeStone();
+                selectRandomRemove();
                 break;
         }
 
