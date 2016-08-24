@@ -1,12 +1,15 @@
 package view.ai;
 
 import model.Gamestate;
+import model.Playfield;
 
 import java.awt.Point;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.List;
+import java.util.Set;
+
 /**
  * Created by Max on 19/08/2016.
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
@@ -28,6 +31,7 @@ public class MCTS {
         Random rn = new Random();
         return rn.nextInt();
     }
+    public Color color;
 
     private Point randomMoveSource (Color color) { //gets a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
@@ -40,16 +44,18 @@ public class MCTS {
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
-    private Point selectRandomPlacing() {
-        int randomValue = getRandomNumber();
-        return gametateObject.legalPlacing.get(randomValue % gametateObject.legalPlacing.size());
+    private Point selectRandomPlacing() { //random move while placing Pieces
+        return gametateObject.legalPlacing.get(getRandomNumber() % gametateObject.legalPlacing.size());
     }
 
-    private Point selectRandomMove() {
+    private Move selectRandomMove() { //random move while moving with more than 3 Pieces
+        Point tmpSrc = randomMoveSource(color);
+        List<Point> dstList = gametateObject.legalMoves.get(tmpSrc);
+        return new Move(tmpSrc, dstList.get(getRandomNumber() % dstList.size()));
     }
 
     /*
-    choses the best Node
+    chose the best Node
      */
     public void selectMove() {
         //logic to select e.g. highest winrate or highest win count node
