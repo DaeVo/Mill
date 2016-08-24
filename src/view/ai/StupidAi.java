@@ -54,7 +54,8 @@ public class StupidAi extends AbstractPlayer {
         for (Pieces p : listCopy) {
             if (p.color != myColor) {
                 System.out.println("Ki: Trying to remove " + p.field);
-                millController.removeStone(p.field.getPoint());
+                if (millController.removeStone(p.field.getPoint()))
+                	return;
             }
         }
     }

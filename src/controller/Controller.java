@@ -56,7 +56,6 @@ public class Controller implements java.io.Serializable {
     }
 
     public boolean place(Point p) {
-
         Pieces piece = new Pieces(turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
             System.out.println("please enter a field that is not occupied by another piece, yet.");
