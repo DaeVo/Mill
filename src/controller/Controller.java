@@ -169,6 +169,7 @@ public class Controller implements java.io.Serializable {
     private boolean drawCheck() {
         //Abbort rule 50 round no mill
         if (turn - lastMillTurn > 50) {
+            System.out.println("50 turns without a Mill - game ends in a draw");
             return true;
         }
 
@@ -180,6 +181,7 @@ public class Controller implements java.io.Serializable {
                 count++;
         }
         if (count >= 2) {
+            System.out.println("the exact same situation happened 3times.");
             return true;
         }
 

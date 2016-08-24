@@ -58,7 +58,8 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void moving() {
-        millController.move(selectRandomMove().src, selectRandomMove().dst);
+        Move tmpMove = selectRandomMove();
+        millController.move(tmpMove.src, tmpMove.dst);
     }
 
     private void removeStone() {
@@ -92,8 +93,7 @@ public class SmartAi extends AbstractPlayer {
 
     private Move selectRandomMove() { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource();
-        Point tmpPoint = new Point(millController.getState().board[tmpSrc.x][tmpSrc.y].x, millController.getState().board[tmpSrc.x][tmpSrc.y].y);
-        List<Point> dstList = millController.getState().legalMoves.get(millController.getState().board[tmpPoint.x][tmpPoint.y]);
+        List<Point> dstList = millController.getState().legalMoves.get(millController.getState().board[tmpSrc.x][tmpSrc.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
         return new Move(tmpSrc, tmpDst);
     }
