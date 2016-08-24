@@ -14,4 +14,12 @@ public abstract class AbstractPlayer implements IPlayer {
 		millController = cont;
 		myColor = playerColor;
 	}
+
+	public Color getColor(){
+		return myColor;
+	}
+
+	public Controller getController(){
+		return millController;
+	}
 }

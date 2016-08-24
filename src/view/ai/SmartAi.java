@@ -1,6 +1,6 @@
 package view.ai;
 
-import model.Gamestate;
+import controller.Controller;
 import model.Pieces;
 import model.Playfield;
 import view.AbstractPlayer;
@@ -17,7 +17,7 @@ public class SmartAi extends AbstractPlayer {
     @Override
     public void run() {
         System.out.println("Ki: run()");
-        switch (millController.getGamePhase()) {
+        switch (millController.getGamePhase())	{
             case Placing:
                 place();
                 break;
@@ -34,8 +34,19 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("");
     }
 
-    private void place() {
+    private void place(){
+        //Copy State
+        Controller copyCont = millController.deepCopy();
+        if (myColor == Color.black)
+            copyCont.setWhitePlayer(new DummyPlayer());
+        else
+            copyCont.setBlackPlayer(new DummyPlayer());
 
+        //init mtcs
+
+        //simulate
+
+        //make real call to controller
     }
 
     private void moving() {
