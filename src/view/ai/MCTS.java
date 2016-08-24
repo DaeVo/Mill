@@ -33,7 +33,7 @@ public class MCTS {
     }
     public Color color;
 
-    private Point randomMoveSource (Color color) { //gets a random piece to move this round
+    private Point randomMoveSource () { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
         for (model.Pieces p : gametateObject.currentPieces) {
             if (color == p.color) {
@@ -45,13 +45,27 @@ public class MCTS {
     }
 
     private Point selectRandomPlacing() { //random move while placing Pieces
+        //place here already?
         return gametateObject.legalPlacing.get(getRandomNumber() % gametateObject.legalPlacing.size());
     }
 
-    private Move selectRandomMove() { //random move while moving with more than 3 Pieces
-        Point tmpSrc = randomMoveSource(color);
+    private Move selectRandomMove() { //random move while moving with more than 3 Pieces.
+        Point tmpSrc = randomMoveSource();
         List<Point> dstList = gametateObject.legalMoves.get(tmpSrc);
+        //perform move here already?
         return new Move(tmpSrc, dstList.get(getRandomNumber() % dstList.size()));
+    }
+
+    private Point selectRandomRemove() { //randomly selected field of an enemy field to remove the piece.
+        List<Point> enemyPieces = new LinkedList<Point>();
+        for (model.Pieces p : gametateObject.currentPieces) {
+            if (p.color != color) {
+                Point tmpPoint = new Point(p.field.x, p.field.y);
+                enemyPieces.add(tmpPoint);
+            }
+        }
+        //conquer field here already?
+        return enemyPieces.get(getRandomNumber() % enemyPieces.size());
     }
 
     /*
