@@ -1,9 +1,6 @@
 package controller;
 
-import model.BoardFactory;
-import model.Gamestate;
-import model.Pieces;
-import model.Playfield;
+import model.*;
 import view.IPlayer;
 
 import java.awt.*;
@@ -49,6 +46,13 @@ public class Controller implements java.io.Serializable {
     public void setWhitePlayer(IPlayer wp){
         whitePlayer = wp;
         whitePlayer.create(this, Color.white);
+    }
+
+    public IPlayer getBlackPlayer(){
+        return blackPlayer;
+    }
+    public IPlayer getWhitePlayer(){
+        return whitePlayer;
     }
 
     public boolean place(Point p) {
@@ -177,10 +181,7 @@ public class Controller implements java.io.Serializable {
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);
         System.out.println(" ======================================== Turn " + turn);
-        if (turnColor == Color.black)
-            System.out.println("Next Player Black");
-        else
-            System.out.println("Next Player White");
+        System.out.println("Next Player " + Utils.getColorName(turnColor));
         System.out.println();
     }
 
