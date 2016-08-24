@@ -2,7 +2,6 @@ package view.ai;
 
 import controller.Controller;
 import model.Pieces;
-import model.Playfield;
 import view.AbstractPlayer;
 
 import java.awt.*;
@@ -10,9 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+
 public class SmartAi extends AbstractPlayer {
 
-    Gamestate gametateObject = new Gamestate(null);
+
 
     @Override
     public void run() {
@@ -62,12 +62,11 @@ public class SmartAi extends AbstractPlayer {
         Random rn = new Random();
         return rn.nextInt();
     }
-    public Color color;
 
     private Point randomMoveSource () { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<Point>();
-        for (model.Pieces p : gametateObject.currentPieces) {
-            if (color == p.color) {
+        for (Pieces p : millController.getState().currentPieces) {
+            if (myColor == p.color) {
                 Point tmpPoint = new Point (p.field.x, p.field.y);
                 tmpList.add(tmpPoint);
             }
@@ -75,27 +74,30 @@ public class SmartAi extends AbstractPlayer {
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
-    private Point selectRandomPlacing() { //random move while placing Pieces
-        //place here already?
-        return gametateObject.legalPlacing.get(getRandomNumber() % gametateObject.legalPlacing.size());
+    private Point selectRandomPlacing() { //random move while placing Pieces todo: replace Point with Move
+       Point tmpPoint =  millController.getState().legalPlacing.get(getRandomNumber() % millController.getState().legalPlacing.size());
+        millController.place(tmpPoint);
+        return tmpPoint;
     }
 
     private Move selectRandomMove() { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource();
-        List<Point> dstList = gametateObject.legalMoves.get(tmpSrc);
-        //perform move here already?
-        return new Move(tmpSrc, dstList.get(getRandomNumber() % dstList.size()));
+        List<Point> dstList = millController.getState().legalMoves.get(tmpSrc);
+        Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
+        millController.move(tmpSrc, tmpDst);
+        return new Move(tmpSrc, tmpDst);
     }
 
     private Point selectRandomRemove() { //randomly selected field of an enemy field to remove the piece.
-        List<Point> enemyPieces = new LinkedList<Point>();
-        for (model.Pieces p : gametateObject.currentPieces) {
-            if (p.color != color) {
+        List<Point> enemyPieces = new LinkedList<Point>();  // todo: replace return with an argument of Move
+        for (model.Pieces p : millController.getState().currentPieces) {
+            if (p.color != myColor) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
                 enemyPieces.add(tmpPoint);
             }
         }
-        //conquer field here already?
-        return enemyPieces.get(getRandomNumber() % enemyPieces.size());
+        Point tmpPoint = new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
+        millController.removeStone(tmpPoint);
+        return tmpPoint;
     }
 }
