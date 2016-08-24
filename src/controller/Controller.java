@@ -11,6 +11,7 @@ import static controller.GamePhase.Placing;
 public class Controller implements java.io.Serializable {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
+    private Thread oldThread;
     private Gamestate gameBoard;
 
     private int turn;
@@ -35,23 +36,25 @@ public class Controller implements java.io.Serializable {
         gamePhase = Placing;
         printTurnInfo();
 
-        new Thread(blackPlayer).start();
+        oldThread = new Thread(blackPlayer);
+        oldThread.start();
     }
 
-    public void setBlackPlayer(IPlayer bp){
+    public void setBlackPlayer(IPlayer bp) {
         blackPlayer = bp;
         blackPlayer.create(this, Color.black);
     }
 
-    public void setWhitePlayer(IPlayer wp){
+    public void setWhitePlayer(IPlayer wp) {
         whitePlayer = wp;
         whitePlayer.create(this, Color.white);
     }
 
-    public IPlayer getBlackPlayer(){
+    public IPlayer getBlackPlayer() {
         return blackPlayer;
     }
-    public IPlayer getWhitePlayer(){
+
+    public IPlayer getWhitePlayer() {
         return whitePlayer;
     }
 
@@ -145,8 +148,13 @@ public class Controller implements java.io.Serializable {
             toStart = new Thread(whitePlayer);
         }
 
-
-        toStart.start();
+        try {
+            oldThread.join();
+            toStart.start();
+            oldThread = toStart;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private boolean drawCheck() {
