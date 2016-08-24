@@ -19,15 +19,15 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("Ki: run()");
         switch (millController.getGamePhase())	{
             case Placing:
-                selectRandomPlacing();
+                place();
                 break;
             case Moving:
             case Endgame:
-                selectRandomMove();
+                moving();
                 break;
 
             case RemovingStone:
-                selectRandomRemove();
+                removeStone();
                 break;
         }
 
@@ -42,6 +42,7 @@ public class SmartAi extends AbstractPlayer {
         else
             copyCont.setBlackPlayer(new DummyPlayer());
 
+        millController.place(selectRandomPlacing());
         //init mtcs
 
         //simulate
@@ -50,9 +51,11 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void moving() {
+        millController.move(selectRandomMove().src, selectRandomMove().dst);
     }
 
     private void removeStone() {
+        millController.removeStone(selectRandomRemove());
     }
 
 

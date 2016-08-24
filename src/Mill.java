@@ -7,6 +7,7 @@ import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
 import view.IPlayer;
+import view.ai.SmartAi;
 import view.ai.StupidAi;
 import view.human.ConsoleView;
 
@@ -17,7 +18,7 @@ public final class Mill {
             Controller c = new Controller(gamestate);
 
             try {
-                IPlayer p1 = new ConsoleView();
+                IPlayer p1 = new SmartAi();
                 IPlayer p2 = new StupidAi();
 
                 c.startGame(p1, p2);
