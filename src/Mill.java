@@ -30,7 +30,7 @@ public final class Mill {
             IPlayer p1 = new SmartAi();
             IPlayer p2 = new SmartAi();
 
-            //c.startGame(p1, p2);
+            c.startGame(p1, p2);
 
             while (c.getGamePhase() != GamePhase.Exit) {
                 Thread.sleep(1000);

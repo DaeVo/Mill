@@ -14,7 +14,6 @@ public class Gamestate implements java.io.Serializable {
     public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
     public boolean[] millPositions = new boolean[16];
 
-
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 

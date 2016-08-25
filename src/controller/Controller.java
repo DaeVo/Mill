@@ -14,9 +14,9 @@ public class Controller implements java.io.Serializable {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private Thread oldThread;
-    private Gamestate gameBoard;
     private Observable guiObservable;
 
+    private Gamestate gameBoard;
     private int turn;
     private int toPlace = 2 * 9;
     private int lastMillTurn = 0;
@@ -218,6 +218,7 @@ public class Controller implements java.io.Serializable {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return (Controller) ois.readObject();
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         } catch (ClassNotFoundException e) {
             return null;
