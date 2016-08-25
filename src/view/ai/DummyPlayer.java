@@ -1,6 +1,6 @@
 package view.ai;
 
-import view.AbstractPlayer;
+        import view.AbstractPlayer;
 
 /**
  * Created by Henry on 24.08.2016.

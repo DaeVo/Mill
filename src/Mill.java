@@ -18,7 +18,7 @@ public final class Mill {
             Controller c = new Controller(gamestate);
 
             try {
-                IPlayer p1 = new StupidAi();
+                IPlayer p1 = new SmartAi();
                 IPlayer p2 = new SmartAi();
 
                 c.startGame(p1, p2);
@@ -32,5 +32,3 @@ public final class Mill {
         }
     }
 }
-
-

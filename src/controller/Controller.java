@@ -28,7 +28,7 @@ public class Controller implements java.io.Serializable {
     }
 
     public void startGame(IPlayer bp, IPlayer wp) {
-        //notfiy first playwer
+        //notfiy first player
         setBlackPlayer(bp);
         setWhitePlayer(wp);
 
@@ -216,6 +216,7 @@ public class Controller implements java.io.Serializable {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return (Controller) ois.readObject();
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         } catch (ClassNotFoundException e) {
             return null;

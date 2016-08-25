@@ -9,6 +9,4 @@ public class Move {
     public Move(Point src, Point dst){this.src = src; this.dst = dst;}
     public Point src;  //null while placing
     public Point dst;
-
-
 }
