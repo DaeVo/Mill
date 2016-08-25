@@ -5,6 +5,7 @@ import view.IPlayer;
 
 import java.awt.*;
 import java.io.*;
+import java.util.Observable;
 
 import static controller.GamePhase.Exit;
 import static controller.GamePhase.Placing;
@@ -14,6 +15,7 @@ public class Controller implements java.io.Serializable {
     private IPlayer whitePlayer;
     private Thread oldThread;
     private Gamestate gameBoard;
+    private Observable guiObservable;
 
     private int turn;
     private int toPlace = 2 * 9;
@@ -23,8 +25,9 @@ public class Controller implements java.io.Serializable {
     private GamePhase oldState;
 
 
-    public Controller(Gamestate gs) {
+    public Controller(Gamestate gs, Observable observable) {
         gameBoard = gs;
+        guiObservable = observable;
     }
 
     public void startGame(IPlayer bp, IPlayer wp) {
@@ -39,6 +42,7 @@ public class Controller implements java.io.Serializable {
 
         oldThread = new Thread(blackPlayer);
         oldThread.start();
+        guiObservable.notifyObservers();
     }
 
     public void setBlackPlayer(IPlayer bp) {
@@ -165,7 +169,7 @@ public class Controller implements java.io.Serializable {
         }).start();
 
 
-
+        guiObservable.notifyObservers();
     }
 
 

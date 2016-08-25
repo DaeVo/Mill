@@ -1,5 +1,6 @@
 package view.gui;
 
+import controller.Controller;
 import model.Utils;
 import sun.security.x509.IPAddressName;
 import view.AbstractPlayer;
@@ -15,16 +16,20 @@ import java.util.Observer;
  * Created by Henry on 24.08.2016.
  */
 public class GuiPlayerInfo extends JPanel implements Observer {
-    private IPlayer player;
+    private Color playerColor;
+    private Controller millController;
     private JLabel remainingPieces;
 
-    public GuiPlayerInfo(IPlayer p){
-        player = p;
-        this.setBorder(BorderFactory.createTitledBorder(Utils.getColorName(p.getColor())));
-        remainingPieces = new JLabel("");
-        this.add(remainingPieces);
+    public GuiPlayerInfo(Controller cont, Color color){
+        playerColor = color;
+        millController = cont;
 
         this.setLayout(new FlowLayout());
+        this.setBorder(BorderFactory.createTitledBorder(Utils.getColorName(playerColor)));
+
+        remainingPieces = new JLabel("Remaining Pieces: 9");
+        this.add(remainingPieces);
+        this.setMaximumSize(this.getPreferredSize());
 
         update(null, null);
     }
@@ -32,7 +37,15 @@ public class GuiPlayerInfo extends JPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        remainingPieces.setText("Remaining Pieces: " + player.getController().getState().getPieceCount(player.getColor()));
+        if (getPlayer() != null) {
+            remainingPieces.setText("Remaining Pieces: " + millController.getState().getPieceCount(playerColor));
+        }
+    }
+
+    private IPlayer getPlayer(){
+        if (playerColor == Color.black)
+            return millController.getBlackPlayer();
+        return millController.getWhitePlayer();
     }
 }
 

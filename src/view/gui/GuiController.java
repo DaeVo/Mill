@@ -2,6 +2,7 @@ package view.gui;
 
 import controller.Controller;
 import view.IPlayer;
+import view.ai.DummyPlayer;
 import view.ai.SmartAi;
 import view.ai.StupidAi;
 import view.human.ConsoleView;
@@ -25,6 +26,7 @@ public class GuiController {
     public GuiController(Controller cont){
         millController = cont;
         btnStartGame.addActionListener(x -> start());
+        controllerPanel.setMaximumSize(controllerPanel.getPreferredSize());
     }
 
     private void start(){
@@ -36,7 +38,7 @@ public class GuiController {
     }
 
     private IPlayer getMode(String mode){
-        if (mode.equals("Ki")){
+        if (mode.equals("Ai")){
             String diff = boxDifficulty.getSelectedItem().toString();
             if (diff.startsWith("Stupid")){
                 return new StupidAi();
@@ -44,7 +46,7 @@ public class GuiController {
                 return new SmartAi();
             }
         } else {
-            return new ConsoleView();
+            return new DummyPlayer();
         }
     }
 

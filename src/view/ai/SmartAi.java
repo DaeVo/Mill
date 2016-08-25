@@ -43,12 +43,12 @@ public class SmartAi extends AbstractPlayer {
 
     private void place(){
         //Copy State
-      /*  Controller copyCont = millController.deepCopy();
+        Controller copyCont = millController.deepCopy();
         if (myColor == Color.black)
             copyCont.setWhitePlayer(new DummyPlayer());
         else
             copyCont.setBlackPlayer(new DummyPlayer());
-*/
+
         millController.place(selectRandomPlacing());
         //init mtcs
 
