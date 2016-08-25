@@ -4,5 +4,6 @@ public enum GamePhase {
     Placing,
     Moving,
     Endgame,
-    RemovingStone
+    RemovingStone,
+    Exit
 }

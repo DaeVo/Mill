@@ -101,7 +101,7 @@ public class SmartAi extends AbstractPlayer {
     private Point selectRandomRemove() { //randomly selected field of an enemy field to remove the piece.
         List<Point> enemyPieces = new LinkedList<Point>();  // todo: replace return with an argument of Move
         for (model.Pieces p : millController.getState().currentPieces) {
-            if (p.color != myColor) {
+            if (p.color != myColor && !millController.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
                 enemyPieces.add(tmpPoint);
             }
