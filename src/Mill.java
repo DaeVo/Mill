@@ -2,54 +2,44 @@
  * Created by Max on 16/08/2016.
  */
 
+import controller.Controller;
+import controller.GamePhase;
 import model.BoardFactory;
 import model.Gamestate;
 import model.Playfield;
+import view.IPlayer;
+import view.ai.SmartAi;
+import view.ai.StupidAi;
+import view.gui.GUI;
+import view.human.ConsoleView;
 
-import java.util.*;
+import java.util.Observable;
+
 public final class Mill {
+    public static final boolean DEBUG = true;
+
     public static void main(final String[] args) {
-        Playfield board[][];
+        Observable mainObservable = new Observable();
+        Playfield board[][] = BoardFactory.createBoard();
+        Gamestate gamestate = new Gamestate(board);
+        Controller c = new Controller(gamestate, mainObservable);
 
-        board = BoardFactory.createBoard();
-        Gamestate gamestateObject = new Gamestate(board);
-        gamestateObject.createPieces();
+        new GUI(c, mainObservable);
 
-        board[1][1].addPiece(gamestateObject.currentPieces[4]);
+        try {
+            IPlayer p1 = new SmartAi();
+            IPlayer p2 = new SmartAi();
 
-        gamestateObject.millPositionsInitializer();
+            c.startGame(p1, p2);
 
+            while (c.getGamePhase() != GamePhase.Exit) {
+                Thread.sleep(1000);
+            }
 
-        int i = 0;
-        while(i < 7) {  // todo: replace with  < 18 later and move to another class
-                Scanner sc = new Scanner(System.in);
-                System.out.println("zahl 0-8");
-                String tmp = sc.next();
-                Integer x = Integer.parseInt(tmp);
-                System.out.println("zahl 0-3");
-                tmp = sc.next();
-                Integer y = Integer.parseInt(tmp);
-            board[x][y].addPiece(gamestateObject.currentPieces[i]);
-            gamestateObject.currentPieces[i].number = i;
-            gamestateObject.millToInt();
-            gamestateObject.millCheck();
-            gamestateObject.clearMillList();
-            i++;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        BoardFactory.printPieces(gamestateObject);
-        board[1][1].move(board[1][2]);
-        board[1][1].move(board[0][1]);
-        board[3][1].move(board[3][2]);
-        board[4][0].move(board[4][2]);
-        board[4][2].move(board[4][1]);
-
-        System.out.println("---- . ----");
-
-        BoardFactory.printPieces(gamestateObject);
-
     }
-
 }
 
 

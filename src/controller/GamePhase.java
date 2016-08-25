@@ -1,8 +1,9 @@
 package controller;
 
 public enum GamePhase {
-	Placing,
-	Moving,
-	Endgame,
-	RemovingStone
+    Placing,
+    Moving,
+    Endgame,
+    RemovingStone,
+    Exit
 }
