@@ -35,7 +35,7 @@ public class MCTS {
     }
 
     public void startSimulation(){
-        Controller currentState = new Controller(null);
+        Controller currentState = new Controller(null, null);
         currentState = currentState.deepCopy();
     }
 
