@@ -26,6 +26,9 @@ public class GUIBoard extends JPanel implements Observer {
     private List<StonePosition> positions;
     private final int STONE_RADIUS = 50;
 
+
+    private Point lastClickedStone;
+
     public GUIBoard(Controller cont) {
         millController = cont;
         positions = new LinkedList<>();
@@ -71,7 +74,10 @@ public class GUIBoard extends JPanel implements Observer {
 
         for (StonePosition sp : positions){
             if (e.getPoint().distance(sp.pos) < STONE_RADIUS){
-                System.out.println(sp.stone);
+                System.out.println("Clicked: " + sp.stone);
+
+
+
             }
         }
     }

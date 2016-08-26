@@ -1,6 +1,7 @@
 package view.gui;
 
 import controller.Controller;
+import model.Utils;
 import view.IPlayer;
 import view.ai.DummyPlayer;
 import view.ai.SmartAi;
@@ -12,15 +13,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Henry on 24.08.2016.
  */
-public class GuiController {
+public class GuiController implements Observer {
     private JComboBox boxMode;
     private JButton btnStartGame;
     private JComboBox boxDifficulty;
     private JPanel controllerPanel;
+    private JLabel lblNextTurn;
     private Controller millController;
 
     public GuiController(Controller cont){
@@ -52,5 +56,10 @@ public class GuiController {
 
     public JPanel getControllerPanel(){
         return controllerPanel;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        lblNextTurn.setText("Next Turn: " + Utils.getColorName(millController.getTurnColor()));
     }
 }

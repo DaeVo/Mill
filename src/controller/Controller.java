@@ -212,6 +212,8 @@ public class Controller extends Observable implements java.io.Serializable  {
         return gameBoard;
     }
 
+    public Color getTurnColor() { return turnColor;}
+
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);
         System.out.println(" ======================================== Turn " + turn);
