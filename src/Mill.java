@@ -25,7 +25,7 @@ public final class Mill {
 
         try {
             IPlayer p1 = new SmartAi();
-            IPlayer p2 = new StupidAi();
+            IPlayer p2 = new SmartAi();
 
             c.setSleep(250);
             c.startGame(p1, p2);
