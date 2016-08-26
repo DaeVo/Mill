@@ -17,7 +17,6 @@ public class StupidAi extends AbstractPlayer {
 			place();
 			break;
 		case Moving:
-		case Endgame:
 		    moving();
 			break;
 

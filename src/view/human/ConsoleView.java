@@ -18,7 +18,6 @@ public class ConsoleView extends AbstractPlayer {
 				place();
 				break;
 			case Moving:
-			case Endgame:
 				move();
 				break;
 			case RemovingStone:

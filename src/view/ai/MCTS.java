@@ -44,7 +44,6 @@ public class MCTS {
                 AiUtils.place(currentState);
                 break;
             case Moving:
-            case Endgame:
                 AiUtils.moving(currentState, abstractPlayer);
                 break;
 

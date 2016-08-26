@@ -43,11 +43,11 @@ public class GUIBoard extends JPanel implements Observer {
             imageLabel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    boardClick(e);
                 }
 
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    boardClick(e);
                 }
 
                 @Override
@@ -77,7 +77,8 @@ public class GUIBoard extends JPanel implements Observer {
 
     public void boardClick(MouseEvent e) {
         System.out.println(e);
-        if (millController.getGamePhase() == GamePhase.Exit)
+        //End or not started
+        if (millController.getGamePhase() == GamePhase.Exit || millController.getState() == null)
             return;
 
 
@@ -135,8 +136,6 @@ public class GUIBoard extends JPanel implements Observer {
     }
 
     public void paintStones() {
-        int width = imageLabel.getWidth();
-        int height = imageLabel.getHeight();
         BufferedImage img2 = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         Graphics2D g = img2.createGraphics();
 

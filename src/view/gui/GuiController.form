@@ -26,10 +26,10 @@
         </constraints>
         <properties>
           <model>
-            <item value="Stupid"/>
             <item value="Easy (x secs)"/>
             <item value="Medium (x secs)"/>
             <item value="Hard (x secs)"/>
+            <item value="Stupid"/>
           </model>
         </properties>
       </component>

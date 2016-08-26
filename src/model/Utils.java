@@ -16,7 +16,7 @@ public class Utils {
         return "";
     }
 
-    public static boolean isMyTurn(Controller millController, Color myColor){
-        return true;
+    public static boolean freeMoveAllowed(Controller millController, Color c){
+        return millController.getState().getPieceCount(c) < 4 && millController.getGamePhase() == GamePhase.Moving;
     }
 }

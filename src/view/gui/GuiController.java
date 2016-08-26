@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
 
+import static model.Utils.freeMoveAllowed;
+
 /**
  * Created by Henry on 24.08.2016.
  */
@@ -71,10 +73,11 @@ public class GuiController implements Observer {
                 lblTodo.setText("Remove a stone");
                 break;
             case Moving:
-                lblTodo.setText("Move a stone");
-                break;
-            case Endgame:
-                lblTodo.setText("Move a stone freely");
+                if (!freeMoveAllowed(millController, millController.getTurnColor())) {
+                    lblTodo.setText("Move a stone");
+                } else {
+                    lblTodo.setText("Move a stone freely");
+                }
                 break;
             case Exit:
                 lblTodo.setText("End");

@@ -1,12 +1,15 @@
 package view.ai;
 
 import controller.Controller;
+import model.GamePhase;
 import model.Pieces;
 import view.AbstractPlayer;
 
 import java.awt.*;
-import java.awt.List;
 import java.util.*;
+import java.util.List;
+
+import static model.Utils.freeMoveAllowed;
 
 /**
  * Created by Max on 25/08/2016.
@@ -19,7 +22,7 @@ public class AiUtils {
     }
 
     public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
-        java.util.List<Point> tmpList = new LinkedList<Point>();
+       List<Point> tmpList = new LinkedList<>();
         for (Pieces p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor() == p.color && controller.getState().legalMoves.containsKey(p.field)) {
                 if (controller.getState().legalMoves.get(p.field).size() > 0) {
@@ -37,13 +40,13 @@ public class AiUtils {
 
     public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource(controller, abstractPlayer);
-        java.util.List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
+        List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
         return new Move(tmpSrc, tmpDst);
     }
 
     public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
-        java.util.List<Point> enemyPieces = new LinkedList<Point>();  //
+        List<Point> enemyPieces = new LinkedList<Point>();
         for (model.Pieces p : controller.getState().currentPieces) {
             if (p.color != abstractPlayer.getColor() && !controller.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
@@ -56,8 +59,11 @@ public class AiUtils {
     public static void updateLists(Controller controller) {
         controller.getState().legalPlacing.clear();
         controller.getState().legalMoves.clear();
-        //controller.getState().updateFreeMovementLegalMoves();
-        controller.getState().updateLegalMoves();
+        if (!freeMoveAllowed(controller, controller.getTurnColor())){
+            controller.getState().updateLegalMoves();
+        } else {
+            controller.getState().updateFreeMovementLegalMoves();
+        }
         controller.getState().updateLegalPlacing();
     }
 
@@ -81,7 +87,13 @@ public class AiUtils {
 
     public static void moving(Controller controller, AbstractPlayer abstractPlayer) {
         Move tmpMove = selectRandomMove(controller, abstractPlayer);
-        controller.move(tmpMove.src, tmpMove.dst);
+        if (!freeMoveAllowed(controller, controller.getTurnColor())){
+            controller.move(tmpMove.src, tmpMove.dst);
+        } else {
+            controller.setSleep(1000);
+            controller.moveFreely(tmpMove.src, tmpMove.dst);
+        }
+
     }
 
     public static void removeStone(Controller controller, AbstractPlayer abstractPlayer) {
