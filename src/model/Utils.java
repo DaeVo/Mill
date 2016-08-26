@@ -1,5 +1,7 @@
 package model;
 
+import controller.Controller;
+
 import java.awt.*;
 
 /**
@@ -12,5 +14,9 @@ public class Utils {
         else if (c == Color.white)
             return "White";
         return "";
+    }
+
+    public static boolean freeMoveAllowed(Controller millController, Color c){
+        return millController.getState().getPieceCount(c) < 4 && millController.getGamePhase() == GamePhase.Moving;
     }
 }

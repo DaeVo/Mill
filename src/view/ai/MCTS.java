@@ -1,14 +1,6 @@
 package view.ai;
 import controller.Controller;
-import controller.GamePhase;
-import model.Gamestate;
 import view.AbstractPlayer;
-
-import java.awt.Point;
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.List;
 
 /**
  * Created by Max on 19/08/2016.
@@ -52,7 +44,6 @@ public class MCTS {
                 AiUtils.place(currentState);
                 break;
             case Moving:
-            case Endgame:
                 AiUtils.moving(currentState, abstractPlayer);
                 break;
 

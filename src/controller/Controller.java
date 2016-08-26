@@ -7,10 +7,10 @@ import java.awt.*;
 import java.io.*;
 import java.util.Observable;
 
-import static controller.GamePhase.Exit;
-import static controller.GamePhase.Placing;
+import static model.GamePhase.Exit;
+import static model.GamePhase.Placing;
 
-public class Controller extends Observable implements java.io.Serializable  {
+public class Controller extends Observable implements java.io.Serializable {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private Thread oldThread;
@@ -22,6 +22,7 @@ public class Controller extends Observable implements java.io.Serializable  {
     private Color turnColor;
     private GamePhase gamePhase;
     private GamePhase oldState;
+    private GameEnd gameEnd;
     private int sleepTime = 0;
 
     public Controller() {
@@ -36,11 +37,11 @@ public class Controller extends Observable implements java.io.Serializable  {
         turn = 1;
         toPlace = 2 * 9;
         lastMillTurn = 0;
-        turnColor = Color.black;
+        turnColor = Color.white;
         gamePhase = Placing;
         printTurnInfo();
 
-        oldThread = new Thread(blackPlayer);
+        oldThread = new Thread(whitePlayer);
         oldThread.start();
 
         setChanged();
@@ -65,7 +66,7 @@ public class Controller extends Observable implements java.io.Serializable  {
         return whitePlayer;
     }
 
-    public void setSleep(int s){
+    public void setSleep(int s) {
         sleepTime = s;
     }
 
@@ -120,21 +121,32 @@ public class Controller extends Observable implements java.io.Serializable  {
 
 
     private void endTurn() {
+        String infoText = null;
+        setChanged();
 
-        if (gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) { //(gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)) {
-            System.out.println("Game ends in a victory for " + Utils.getColorName(winCheck()) + "!");
-            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+        //Wind/Draw Checks
+        if (gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) {
+            infoText = "Game ends in a victory for " + Utils.getColorName(winCheck()) + "!";
+
+            if (winCheck() == Color.black)
+                gameEnd = GameEnd.BlackWon;
+            else
+                gameEnd = GameEnd.WhiteWon;
+        } else if (drawCheck()) {
+            infoText = "Game ends in a draw!";
+            gameEnd = GameEnd.Draw;
+
+        }
+
+        if (infoText != null){
             gamePhase = Exit;
+            System.out.println(infoText);
+            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            notifyObservers(infoText);
             return;
         }
-        if (drawCheck()) {
-            System.out.println("Game ends in a draw!");
-            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
-            gamePhase = Exit;
-            return;
-        }
 
-
+        //Mill/End Turn
         if (gameBoard.millCheckCompare()) {
             //the turncolor got a new mill
             //turn is not ended
@@ -177,12 +189,13 @@ public class Controller extends Observable implements java.io.Serializable  {
             }
         }).start();
 
-        setChanged();
         notifyObservers();
     }
 
 
-        private Color winCheck() {
+
+
+    private Color winCheck() {
         if (gameBoard.getPieceCount(Color.black) < 3) return Color.white;
         else if (gameBoard.getPieceCount(Color.white) < 3) return Color.black;
         else return null;
@@ -218,7 +231,15 @@ public class Controller extends Observable implements java.io.Serializable  {
         return gameBoard;
     }
 
-    public Color getTurnColor() { return turnColor;}
+    public Color getTurnColor() {
+        return turnColor;
+    }
+
+    public IPlayer getTurnPlayer() {
+        if (turnColor == Color.white)
+            return getWhitePlayer();
+        return getBlackPlayer();
+    }
 
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);

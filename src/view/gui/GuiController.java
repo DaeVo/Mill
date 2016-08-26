@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
 
+import static model.Utils.freeMoveAllowed;
+
 /**
  * Created by Henry on 24.08.2016.
  */
@@ -25,6 +27,7 @@ public class GuiController implements Observer {
     private JComboBox boxDifficulty;
     private JPanel controllerPanel;
     private JLabel lblNextTurn;
+    private JLabel lblTodo;
     private Controller millController;
 
     public GuiController(Controller cont){
@@ -50,7 +53,8 @@ public class GuiController implements Observer {
                 return new SmartAi();
             }
         } else {
-            return new DummyPlayer();
+            millController.setSleep(0);
+            return new GuiPlayer();
         }
     }
 
@@ -61,5 +65,23 @@ public class GuiController implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         lblNextTurn.setText("Next Turn: " + Utils.getColorName(millController.getTurnColor()));
+        switch (millController.getGamePhase()){
+            case Placing:
+                lblTodo.setText("Place a stone");
+                break;
+            case RemovingStone:
+                lblTodo.setText("Remove a stone");
+                break;
+            case Moving:
+                if (!freeMoveAllowed(millController, millController.getTurnColor())) {
+                    lblTodo.setText("Move a stone");
+                } else {
+                    lblTodo.setText("Move a stone freely");
+                }
+                break;
+            case Exit:
+                lblTodo.setText("End");
+                break;
+        }
     }
 }

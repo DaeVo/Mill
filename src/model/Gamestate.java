@@ -202,12 +202,12 @@ public class Gamestate implements java.io.Serializable {
     and store them in a HashMap
      */
     public void updateFreeMovementLegalMoves() { //
-        LinkedList<Point> legalMoveList = new LinkedList<Point>();
         for (Pieces p : currentPieces) {
+            LinkedList<Point> legalMoveList = new LinkedList<>();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 3; j++) {
                     Playfield tmpField = board[i][j];
-                    if (!tmpField.empty) {
+                    if (tmpField.empty) {
                         Point tmp = new Point(tmpField.x, tmpField.y);
                         legalMoveList.add(tmp);
                     }
@@ -219,7 +219,7 @@ public class Gamestate implements java.io.Serializable {
 
 
     public void updateLegalPlacing() {
-        Playfield tmpField = new Playfield(false);
+        Playfield tmpField;
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 3; j++) {
                 tmpField = board[i][j];

@@ -23,7 +23,6 @@ public class SmartAi extends AbstractPlayer {
                 AiUtils.place(millController);
                 break;
             case Moving:
-            case Endgame:
                 AiUtils.moving(millController, this);
                 break;
 

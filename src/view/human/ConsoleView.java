@@ -1,7 +1,7 @@
 package view.human;
 
 
-import controller.GamePhase;
+import model.GamePhase;
 import view.AbstractPlayer;
 
 import java.awt.*;
@@ -18,7 +18,6 @@ public class ConsoleView extends AbstractPlayer {
 				place();
 				break;
 			case Moving:
-			case Endgame:
 				move();
 				break;
 			case RemovingStone:
