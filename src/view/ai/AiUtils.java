@@ -1,7 +1,8 @@
 package view.ai;
 
 import controller.Controller;
-import model.Piece;
+import model.GamePhase;
+import model.Pieces;
 import view.AbstractPlayer;
 
 import java.awt.*;
@@ -21,8 +22,8 @@ public class AiUtils {
     }
 
     public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
-       List<Point> tmpList = new LinkedList<>();
-        for (Piece p : controller.getState().currentPieces) {
+        List<Point> tmpList = new LinkedList<>();
+        for (Pieces p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor() == p.color && controller.getState().legalMoves.containsKey(p.field)) {
                 if (controller.getState().legalMoves.get(p.field).size() > 0) {
                     Point tmpPoint = new Point(p.field.x, p.field.y);
@@ -33,11 +34,11 @@ public class AiUtils {
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
-    public static Point selectRandomPlacing(Controller controller) { //random move while placing Piece
+    public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces
         return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
     }
 
-    public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Piece.
+    public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource(controller, abstractPlayer);
         List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
@@ -46,7 +47,7 @@ public class AiUtils {
 
     public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
         List<Point> enemyPieces = new LinkedList<Point>();
-        for (Piece p : controller.getState().currentPieces) {
+        for (model.Pieces p : controller.getState().currentPieces) {
             if (p.color != abstractPlayer.getColor() && !controller.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
                 enemyPieces.add(tmpPoint);
@@ -66,8 +67,11 @@ public class AiUtils {
         controller.getState().updateLegalPlacing();
     }
 
-    public static void place(Controller controller){
-        controller.place(selectRandomPlacing(controller));
+    public static Move place(Controller controller){
+        Move tmpMove = new Move(null, null);
+        tmpMove.dst = selectRandomPlacing(controller);
+        controller.place(tmpMove.dst);
+        return tmpMove;
         //Copy State
         /*
         Controller copyCont = millController.deepCopy();
@@ -84,18 +88,24 @@ public class AiUtils {
         //make real call to controller
     }
 
-    public static void moving(Controller controller, AbstractPlayer abstractPlayer) {
+    public static Move moving(Controller controller, AbstractPlayer abstractPlayer) {
         Move tmpMove = selectRandomMove(controller, abstractPlayer);
         if (!freeMoveAllowed(controller, controller.getTurnColor())){
             controller.move(tmpMove.src, tmpMove.dst);
+            return tmpMove;
         } else {
+            controller.setSleep(1);
             controller.moveFreely(tmpMove.src, tmpMove.dst);
+            return tmpMove;
         }
-
     }
 
-    public static void removeStone(Controller controller, AbstractPlayer abstractPlayer) {
-        controller.removeStone(selectRandomRemove(controller, abstractPlayer));
+    public static Move removeStone(Controller controller, AbstractPlayer abstractPlayer) {
+        Move tmpMove = new Move(null, null);
+        tmpMove.src = selectRandomRemove(controller, abstractPlayer);
+        controller.removeStone(tmpMove.src);  //using src =value, dst = null to differ from placing Moves
+        return tmpMove;
     }
 
 }
+
