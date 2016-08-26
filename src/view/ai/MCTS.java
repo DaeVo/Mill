@@ -17,7 +17,7 @@ import java.util.List;
 public class MCTS {
 
 
-    private Controller currentState = new Controller(null, null);  //current gamestate
+    private Controller currentState = new Controller();  //current gamestate
     public Node root = new Node(); //global root Node
     /*
     initializes the tree
