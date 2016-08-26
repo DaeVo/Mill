@@ -36,43 +36,59 @@ public class MCTS {
         updateCurrentGameState();
         AiUtils.updateLists(currentState);
         System.out.println("recursion");
+        Move treeMove = new Move(null, null);
 
         switch (currentState.getGamePhase()) {
             case Placing:
                 treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
-                if(simulationHelper(currentNode, treeMove)) {  //checks if that move has already been done
+                if (simulationHelper(currentNode, treeMove)) {  //checks if that move has already been done
                     currentNode = simulationHelper(currentNode, treeMove, true); //updates currentNode for the next recursive call
                     break;
-                }
-                else {
+                } else {
                     treeMove = AiUtils.moving(currentState, abstractPlayer);
-                    Node tmpNode = new Node();
-                    tmpNode.move = treeMove;
-                    tmpNode.currenstate = this.currentState;
-                    currentNode.listOfChildren.add(tmpNode);
+                    currentNode = nodeUpdate(currentNode, treeMove, abstractPlayer);
+                    break;
                 }
-                break;
+
             case Moving:
                 treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
-                break;
+                if (simulationHelper(currentNode, treeMove)) {
+                    currentNode = simulationHelper(currentNode, treeMove, true);
+                    break;
+                } else {
+                    // todo: this is where i just left to get some fooderino
+                    break;
+                }
             case RemovingStone:
                 treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
                 break;
         }
         simulationR(abstractPlayer, currentNode);
     }
-    private Node simulationHelper (Node currentNode, Move treeMove, boolean b) {
+
+    private Node simulationHelper(Node currentNode, Move treeMove, boolean b) {
         for (Node node : currentNode.listOfChildren) {
             if (node.move == treeMove) return node;
-        } return null;
+        }
+        return null;
     }
 
     private boolean simulationHelper(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
             if (node.move == treeMove) {
                 currentState = node.currenstate;
-                return true;}
-        } return false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Node nodeUpdate(Node currentNode, Move treeMove, AbstractPlayer abstractPlayer) {
+        Node tmpNode = new Node();
+        tmpNode.move = this.treeMove;
+        tmpNode.currenstate = this.currentState;
+        currentNode.listOfChildren.add(tmpNode);
+        return tmpNode;
     }
 }
 
