@@ -17,8 +17,6 @@ public final class Mill {
     public static void main(final String[] args) {
         Controller c = new Controller();
 
-
-
         new GUI(c);
 
         try {

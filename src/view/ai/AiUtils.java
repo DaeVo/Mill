@@ -90,7 +90,6 @@ public class AiUtils {
         if (!freeMoveAllowed(controller, controller.getTurnColor())){
             controller.move(tmpMove.src, tmpMove.dst);
         } else {
-            controller.setSleep(1000);
             controller.moveFreely(tmpMove.src, tmpMove.dst);
         }
 
