@@ -41,11 +41,9 @@ public class MCTS {
     public void simulation(AbstractPlayer abstractPlayer) {
         //Copy State
         updateCurrentGameState();
-        if (abstractPlayer.getColor() == Color.black) {
-            currentState.setWhitePlayer(new DummyPlayer());
-        } else {
-            currentState.setBlackPlayer(new DummyPlayer());
-        }
+        currentState.setWhitePlayer(new DummyPlayer());
+        currentState.setBlackPlayer(new DummyPlayer());
+
 
         AiUtils.updateLists(currentState);
         System.out.println("smartAI: run()");
