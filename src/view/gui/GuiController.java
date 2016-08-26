@@ -50,6 +50,7 @@ public class GuiController implements Observer {
                 return new SmartAi();
             }
         } else {
+            millController.setSleep(0);
             return new GuiPlayer();
         }
     }

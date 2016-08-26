@@ -3,17 +3,11 @@
  */
 
 import controller.Controller;
-import controller.GamePhase;
-import model.BoardFactory;
-import model.Gamestate;
-import model.Playfield;
+import model.GamePhase;
 import view.IPlayer;
 import view.ai.SmartAi;
 import view.ai.StupidAi;
 import view.gui.GUI;
-import view.human.ConsoleView;
-
-import java.util.Observable;
 
 public final class Mill {
     public static final boolean DEBUG = true;

@@ -1,10 +1,9 @@
 package view.gui;
 
 import controller.Controller;
-import controller.GamePhase;
+import model.GamePhase;
 import model.Playfield;
 import view.IPlayer;
-import view.ai.Move;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -28,7 +26,6 @@ public class GUIBoard extends JPanel implements Observer {
     private JLabel imageLabel;
     private List<StonePosition> positions;
     private final int STONE_RADIUS = 50;
-
 
     private Point sourceStone;
 
@@ -79,9 +76,9 @@ public class GUIBoard extends JPanel implements Observer {
 
         for (StonePosition sp : positions){
             if (e.getPoint().distance(sp.pos) < STONE_RADIUS){
-                System.out.println("Clicked: " + sp.stone);
-
                 IPlayer player = millController.getTurnPlayer();
+                System.out.println("Clicked: " + sp.stone + " Player: " + player);
+
 
                 //Not our turn
                 if (!(player instanceof GuiPlayer))
@@ -111,6 +108,11 @@ public class GUIBoard extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         paintStones();
+
+        //end game string
+        if (arg instanceof String){
+
+        }
     }
 
     public void paintStones(){

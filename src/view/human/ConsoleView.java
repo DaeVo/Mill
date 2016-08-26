@@ -1,7 +1,7 @@
 package view.human;
 
 
-import controller.GamePhase;
+import model.GamePhase;
 import view.AbstractPlayer;
 
 import java.awt.*;
