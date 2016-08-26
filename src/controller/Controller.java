@@ -10,24 +10,21 @@ import java.util.Observable;
 import static controller.GamePhase.Exit;
 import static controller.GamePhase.Placing;
 
-public class Controller implements java.io.Serializable {
+public class Controller extends Observable implements java.io.Serializable  {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private Thread oldThread;
-    private Observable guiObservable;
 
     private Gamestate gameBoard;
     private int turn;
-    private int toPlace = 2 * 9;
-    private int lastMillTurn = 0;
+    private int toPlace;
+    private int lastMillTurn;
     private Color turnColor;
     private GamePhase gamePhase;
     private GamePhase oldState;
+    private int sleepTime = 0;
 
-
-    public Controller(Gamestate gs, Observable observable) {
-        gameBoard = gs;
-        guiObservable = observable;
+    public Controller() {
     }
 
     public void startGame(IPlayer bp, IPlayer wp) {
@@ -35,14 +32,19 @@ public class Controller implements java.io.Serializable {
         setBlackPlayer(bp);
         setWhitePlayer(wp);
 
+        gameBoard = new Gamestate();
         turn = 1;
+        toPlace = 2 * 9;
+        lastMillTurn = 0;
         turnColor = Color.black;
         gamePhase = Placing;
         printTurnInfo();
 
         oldThread = new Thread(blackPlayer);
         oldThread.start();
-        guiObservable.notifyObservers();
+
+        setChanged();
+        notifyObservers();
     }
 
     public void setBlackPlayer(IPlayer bp) {
@@ -61,6 +63,10 @@ public class Controller implements java.io.Serializable {
 
     public IPlayer getWhitePlayer() {
         return whitePlayer;
+    }
+
+    public void setSleep(int s){
+        sleepTime = s;
     }
 
     public boolean place(Point p) {
@@ -156,6 +162,9 @@ public class Controller implements java.io.Serializable {
                 //Set actual turn as last turn
                 oldThread = Thread.currentThread();
 
+                //Sleep
+                Thread.sleep(sleepTime);
+
                 //Start actual turn
                 if (turnColor == Color.black) {
                     blackPlayer.run();
@@ -168,8 +177,8 @@ public class Controller implements java.io.Serializable {
             }
         }).start();
 
-
-        guiObservable.notifyObservers();
+        setChanged();
+        notifyObservers();
     }
 
 

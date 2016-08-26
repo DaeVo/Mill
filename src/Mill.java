@@ -19,17 +19,15 @@ public final class Mill {
     public static final boolean DEBUG = true;
 
     public static void main(final String[] args) {
-        Observable mainObservable = new Observable();
-        Playfield board[][] = BoardFactory.createBoard();
-        Gamestate gamestate = new Gamestate(board);
-        Controller c = new Controller(gamestate, mainObservable);
+        Controller c = new Controller();
 
-        new GUI(c, mainObservable);
+        new GUI(c);
 
         try {
             IPlayer p1 = new SmartAi();
             IPlayer p2 = new SmartAi();
 
+            c.setSleep(250);
             c.startGame(p1, p2);
 
             while (c.getGamePhase() != GamePhase.Exit) {
