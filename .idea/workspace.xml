@@ -4,7 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/model/Gamestate.java" line="106" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d927f69e-5cbe-45d0-b67d-7a2c95984105" name="Default" comment="completed logic to check for new mills">
+    <list default="true" id="d927f69e-5cbe-45d0-b67d-7a2c95984105" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Mühle.iws" />
@@ -721,7 +721,14 @@
       <option name="project" value="LOCAL" />
       <updated>1471543954006</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="reopening branch">
+      <created>1472239736213</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1472239736213</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -805,7 +812,8 @@
     <MESSAGE value="Packages&#10;" />
     <MESSAGE value="added millCheck" />
     <MESSAGE value="completed logic to check for new mills" />
-    <option name="LAST_COMMIT_MESSAGE" value="completed logic to check for new mills" />
+    <MESSAGE value="reopening branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="reopening branch" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
