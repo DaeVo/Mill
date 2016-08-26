@@ -25,6 +25,7 @@ public class GuiController implements Observer {
     private JComboBox boxDifficulty;
     private JPanel controllerPanel;
     private JLabel lblNextTurn;
+    private JLabel lblTodo;
     private Controller millController;
 
     public GuiController(Controller cont){
@@ -62,5 +63,22 @@ public class GuiController implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         lblNextTurn.setText("Next Turn: " + Utils.getColorName(millController.getTurnColor()));
+        switch (millController.getGamePhase()){
+            case Placing:
+                lblTodo.setText("Place a stone");
+                break;
+            case RemovingStone:
+                lblTodo.setText("Remove a stone");
+                break;
+            case Moving:
+                lblTodo.setText("Move a stone");
+                break;
+            case Endgame:
+                lblTodo.setText("Move a stone freely");
+                break;
+            case Exit:
+                lblTodo.setText("End");
+                break;
+        }
     }
 }

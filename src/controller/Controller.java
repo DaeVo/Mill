@@ -37,11 +37,11 @@ public class Controller extends Observable implements java.io.Serializable {
         turn = 1;
         toPlace = 2 * 9;
         lastMillTurn = 0;
-        turnColor = Color.black;
+        turnColor = Color.white;
         gamePhase = Placing;
         printTurnInfo();
 
-        oldThread = new Thread(blackPlayer);
+        oldThread = new Thread(whitePlayer);
         oldThread.start();
 
         setChanged();
