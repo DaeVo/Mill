@@ -54,11 +54,12 @@ public class AiUtils {
     }
 
     public static void updateLists(Controller controller) {
+
         controller.getState().legalPlacing.clear();
         controller.getState().legalMoves.clear();
-        //controller.getState().updateFreeMovementLegalMoves();
-        controller.getState().updateLegalMoves();
         controller.getState().updateLegalPlacing();
+        if (controller.getPieceCount(getTurnPlayer()) > 3) controller.getState().updateLegalMoves();
+        else controller.getState().updateFreeMovementLegalMoves();
     }
 
     public static void place(Controller controller){
