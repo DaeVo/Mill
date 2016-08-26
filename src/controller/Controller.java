@@ -68,7 +68,11 @@ public class Controller extends Observable implements java.io.Serializable {
         sleepTime = s;
     }
 
+
+
+
     public boolean place(Point p) {
+        gameBoard.currentMove.dst = p;
         Piece piece = new Piece(gameBoard.turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
             System.out.println("please enter a field that is not occupied by another piece, yet.");
@@ -86,6 +90,8 @@ public class Controller extends Observable implements java.io.Serializable {
 
 
     public boolean move(Point src, Point dst) {
+        gameBoard.currentMove.src = src;
+        gameBoard.currentMove.dst = dst;
         boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
 
         if (success)
@@ -94,6 +100,8 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean moveFreely(Point src, Point dst) {
+        gameBoard.currentMove.src = src;
+        gameBoard.currentMove.dst = dst;
         boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
 
         if (success)
@@ -102,6 +110,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean removeStone(Point p) {
+        gameBoard.currentMove.src = p;
         Piece oldPiece = gameBoard.board[p.x][p.y].piece;
 
         if (oldPiece == null || oldPiece.color == gameBoard.turnColor)

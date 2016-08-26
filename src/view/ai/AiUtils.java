@@ -23,7 +23,7 @@ public class AiUtils {
 
     public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<>();
-        for (Pieces p : controller.getState().currentPieces) {
+        for (model.Piece p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor() == p.color && controller.getState().legalMoves.containsKey(p.field)) {
                 if (controller.getState().legalMoves.get(p.field).size() > 0) {
                     Point tmpPoint = new Point(p.field.x, p.field.y);
@@ -47,7 +47,7 @@ public class AiUtils {
 
     public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
         List<Point> enemyPieces = new LinkedList<Point>();
-        for (model.Pieces p : controller.getState().currentPieces) {
+        for (model.Piece p : controller.getState().currentPieces) {
             if (p.color != abstractPlayer.getColor() && !controller.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
                 enemyPieces.add(tmpPoint);
