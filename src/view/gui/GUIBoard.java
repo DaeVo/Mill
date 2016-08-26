@@ -1,6 +1,7 @@
 package view.gui;
 
 import controller.Controller;
+import model.Playfield;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,15 +13,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Henry on 23.08.2016.
  */
-public class GUIBoard extends JPanel {
+public class GUIBoard extends JPanel implements Observer {
     private Controller millController;
+    BufferedImage image;
     private JLabel imageLabel;
     private List<StonePosition> positions;
-    private final int CLICK_TOLERANCE = 10;
+    private final int STONE_RADIUS = 50;
+
+
+    private Point lastClickedStone;
 
     public GUIBoard(Controller cont) {
         millController = cont;
@@ -30,8 +37,9 @@ public class GUIBoard extends JPanel {
         try {
             String path = "board.jpg";
             File file = new File(path);
-            BufferedImage image = ImageIO.read(file);
+            image = ImageIO.read(file);
             imageLabel = new JLabel(new ImageIcon(image));
+
             imageLabel.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -55,24 +63,91 @@ public class GUIBoard extends JPanel {
         }
 
         this.setVisible(true);
-
-
+        createList();
     }
+
+
 
     public void boardClick(MouseEvent e){
         System.out.println(e);
 
 
         for (StonePosition sp : positions){
-            if (e.getPoint().distance(sp.pos) < CLICK_TOLERANCE){
-                System.out.println(sp.stone);
+            if (e.getPoint().distance(sp.pos) < STONE_RADIUS){
+                System.out.println("Clicked: " + sp.stone);
+
+
+
             }
         }
     }
+    @Override
+    public void update(Observable o, Object arg) {
+        paintStones();
+    }
+
+    public void paintStones(){
+        int width = imageLabel.getWidth();
+        int height = imageLabel.getHeight();
+        BufferedImage img2 = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        Graphics2D g = img2.createGraphics();
+
+        g.drawImage(image, 0, 0, null);
+
+        for (StonePosition sp : positions){
+            Playfield field = millController.getState().board[sp.stone.x][sp.stone.y];
+            //drawing is from top left, our pos is in center, we need to fix that
+            Point center = new Point(sp.pos.x - (STONE_RADIUS / 2), sp.pos.y - (STONE_RADIUS / 2));
+
+            if (!field.empty) {
+                g.setColor(field.piece.color);
+                g.fillOval(center.x, center.y, STONE_RADIUS, STONE_RADIUS);
+            }
+        }
+        imageLabel.setIcon(new ImageIcon(img2));
+        imageLabel.revalidate();
+    }
 
     public void createList(){
+
+
         positions.add(new StonePosition(new Point(33,33), new Point(0,0)));
+        positions.add(new StonePosition(new Point(404,33), new Point(1,0)));
+        positions.add(new StonePosition(new Point(764,33), new Point(2,0)));
+
+        positions.add(new StonePosition(new Point(141,141), new Point(0,1)));
+        positions.add(new StonePosition(new Point(404,141), new Point(1,1)));
+        positions.add(new StonePosition(new Point(655,141), new Point(2,1)));
+
+        positions.add(new StonePosition(new Point(253,253), new Point(0,2)));
+        positions.add(new StonePosition(new Point(404,253), new Point(1,2)));
+        positions.add(new StonePosition(new Point(548,253), new Point(2,2)));
+
+        //mid left
+        positions.add(new StonePosition(new Point(33,406), new Point(7,0)));
+        positions.add(new StonePosition(new Point(141,406), new Point(7,1)));
+        positions.add(new StonePosition(new Point(253,406), new Point(7,2)));
+
+        //mid right
+        positions.add(new StonePosition(new Point(548,406), new Point(3,2)));
+        positions.add(new StonePosition(new Point(655,406), new Point(3,1)));
+        positions.add(new StonePosition(new Point(764,406), new Point(3,0)));
+
+
+        positions.add(new StonePosition(new Point(253,544), new Point(6,2)));
+        positions.add(new StonePosition(new Point(404,544), new Point(5,2)));
+        positions.add(new StonePosition(new Point(548,544), new Point(4,2)));
+
+        positions.add(new StonePosition(new Point(141,657), new Point(6,1)));
+        positions.add(new StonePosition(new Point(404,657), new Point(5,1)));
+        positions.add(new StonePosition(new Point(655,657), new Point(4,1)));
+
+        positions.add(new StonePosition(new Point(33,766), new Point(6,0)));
+        positions.add(new StonePosition(new Point(404,766), new Point(5,0)));
+        positions.add(new StonePosition(new Point(764,766), new Point(4,0)));
     }
+
+
 
     private class StonePosition{
         public Point pos;

@@ -24,8 +24,8 @@ public class Gamestate implements java.io.Serializable {
     public Map<Playfield, List<Point>> legalMoves = new HashMap<>();
     public List<String> turnHistory = new LinkedList<>();
 
-    public Gamestate(Playfield[][] board) {
-        this.board = board;
+    public Gamestate() {
+        board = BoardFactory.createBoard();
         millPositionsInitializer();
         createNeighbors();
     }

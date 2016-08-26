@@ -14,7 +14,7 @@ import java.util.Observer;
 public class GUI extends JFrame {
     private Controller millController;
 
-    public GUI(Controller cont, Observable observ){
+    public GUI(Controller cont){
         millController = cont;
 
         //Side Panel
@@ -23,18 +23,21 @@ public class GUI extends JFrame {
 
         GuiController gc = new GuiController(millController);
         leftPanel.add(gc.getControllerPanel());
+        millController.addObserver(gc);
 
         //Info Boxes
         GuiPlayerInfo bi = new GuiPlayerInfo(millController, Color.black);
         GuiPlayerInfo wi = new GuiPlayerInfo(millController, Color.white);
-        observ.addObserver(bi);
-        observ.addObserver(wi);
+        millController.addObserver(bi);
+        millController.addObserver(wi);
 
         leftPanel.add(bi);
         leftPanel.add(wi);
         leftPanel.setSize(leftPanel.getMinimumSize());
+
         //Game Panel
         GUIBoard gBoard = new GUIBoard(millController);
+        millController.addObserver(gBoard);
 
         //Finish
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
