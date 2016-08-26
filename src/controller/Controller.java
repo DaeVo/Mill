@@ -115,14 +115,14 @@ public class Controller implements java.io.Serializable {
 
     private void endTurn() {
 
-        if (gamePhase != Placing && (gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)) {
-            System.out.println("Game ends with a victory!");
+        if (gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) { //(gameBoard.getPieceCount(Color.black) < 3 || gameBoard.getPieceCount(Color.white) < 3)) {
+            System.out.println("Game ends in a victory for " + Utils.getColorName(winCheck()) + "!");
             System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
             gamePhase = Exit;
             return;
         }
         if (drawCheck()) {
-            System.out.println("Game ends with a draw!");
+            System.out.println("Game ends in a draw!");
             System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
             gamePhase = Exit;
             return;
@@ -172,6 +172,12 @@ public class Controller implements java.io.Serializable {
         guiObservable.notifyObservers();
     }
 
+
+        private Color winCheck() {
+        if (gameBoard.getPieceCount(Color.black) < 3) return Color.white;
+        else if (gameBoard.getPieceCount(Color.white) < 3) return Color.black;
+        else return null;
+    }
 
     private boolean drawCheck() {
         //Abbort rule 50 round no mill

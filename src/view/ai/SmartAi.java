@@ -8,9 +8,11 @@ import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
+import java.math.*;
 
 public class SmartAi extends AbstractPlayer {
+
+    private MCTS MCTSobject = new MCTS();
 
     @Override
     public void run() {
@@ -18,42 +20,23 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{
             case Placing:
-                place();
+                AiUtils.place(millController);
                 break;
             case Moving:
             case Endgame:
-                moving();
+                AiUtils.moving(millController, this);
                 break;
 
             case RemovingStone:
-                removeStone();
+                AiUtils.removeStone(millController, this);
                 break;
         }
 
         System.out.println("smartAI: exit");
     }
 
-    private void place(){
-        //Copy State
-      /*  Controller copyCont = millController.deepCopy();
-        if (myColor == Color.black)
-            copyCont.setWhitePlayer(new DummyPlayer());
-        else
-            copyCont.setBlackPlayer(new DummyPlayer());
-*/
-        millController.place(AiUtils.selectRandomPlacing(millController));
-        //init mtcs
-
-        //simulate
-
-        //make real call to controller
+   /* private void startSimulation(){
+        MCTSobject.simulation(this);
     }
-    private void moving() {
-        Move tmpMove = AiUtils.selectRandomMove(millController, this);
-        millController.move(tmpMove.src, tmpMove.dst);
-    }
-
-    private void removeStone() {
-        millController.removeStone(AiUtils.selectRandomRemove(millController, this));
-    }
+    */
 }

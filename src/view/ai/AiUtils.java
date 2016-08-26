@@ -31,7 +31,7 @@ public class AiUtils {
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
-    public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces todo: replace Point with Move
+    public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces
         return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
     }
 
@@ -43,7 +43,7 @@ public class AiUtils {
     }
 
     public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
-        java.util.List<Point> enemyPieces = new LinkedList<Point>();  // todo: replace return with an argument of Move
+        java.util.List<Point> enemyPieces = new LinkedList<Point>();  //
         for (model.Pieces p : controller.getState().currentPieces) {
             if (p.color != abstractPlayer.getColor() && !controller.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
@@ -60,4 +60,32 @@ public class AiUtils {
         controller.getState().updateLegalMoves();
         controller.getState().updateLegalPlacing();
     }
+
+    public static void place(Controller controller){
+        controller.place(selectRandomPlacing(controller));
+        //Copy State
+        /*
+        Controller copyCont = millController.deepCopy();
+        if (myColor == Color.black)
+            copyCont.setWhitePlayer(new DummyPlayer());
+        else
+            copyCont.setBlackPlayer(new DummyPlayer());
+            */
+
+        //init mtcs
+
+        //simulate
+
+        //make real call to controller
+    }
+
+    public static void moving(Controller controller, AbstractPlayer abstractPlayer) {
+        Move tmpMove = selectRandomMove(controller, abstractPlayer);
+        controller.move(tmpMove.src, tmpMove.dst);
+    }
+
+    public static void removeStone(Controller controller, AbstractPlayer abstractPlayer) {
+        controller.removeStone(selectRandomRemove(controller, abstractPlayer));
+    }
+
 }
