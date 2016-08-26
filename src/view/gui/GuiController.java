@@ -9,6 +9,7 @@ import view.ai.StupidAi;
 import view.human.ConsoleView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -38,10 +39,13 @@ public class GuiController implements Observer {
 
     private void start(){
         String[] split = boxMode.getSelectedItem().toString().split("-");
-        IPlayer p1 = getMode(split[0]);
-        IPlayer p2 = getMode(split[1]);
+        IPlayer whiteP = getMode(split[0]);
+        whiteP.create(millController, Color.white);
 
-        millController.startGame(p1, p2);
+        IPlayer blackP = getMode(split[1]);
+        blackP.create(millController, Color.white);
+
+        millController.startGame(whiteP, blackP);
     }
 
     private IPlayer getMode(String mode){

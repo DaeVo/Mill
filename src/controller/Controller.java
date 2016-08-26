@@ -6,6 +6,7 @@ import view.IPlayer;
 import java.awt.*;
 import java.io.*;
 import java.util.Observable;
+import java.util.ResourceBundle;
 
 import static model.GamePhase.Exit;
 import static model.GamePhase.Placing;
@@ -14,31 +15,32 @@ public class Controller extends Observable implements java.io.Serializable {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private Thread oldThread;
-
-    private Gamestate gameBoard;
-    private int turn;
-    private int toPlace;
-    private int lastMillTurn;
-    private Color turnColor;
-    private GamePhase gamePhase;
-    private GamePhase oldState;
-    private GameEnd gameEnd;
     private int sleepTime = 0;
 
+    private Gamestate gameBoard;
+
+
     public Controller() {
+        gameBoard = new Gamestate();
     }
 
-    public void startGame(IPlayer bp, IPlayer wp) {
-        //notfiy first player
-        setBlackPlayer(bp);
-        setWhitePlayer(wp);
+    public Controller(Gamestate gs) {
+        gameBoard = gs;
+        oldThread = null;
+    }
 
+    public void startGame(IPlayer whiteP, IPlayer blackP) {
+        //notfiy first player
+        setWhitePlayer(whiteP);
+        setBlackPlayer(blackP);
+
+        //reset everything
         gameBoard = new Gamestate();
-        turn = 1;
-        toPlace = 2 * 9;
-        lastMillTurn = 0;
-        turnColor = Color.white;
-        gamePhase = Placing;
+        gameBoard.turn = 1;
+        gameBoard.toPlace = 2 * 9;
+        gameBoard.lastMillTurn = 0;
+        gameBoard.turnColor = Color.white;
+        gameBoard.gamePhase = Placing;
         printTurnInfo();
 
         oldThread = new Thread(whitePlayer);
@@ -50,12 +52,10 @@ public class Controller extends Observable implements java.io.Serializable {
 
     public void setBlackPlayer(IPlayer bp) {
         blackPlayer = bp;
-        blackPlayer.create(this, Color.black);
     }
 
     public void setWhitePlayer(IPlayer wp) {
         whitePlayer = wp;
-        whitePlayer.create(this, Color.white);
     }
 
     public IPlayer getBlackPlayer() {
@@ -71,7 +71,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean place(Point p) {
-        Pieces piece = new Pieces(turnColor);
+        Pieces piece = new Pieces(gameBoard.turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
             System.out.println("please enter a field that is not occupied by another piece, yet.");
             return false;
@@ -79,9 +79,9 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.currentPieces.add(piece);
         gameBoard.board[p.x][p.y].addPiece(piece);
 
-        toPlace--;
-        if (toPlace == 0)
-            gamePhase = GamePhase.Moving;
+        gameBoard.toPlace--;
+        if (gameBoard.toPlace == 0)
+            gameBoard.gamePhase = GamePhase.Moving;
         endTurn();
         return true;
     }
@@ -106,7 +106,7 @@ public class Controller extends Observable implements java.io.Serializable {
     public boolean removeStone(Point p) {
         Pieces oldPiece = gameBoard.board[p.x][p.y].piece;
 
-        if (oldPiece == null || oldPiece.color == turnColor)
+        if (oldPiece == null || oldPiece.color == gameBoard.turnColor)
             return false;
         if (gameBoard.isInMill(oldPiece))
             return false;
@@ -114,7 +114,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.currentPieces.remove(oldPiece);
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
-        gamePhase = oldState;
+        gameBoard.gamePhase = gameBoard.oldState;
         endTurn();
         return true;
     }
@@ -125,21 +125,21 @@ public class Controller extends Observable implements java.io.Serializable {
         setChanged();
 
         //Wind/Draw Checks
-        if (gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) {
+        if (gameBoard.gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) {
             infoText = "Game ends in a victory for " + Utils.getColorName(winCheck()) + "!";
 
             if (winCheck() == Color.black)
-                gameEnd = GameEnd.BlackWon;
+                gameBoard.gameEnd = GameEnd.BlackWon;
             else
-                gameEnd = GameEnd.WhiteWon;
+                gameBoard.gameEnd = GameEnd.WhiteWon;
         } else if (drawCheck()) {
             infoText = "Game ends in a draw!";
-            gameEnd = GameEnd.Draw;
+            gameBoard.gameEnd = GameEnd.Draw;
 
         }
 
         if (infoText != null){
-            gamePhase = Exit;
+            gameBoard.gamePhase = Exit;
             System.out.println(infoText);
             System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
             notifyObservers(infoText);
@@ -150,16 +150,16 @@ public class Controller extends Observable implements java.io.Serializable {
         if (gameBoard.millCheckCompare()) {
             //the turncolor got a new mill
             //turn is not ended
-            oldState = gamePhase;
-            gamePhase = GamePhase.RemovingStone;
-            lastMillTurn = turn;
+            gameBoard.oldState = gameBoard.gamePhase;
+            gameBoard.gamePhase = GamePhase.RemovingStone;
+            gameBoard.lastMillTurn = gameBoard.turn;
         } else {
 
-            turn++;
-            if (turnColor == Color.black) {
-                turnColor = Color.white;
+            gameBoard.turn++;
+            if (gameBoard.turnColor == Color.black) {
+                gameBoard.turnColor = Color.white;
             } else {
-                turnColor = Color.black;
+                gameBoard.turnColor = Color.black;
             }
             gameBoard.turnHistory.add(BoardFactory.getBoardString(gameBoard.board));
         }
@@ -170,7 +170,7 @@ public class Controller extends Observable implements java.io.Serializable {
         new Thread(() -> {
             try {
                 //Wait for last turn to finish
-                oldThread.join();
+                if (oldThread != null) oldThread.join();
                 //Set actual turn as last turn
                 oldThread = Thread.currentThread();
 
@@ -178,7 +178,7 @@ public class Controller extends Observable implements java.io.Serializable {
                 Thread.sleep(sleepTime);
 
                 //Start actual turn
-                if (turnColor == Color.black) {
+                if (gameBoard.turnColor == Color.black) {
                     blackPlayer.run();
                 } else {
                     whitePlayer.run();
@@ -203,7 +203,7 @@ public class Controller extends Observable implements java.io.Serializable {
 
     private boolean drawCheck() {
         //Abbort rule 50 round no mill
-        if (turn - lastMillTurn > 50) {
+        if (gameBoard.turn - gameBoard.lastMillTurn > 50) {
             System.out.println("50 turns without a Mill - game ends in a draw");
             return true;
         }
@@ -224,7 +224,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public GamePhase getGamePhase() {
-        return gamePhase;
+        return gameBoard.gamePhase;
     }
 
     public Gamestate getState() {
@@ -232,35 +232,38 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public Color getTurnColor() {
-        return turnColor;
+        return gameBoard.turnColor;
     }
 
     public IPlayer getTurnPlayer() {
-        if (turnColor == Color.white)
+        if (gameBoard.turnColor == Color.white)
             return getWhitePlayer();
         return getBlackPlayer();
     }
 
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);
-        System.out.println(" ======================================== Turn " + turn);
-        System.out.println("Next Player " + Utils.getColorName(turnColor));
+        System.out.println(" ======================================== Turn " + gameBoard.turn);
+        System.out.println("Next Player " + Utils.getColorName(gameBoard.turnColor));
         System.out.println();
     }
 
     public Controller deepCopy() {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
+            Gamestate gsCopy = null;
+            if (gameBoard != null)
+                gsCopy = gameBoard.deepCopy();
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (Controller) ois.readObject();
-        } catch (IOException e) {
+            Controller cCopy = new Controller(gsCopy);
+
+            //these fields are copied, oldThread remains null
+            cCopy.setWhitePlayer(whitePlayer);
+            cCopy.setBlackPlayer(blackPlayer);
+            cCopy.setSleep(sleepTime);
+
+            return cCopy;
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException e) {
             return null;
         }
     }

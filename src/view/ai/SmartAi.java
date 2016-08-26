@@ -16,6 +16,9 @@ public class SmartAi extends AbstractPlayer {
 
     @Override
     public void run() {
+        Controller c2 = millController.deepCopy();
+        c2.getState().board = null;
+
         AiUtils.updateLists(millController);
         System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{

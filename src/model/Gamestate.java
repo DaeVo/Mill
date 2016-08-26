@@ -1,6 +1,9 @@
 package model;
 
+import controller.Controller;
+
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -10,7 +13,6 @@ import java.util.List;
  * Created by Max on 16/08/2016.
  */
 public class Gamestate implements java.io.Serializable {
-
     public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
     public boolean[] millPositions = new boolean[16];
 
@@ -22,6 +24,14 @@ public class Gamestate implements java.io.Serializable {
     public List<Pieces> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
     public Map<Playfield, List<Point>> legalMoves = new HashMap<>();
+
+    public int turn;
+    public int toPlace;
+    public int lastMillTurn;
+    public Color turnColor;
+    public GamePhase gamePhase;
+    public GamePhase oldState;
+    public GameEnd gameEnd;
     public List<String> turnHistory = new LinkedList<>();
 
     public Gamestate() {
@@ -228,6 +238,21 @@ public class Gamestate implements java.io.Serializable {
                     legalPlacing.add(tmpPoint);
                 }
             }
+        }
+    }
+
+    public Gamestate deepCopy() {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (Gamestate) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -9,20 +9,28 @@ import view.ai.SmartAi;
 import view.ai.StupidAi;
 import view.gui.GUI;
 
+import java.awt.*;
+
 public final class Mill {
     public static final boolean DEBUG = true;
 
     public static void main(final String[] args) {
         Controller c = new Controller();
 
+
+
         new GUI(c);
 
         try {
-            IPlayer p1 = new SmartAi();
-            IPlayer p2 = new StupidAi();
+            IPlayer whiteP = new SmartAi();
+            whiteP.create(c, Color.white);
+
+            IPlayer blackP = new StupidAi();
+            blackP.create(c, Color.black);
 
             c.setSleep(50);
-            //c.startGame(p1, p2);
+            c.startGame(whiteP, blackP);
+
 
             while (c.getGamePhase() != GamePhase.Exit) {
                 Thread.sleep(1000);
