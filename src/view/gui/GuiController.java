@@ -50,7 +50,7 @@ public class GuiController implements Observer {
                 return new SmartAi();
             }
         } else {
-            return new DummyPlayer();
+            return new GuiPlayer();
         }
     }
 

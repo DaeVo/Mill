@@ -220,6 +220,12 @@ public class Controller extends Observable implements java.io.Serializable  {
 
     public Color getTurnColor() { return turnColor;}
 
+    public IPlayer getTurnPlayer(){
+        if (turnColor == Color.white)
+            return getWhitePlayer();
+        return getBlackPlayer();
+    }
+
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);
         System.out.println(" ======================================== Turn " + turn);

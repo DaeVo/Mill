@@ -1,7 +1,10 @@
 package view.gui;
 
 import controller.Controller;
+import controller.GamePhase;
 import model.Playfield;
+import view.IPlayer;
+import view.ai.Move;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -27,7 +30,7 @@ public class GUIBoard extends JPanel implements Observer {
     private final int STONE_RADIUS = 50;
 
 
-    private Point lastClickedStone;
+    private Point sourceStone;
 
     public GUIBoard(Controller cont) {
         millController = cont;
@@ -70,14 +73,38 @@ public class GUIBoard extends JPanel implements Observer {
 
     public void boardClick(MouseEvent e){
         System.out.println(e);
+        if (millController.getGamePhase() == GamePhase.Exit)
+            return;
 
 
         for (StonePosition sp : positions){
             if (e.getPoint().distance(sp.pos) < STONE_RADIUS){
                 System.out.println("Clicked: " + sp.stone);
 
+                IPlayer player = millController.getTurnPlayer();
 
+                //Not our turn
+                if (!(player instanceof GuiPlayer))
+                    return;
 
+                if (millController.getGamePhase() == GamePhase.Placing){
+                    millController.place(sp.stone);
+                } else if (millController.getGamePhase() == GamePhase.RemovingStone) {
+                    millController.removeStone(sp.stone);
+                } else {
+                    //1. select a source
+                    //2. select a dest
+                    if (sourceStone == null){
+                        sourceStone = sp.stone;
+                    } else {
+                        if (millController.getGamePhase() == GamePhase.Moving) {
+                            millController.move(sourceStone, sp.stone);
+                        } else {
+                            millController.moveFreely(sourceStone, sp.stone);
+                        }
+                        sourceStone = null;
+                    }
+                }
             }
         }
     }
