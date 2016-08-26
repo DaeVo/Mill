@@ -11,10 +11,12 @@ public class MCTS {
 
     private Controller currentState = new Controller();  //current gamestate
     public Node root = new Node(); //global root Node
+    Move treeMove = new Move(null, null);
+
     /*
     initializes the tree
      */
-    public void initializeMCTS(){
+    public void initializeMCTS() {
         root = new Node();
     }
 
@@ -26,32 +28,56 @@ public class MCTS {
         // root = selectedNode
     }
 
-    public void updateCurrentGameState(){
+    public void updateCurrentGameState() {
         currentState = currentState.deepCopy();
     }
 
-    public void simulation(AbstractPlayer abstractPlayer) {
-        //Copy State
+    private void simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
         updateCurrentGameState();
-        currentState.setWhitePlayer(new DummyPlayer());
-        currentState.setBlackPlayer(new DummyPlayer());
-
-
         AiUtils.updateLists(currentState);
-        System.out.println("smartAI: run()");
+        System.out.println("recursion");
+
         switch (currentState.getGamePhase()) {
             case Placing:
-                AiUtils.place(currentState);
+                treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
+                if(simulationHelper(currentNode, treeMove)) {  //checks if that move has already been done
+                    currentNode = simulationHelper(currentNode, treeMove, true); //updates currentNode for the next recursive call
+                    break;
+                }
+                else {
+                    treeMove = AiUtils.moving(currentState, abstractPlayer);
+                    Node tmpNode = new Node();
+                    tmpNode.move = treeMove;
+                    tmpNode.currenstate = this.currentState;
+                    currentNode.listOfChildren.add(tmpNode);
+                }
                 break;
             case Moving:
-                AiUtils.moving(currentState, abstractPlayer);
+                treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
                 break;
-
             case RemovingStone:
-                AiUtils.removeStone(currentState, abstractPlayer);
+                treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
                 break;
         }
+        simulationR(abstractPlayer, currentNode);
     }
+    private Node simulationHelper (Node currentNode, Move treeMove, boolean b) {
+        for (Node node : currentNode.listOfChildren) {
+            if (node.move == treeMove) return node;
+        } return null;
+    }
+
+    private boolean simulationHelper(Node currentNode, Move treeMove) {
+        for (Node node : currentNode.listOfChildren) {
+            if (node.move == treeMove) {
+                currentState = node.currenstate;
+                return true;}
+        } return false;
+    }
+}
+
+
+
         /*
 
         Controller copyCont = millController.deepCopy();
@@ -61,9 +87,8 @@ public class MCTS {
             copyCont.setBlackPlayer(new DummyPlayer());
             */
 
-        //init mtcs
+//init mtcs
 
-        //simulate
+//simulate
 
-        //make real call to controller
-    }
+//make real call to controller

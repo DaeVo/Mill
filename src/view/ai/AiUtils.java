@@ -22,7 +22,7 @@ public class AiUtils {
     }
 
     public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
-       List<Point> tmpList = new LinkedList<>();
+        List<Point> tmpList = new LinkedList<>();
         for (Pieces p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor() == p.color && controller.getState().legalMoves.containsKey(p.field)) {
                 if (controller.getState().legalMoves.get(p.field).size() > 0) {
@@ -67,8 +67,11 @@ public class AiUtils {
         controller.getState().updateLegalPlacing();
     }
 
-    public static void place(Controller controller){
-        controller.place(selectRandomPlacing(controller));
+    public static Move place(Controller controller){
+        Move tmpMove = new Move(null, null);
+        tmpMove.dst = selectRandomPlacing(controller);
+        controller.place(tmpMove.dst);
+        return tmpMove;
         //Copy State
         /*
         Controller copyCont = millController.deepCopy();
@@ -85,19 +88,24 @@ public class AiUtils {
         //make real call to controller
     }
 
-    public static void moving(Controller controller, AbstractPlayer abstractPlayer) {
+    public static Move moving(Controller controller, AbstractPlayer abstractPlayer) {
         Move tmpMove = selectRandomMove(controller, abstractPlayer);
         if (!freeMoveAllowed(controller, controller.getTurnColor())){
             controller.move(tmpMove.src, tmpMove.dst);
+            return tmpMove;
         } else {
-            controller.setSleep(1000);
+            controller.setSleep(1);
             controller.moveFreely(tmpMove.src, tmpMove.dst);
+            return tmpMove;
         }
-
     }
 
-    public static void removeStone(Controller controller, AbstractPlayer abstractPlayer) {
-        controller.removeStone(selectRandomRemove(controller, abstractPlayer));
+    public static Move removeStone(Controller controller, AbstractPlayer abstractPlayer) {
+        Move tmpMove = new Move(null, null);
+        tmpMove.src = selectRandomRemove(controller, abstractPlayer);
+        controller.removeStone(tmpMove.src);  //using src =value, dst = null to differ from placing Moves
+        return tmpMove;
     }
 
 }
+
