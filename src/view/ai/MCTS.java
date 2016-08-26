@@ -7,25 +7,25 @@ import view.AbstractPlayer;
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-
-
     private Controller currentState = new Controller();  //current gamestate
-    public Node root = new Node(); //global root Node
-    Move treeMove = new Move(null, null);
+    private Node root = new Node(); //global root Node
 
     /*
     initializes the tree
      */
-    public void initializeMCTS() {
+    public MCTS() {
         root = new Node();
     }
 
     /*
     chose the best Node
      */
-    public void selectMove() { //finally decides for a move and sets the root to the next move
+    public void selectMove() {
+        //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
+
+
     }
 
     public void updateCurrentGameState() {
@@ -68,7 +68,8 @@ public class MCTS {
 
     private Node simulationHelper(Node currentNode, Move treeMove, boolean b) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move == treeMove) return node;
+            if (node.move == treeMove)
+                return node;
         }
         return null;
     }
@@ -85,10 +86,27 @@ public class MCTS {
 
     private Node nodeUpdate(Node currentNode, Move treeMove, AbstractPlayer abstractPlayer) {
         Node tmpNode = new Node();
-        tmpNode.move = this.treeMove;
-        tmpNode.currenstate = this.currentState;
+        tmpNode.move = treeMove;
+        tmpNode.currenstate = currentState;
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
+    }
+
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        toStringR(root, sb, 0);
+        return sb.toString();
+    }
+
+    public void toStringR(Node node, StringBuilder sb, int depth){
+        for (int i = 0; i < depth; i++){
+            sb.append(" ");
+        }
+        sb.append(node);
+        for(Node n : node.listOfChildren){
+            toStringR(n, sb, ++depth);
+        }
     }
 }
 
