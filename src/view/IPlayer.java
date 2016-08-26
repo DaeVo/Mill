@@ -1,10 +1,12 @@
 package view;
 
-		import java.util.Observable;
-		import java.util.Observer;
+import java.awt.*;
+import java.io.Serializable;
 
-		import controller.Controller;
+import controller.Controller;
 
-public interface IPlayer extends Runnable {
-	void setController(Controller cont);
+public interface IPlayer extends Runnable, Serializable {
+	void create(Controller cont, Color playerColor);
+	Color getColor();
+	Controller getController();
 }

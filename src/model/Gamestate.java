@@ -1,50 +1,33 @@
 package model;
+
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
+
 
 /**
  * Created by Max on 16/08/2016.
  */
-public class Gamestate {
+public class Gamestate implements java.io.Serializable {
 
-    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be emptied after every turn
-    /*
-    saves which of the 16 possible mills is currently active
-     */
+    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
     public boolean[] millPositions = new boolean[16];
 
-    /*
-    arrays to help calculating if a new mill has been created in this turn
-     */
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];
 
-    public int pieceCountWhite = 0;
-    public int pieceCountBlack = 0;
+    public List<Point> legalPlacing = new LinkedList<Point>();
     public Playfield[][] board = new Playfield[8][3];
-    public Pieces[] currentPieces = new Pieces[18];
-    public int turnsNoMill = 0; // resets if mill happens, if >49 => tie
+    public List<Pieces> currentPieces = new LinkedList<>();
+    public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
+    public Map<Playfield, List<Point>> legalMoves = new HashMap<>();
+    public List<String> turnHistory = new LinkedList<>();
 
-    public Gamestate(Playfield[][] board) {
-        this.board = board;
-    }
-
-    /*
-    create 18 pieces and updates the piece count for each player
-     */
-    public void createPieces() {
-        for (int i = 0; i < 18; i++) {
-            Color color;
-            if (i % 2 == 1) {
-                color = Color.black;
-                pieceCountBlack++;
-            }
-            else {
-                color = Color.white;
-                pieceCountWhite++;
-            }
-            currentPieces[i] = new Pieces(color);
-        }
+    public Gamestate() {
+        board = BoardFactory.createBoard();
+        millPositionsInitializer();
+        createNeighbors();
     }
 
     /*
@@ -60,14 +43,15 @@ public class Gamestate {
 
     public int getMillCheckCount(int[] count) {
         int m = 0;
-        for(int i = 0; i < 16; i++){
+        for (int i = 0; i < 16; i++) {
             m += count[i];
-        }return m;
+        }
+        return m;
     }
 
-    public void millToInt(){
-        for(int i = 0; i < 16; i++){
-            if(millPositions[i]) newMillCheck[i] = 1;
+    public void millToInt() {
+        for (int i = 0; i < 16; i++) {
+            if (millPositions[i]) newMillCheck[i] = 1;
             else newMillCheck[i] = 0;
         }
     }
@@ -79,11 +63,15 @@ public class Gamestate {
                 currentMillPieces.add(playfield1.piece);
                 currentMillPieces.add(playfield2.piece);
                 currentMillPieces.add(playfield3.piece);
-                System.out.println("LISTE: " + currentMillPieces);
+                System.out.println("MillList:: " + currentMillPieces);
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isInMill(Pieces piece){
+        return (currentMillPieces.contains(piece));
     }
 
     public void clearMillList() {
@@ -94,17 +82,18 @@ public class Gamestate {
     compares the old mill situation to the new one and figures out if a new mill has been created or not.
      */
     public boolean millCheckCompare() {
+        clearMillList();
+        millCheck();
         millToInt();
         int oldMillCheckCount = getMillCheckCount(oldMillCheck);
         int newMillCheckCount = getMillCheckCount(newMillCheck);
 
-        if(newMillCheckCount > oldMillCheckCount){
+        if (newMillCheckCount > oldMillCheckCount) {
             oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
             return true; //a mill got created by using a piece that wasn't in a mill before
-        }
-        else if (oldMillCheckCount == newMillCheckCount){ //same amount of mills, but different distribution, meaning a piece left a mill and entered a new mill
+        } else if (oldMillCheckCount == newMillCheckCount) { //same amount of mills, but different distribution, meaning a piece left a mill and entered a new mill
             for (int i = 0; i < 16; i++) {
-                if (!millPositions[i] && oldMillCheck[i] == 1 || millPositions[i] && oldMillCheck[i] == 0){
+                if (!millPositions[i] && oldMillCheck[i] == 1 || millPositions[i] && oldMillCheck[i] == 0) {
                     oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
                     return true;
                 }
@@ -116,10 +105,9 @@ public class Gamestate {
 
     /*
     easier to read and understand than dyamic statements to check for mills
-    sets a booleana to 1 if a mill position happens.
-
+    stores which of the possible 16 mill positions are currently active.
      */
-    public void millCheck(){
+    public void millCheck() {
 
         //top and left side mills
         millPositions[0] = isMill(board[0][0], board[1][0], board[2][0]);
@@ -143,6 +131,103 @@ public class Gamestate {
         millPositions[14] = isMill(board[3][0], board[3][1], board[3][2]);
         millPositions[15] = isMill(board[1][0], board[1][1], board[1][2]);
     }
+
+
+    public Point findFreePlayfield() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j].empty)
+                    return new Point(i, j);
+            }
+        }
+        return null;
+    }
+
+    private void createNeighbors() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                Playfield base = board[i][j];
+
+                for (int i2 = 0; i2 < 8; i2++) {
+                    for (int j2 = 0; j2 < 3; j2++) {
+                        Playfield toCompare = board[i2][j2];
+                        if (base.isNeighbour(toCompare)) {
+                            if (!playfieldNeighbors.containsKey(base))
+                                playfieldNeighbors.put(base, new LinkedList<>());
+
+                            playfieldNeighbors.get(base).add(toCompare);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Playfield> getNeighbours(Playfield field) {
+        return playfieldNeighbors.get(field);
+    }
+
+    public int getPieceCount() {
+        return getPieceCount(Color.black) + getPieceCount(Color.white);
+    }
+
+    public int getPieceCount(Color color) {
+        int count = 0;
+        for (Pieces p : currentPieces) {
+            if (p.field != null && p.color == color)
+                count++;
+        }
+        return count;
+    }
+
+    /*
+    updates the hashmap to store all legal moves for each playfield on the board.
+     */
+    public void updateLegalMoves() { // clear HashMap every turn.
+        for (Pieces p : currentPieces) {
+            LinkedList<Point> legalMoveList = new LinkedList<Point>();
+            Playfield tmpField = p.field;
+            for (Playfield neighbourfield : getNeighbours(tmpField)) {
+                if (neighbourfield.empty) {
+                    Point tmpPoint = new Point(neighbourfield.x, neighbourfield.y);
+                    legalMoveList.add(tmpPoint);
+                }
+            }
+            legalMoves.put(p.field, legalMoveList);
+        }
+    }
+
+    /*
+    method to update all legal moves if there are less than 4 pieces for the player that is moving
+    and store them in a HashMap
+     */
+    public void updateFreeMovementLegalMoves() { //
+        for (Pieces p : currentPieces) {
+            LinkedList<Point> legalMoveList = new LinkedList<>();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Playfield tmpField = board[i][j];
+                    if (tmpField.empty) {
+                        Point tmp = new Point(tmpField.x, tmpField.y);
+                        legalMoveList.add(tmp);
+                    }
+                }
+            }
+            legalMoves.put(p.field, legalMoveList);
+        }
+    }
+
+
+    public void updateLegalPlacing() {
+        Playfield tmpField;
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 3; j++) {
+                tmpField = board[i][j];
+                if (tmpField.empty) {
+                    Point tmpPoint = new Point(tmpField.x, tmpField.y);
+                    legalPlacing.add(tmpPoint);
+                }
+            }
+        }
+    }
 }
-
-
