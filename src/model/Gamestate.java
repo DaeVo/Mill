@@ -1,7 +1,5 @@
 package model;
 
-import controller.Controller;
-
 import java.awt.*;
 import java.io.*;
 import java.util.*;
@@ -13,7 +11,7 @@ import java.util.List;
  * Created by Max on 16/08/2016.
  */
 public class Gamestate implements java.io.Serializable {
-    public HashSet<Pieces> currentMillPieces = new HashSet<Pieces>();  //must be updated after every turn
+    public HashSet<Piece> currentMillPieces = new HashSet<Piece>();  //must be updated after every turn
     public boolean[] millPositions = new boolean[16];
 
     public int[] newMillCheck = new int[16];
@@ -21,7 +19,7 @@ public class Gamestate implements java.io.Serializable {
 
     public List<Point> legalPlacing = new LinkedList<Point>();
     public Playfield[][] board = new Playfield[8][3];
-    public List<Pieces> currentPieces = new LinkedList<>();
+    public List<Piece> currentPieces = new LinkedList<>();
     public Map<Playfield, List<Playfield>> playfieldNeighbors = new HashMap<>();
     public Map<Playfield, List<Point>> legalMoves = new HashMap<>();
 
@@ -80,7 +78,7 @@ public class Gamestate implements java.io.Serializable {
         return false;
     }
 
-    public boolean isInMill(Pieces piece){
+    public boolean isInMill(Piece piece){
         return (currentMillPieces.contains(piece));
     }
 
@@ -183,7 +181,7 @@ public class Gamestate implements java.io.Serializable {
 
     public int getPieceCount(Color color) {
         int count = 0;
-        for (Pieces p : currentPieces) {
+        for (Piece p : currentPieces) {
             if (p.field != null && p.color == color)
                 count++;
         }
@@ -194,7 +192,7 @@ public class Gamestate implements java.io.Serializable {
     updates the hashmap to store all legal moves for each playfield on the board.
      */
     public void updateLegalMoves() { // clear HashMap every turn.
-        for (Pieces p : currentPieces) {
+        for (Piece p : currentPieces) {
             LinkedList<Point> legalMoveList = new LinkedList<Point>();
             Playfield tmpField = p.field;
             for (Playfield neighbourfield : getNeighbours(tmpField)) {
@@ -212,7 +210,7 @@ public class Gamestate implements java.io.Serializable {
     and store them in a HashMap
      */
     public void updateFreeMovementLegalMoves() { //
-        for (Pieces p : currentPieces) {
+        for (Piece p : currentPieces) {
             LinkedList<Point> legalMoveList = new LinkedList<>();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 3; j++) {

@@ -4,9 +4,7 @@ import model.*;
 import view.IPlayer;
 
 import java.awt.*;
-import java.io.*;
 import java.util.Observable;
-import java.util.ResourceBundle;
 
 import static model.GamePhase.Exit;
 import static model.GamePhase.Placing;
@@ -71,7 +69,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean place(Point p) {
-        Pieces piece = new Pieces(gameBoard.turnColor);
+        Piece piece = new Piece(gameBoard.turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
             System.out.println("please enter a field that is not occupied by another piece, yet.");
             return false;
@@ -104,7 +102,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean removeStone(Point p) {
-        Pieces oldPiece = gameBoard.board[p.x][p.y].piece;
+        Piece oldPiece = gameBoard.board[p.x][p.y].piece;
 
         if (oldPiece == null || oldPiece.color == gameBoard.turnColor)
             return false;

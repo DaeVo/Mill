@@ -11,7 +11,7 @@ import java.awt.*;
 public class Playfield implements java.io.Serializable {
 
     public boolean empty;
-    public Pieces piece;
+    public Piece piece;
     /*
     so the field knows it's own array position
      */
@@ -72,7 +72,7 @@ public class Playfield implements java.io.Serializable {
     /*
     ensures that piece is known to the field and vice versa
      */
-    public void addPiece(Pieces piece) {
+    public void addPiece(Piece piece) {
         this.piece = piece;
         piece.addPlayfield(this);
         this.empty = false;

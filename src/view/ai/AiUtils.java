@@ -1,8 +1,7 @@
 package view.ai;
 
 import controller.Controller;
-import model.GamePhase;
-import model.Pieces;
+import model.Piece;
 import view.AbstractPlayer;
 
 import java.awt.*;
@@ -23,7 +22,7 @@ public class AiUtils {
 
     public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
        List<Point> tmpList = new LinkedList<>();
-        for (Pieces p : controller.getState().currentPieces) {
+        for (Piece p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor() == p.color && controller.getState().legalMoves.containsKey(p.field)) {
                 if (controller.getState().legalMoves.get(p.field).size() > 0) {
                     Point tmpPoint = new Point(p.field.x, p.field.y);
@@ -34,11 +33,11 @@ public class AiUtils {
         return tmpList.get(getRandomNumber() % tmpList.size());
     }
 
-    public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces
+    public static Point selectRandomPlacing(Controller controller) { //random move while placing Piece
         return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
     }
 
-    public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
+    public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Piece.
         Point tmpSrc = randomMoveSource(controller, abstractPlayer);
         List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
@@ -47,7 +46,7 @@ public class AiUtils {
 
     public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
         List<Point> enemyPieces = new LinkedList<Point>();
-        for (model.Pieces p : controller.getState().currentPieces) {
+        for (Piece p : controller.getState().currentPieces) {
             if (p.color != abstractPlayer.getColor() && !controller.getState().isInMill(p)) {
                 Point tmpPoint = new Point(p.field.x, p.field.y);
                 enemyPieces.add(tmpPoint);

@@ -40,10 +40,4 @@ public class BoardFactory implements java.io.Serializable{
         sb.append(String.format(line1, board[6][0].shortString(), board[5][0].shortString(), board[4][0].shortString()));
         return sb.toString();
     }
-
-    public static void printPieces(Gamestate gs){
-        for (Pieces p : gs.currentPieces){
-            System.out.println(p.field);
-        }
-    }
 }

@@ -1,6 +1,6 @@
 package view.ai;
 
-import model.Pieces;
+import model.Piece;
 import model.Playfield;
 import view.AbstractPlayer;
 
@@ -35,7 +35,7 @@ public class StupidAi extends AbstractPlayer {
 	}
 
 	private void moving(){
-		for (Pieces p : millController.getState().currentPieces) {
+		for (Piece p : millController.getState().currentPieces) {
 			if (p.color == myColor){
                 System.out.println("Ki: Trying to move " + p.field);
                 for (Playfield toMove : millController.getState().getNeighbours(p.field)){
@@ -49,8 +49,8 @@ public class StupidAi extends AbstractPlayer {
 
 	private void removeStone(){
         System.out.println("Ki: Trying to remove ich");
-        List<Pieces> listCopy = new LinkedList<>(millController.getState().currentPieces);
-        for (Pieces p : listCopy) {
+        List<Piece> listCopy = new LinkedList<>(millController.getState().currentPieces);
+        for (Piece p : listCopy) {
             if (p.color != myColor) {
                 System.out.println("Ki: Trying to remove " + p.field);
                 if (millController.removeStone(p.field.getPoint()))
