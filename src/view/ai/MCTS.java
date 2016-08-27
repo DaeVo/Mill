@@ -1,6 +1,10 @@
 package view.ai;
 import controller.Controller;
+import model.GameEnd;
+import model.GamePhase;
 import view.AbstractPlayer;
+
+import java.awt.*;
 
 /**
  * Created by Max on 19/08/2016.
@@ -39,7 +43,7 @@ public class MCTS {
         simulationR(abstractPlayer, root);
     }
 
-    private void simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
+    private int simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
         updateCurrentGameState();
         AiUtils.updateLists(currentState);
         System.out.println("recursion");
@@ -79,8 +83,20 @@ public class MCTS {
                 }
                 break;
         }
+
+        if (currentState.getGamePhase() == GamePhase.Exit){
+            if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor() == Color.white){
+                return 1;
+            } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor() == Color.black){
+                return 1;
+            } else {
+                //Draw/Loss
+                return 0;
+            }
+        }
+
         int i = simulationR(abstractPlayer, currentNode);
-        if (i == 1) currentNode.winCount += i;
+        currentNode.winCount += i;
         return i;
     }
 

@@ -26,6 +26,6 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void startSimulation(){
-        MCTSobject.simulation(this);
+        mctsTree.simulation(this);
     }
 }
