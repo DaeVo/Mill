@@ -16,6 +16,7 @@ import java.util.List;
 public class MCTS {
     private Node root = new Node(); //global root Node
     private GregorianCalendar expireDate;
+    private boolean randomSelection = false;
 
     /*
     initializes the tree
@@ -31,7 +32,12 @@ public class MCTS {
     public Move selectMove() { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-        Node child = root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
+        Node child;
+        if (randomSelection)
+            child = root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
+        else
+            child = root.getBestChild();
+
         root = child;
         return root.move;
     }
@@ -51,10 +57,11 @@ public class MCTS {
             return currentNode;
         } else {
             //TODO: select child - random or by win/play ratio
-            currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            if (randomSelection)
+               return root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
+            else
+               return root.getBestChild();
         }
-
-        return null;
     }
 
     public Node expansion(Node selectedNode) {
@@ -74,21 +81,11 @@ public class MCTS {
         //TODO: FUCK THIS
         Node newNode = createChildNode(selectedNode, newMove);
         newNode.state = selectedNode.state.deepCopy();
-        exectuteMove(newNode);
+        AiUtils.exectuteMove(newNode.state, newNode.move);
 
         return newNode;
     }
 
-    public void exectuteMove(Node currentNode) {
-        switch (currentNode.state.getGamePhase()) {
-            case Placing:
-                currentNode.state.place(currentNode.move.dst);
-            case Moving:
-                currentNode.state.move(currentNode.move.src, currentNode.move.dst);
-            case RemovingStone:
-                currentNode.state.removeStone(currentNode.move.src);
-        }
-    }
 
 
     public void simulation(IPlayer abstractPlayer, int timeout) {
@@ -99,7 +96,7 @@ public class MCTS {
             doForeignMove(root.state.getState().currentMove);
         }
 
-        while (true){
+        while (true) {
             //Loop to search new üaths
             simulationR(abstractPlayer, root);
         }
@@ -115,6 +112,7 @@ public class MCTS {
 
             //Exit by win
             if (currentNode.state.getGamePhase() == GamePhase.Exit) {
+                System.out.println("Playout at turn " + currentNode.state.getState().turn);
                 if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
                     return 1;
                 } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
@@ -142,7 +140,6 @@ public class MCTS {
 
         return currentNode.winCount;
     }
-
 
 
     private boolean moveAlreadyPerformed(Node currentNode, Move treeMove) {
