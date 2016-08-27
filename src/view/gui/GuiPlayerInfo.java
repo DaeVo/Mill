@@ -2,12 +2,9 @@ package view.gui;
 
 import controller.Controller;
 import model.Utils;
-import sun.security.x509.IPAddressName;
-import view.AbstractPlayer;
-import view.IPlayer;
+import model.IPlayer;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;

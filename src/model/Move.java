@@ -1,4 +1,4 @@
-package view.ai;
+package model;
 import java.awt.Point;
 
 /**

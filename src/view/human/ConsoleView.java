@@ -2,7 +2,7 @@ package view.human;
 
 
 import model.GamePhase;
-import view.AbstractPlayer;
+import model.AbstractPlayer;
 
 import java.awt.*;
 import java.util.Scanner;

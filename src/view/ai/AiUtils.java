@@ -1,10 +1,9 @@
 package view.ai;
 
 import controller.Controller;
-import model.GamePhase;
+import model.Move;
 import model.Piece;
-import view.AbstractPlayer;
-import view.IPlayer;
+import model.IPlayer;
 
 import java.awt.*;
 import java.util.*;

@@ -3,7 +3,7 @@ package view.gui;
 import controller.Controller;
 import model.GamePhase;
 import model.Playfield;
-import view.IPlayer;
+import model.IPlayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

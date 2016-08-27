@@ -1,6 +1,6 @@
 package view.ai;
 
-        import view.AbstractPlayer;
+        import model.AbstractPlayer;
 
 /**
  * Created by Henry on 24.08.2016.

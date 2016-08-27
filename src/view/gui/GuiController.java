@@ -2,18 +2,12 @@ package view.gui;
 
 import controller.Controller;
 import model.Utils;
-import view.IPlayer;
-import view.ai.DummyPlayer;
+import model.IPlayer;
 import view.ai.SmartAi;
 import view.ai.StupidAi;
-import view.human.ConsoleView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
 

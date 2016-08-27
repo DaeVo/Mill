@@ -1,10 +1,9 @@
 package view.ai;
 
 import controller.Controller;
+import model.Move;
 
-import javax.management.NotificationEmitter;
 import java.util.LinkedList;
-import java.awt.Point;
 
 /**
  * Created by Max on 19/08/2016.

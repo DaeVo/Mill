@@ -1,13 +1,12 @@
 package controller;
 
 import model.*;
-import view.IPlayer;
+import model.IPlayer;
 import view.ai.DummyPlayer;
-import view.ai.Move;
+import model.Move;
 
 import java.awt.*;
 import java.util.Observable;
-import java.util.SimpleTimeZone;
 
 import static model.GamePhase.Exit;
 import static model.GamePhase.Placing;

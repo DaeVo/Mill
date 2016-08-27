@@ -2,7 +2,7 @@ package view.ai;
 
 import model.Piece;
 import model.Playfield;
-import view.AbstractPlayer;
+import model.AbstractPlayer;
 
 import java.awt.*;
 import java.util.LinkedList;

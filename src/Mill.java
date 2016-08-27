@@ -4,7 +4,7 @@
 
 import controller.Controller;
 import model.GamePhase;
-import view.IPlayer;
+import model.IPlayer;
 import view.ai.SmartAi;
 import view.ai.StupidAi;
 import view.gui.GUI;

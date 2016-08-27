@@ -1,12 +1,9 @@
 package view.gui;
 
 import controller.Controller;
-import view.AbstractPlayer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * Created by Henry on 23.08.2016.

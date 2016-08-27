@@ -1,4 +1,4 @@
-package view;
+package model;
 
 import java.awt.*;
 import java.io.Serializable;

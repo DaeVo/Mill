@@ -1,6 +1,7 @@
 package view.ai;
 
-import view.AbstractPlayer;
+import model.Move;
+import model.AbstractPlayer;
 
 public class SmartAi extends AbstractPlayer {
 

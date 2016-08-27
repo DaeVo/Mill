@@ -3,7 +3,8 @@ package view.ai;
 import controller.Controller;
 import model.GameEnd;
 import model.GamePhase;
-import view.IPlayer;
+import model.Move;
+import model.IPlayer;
 
 import java.awt.*;
 import java.util.*;
