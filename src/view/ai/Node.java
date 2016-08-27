@@ -18,6 +18,6 @@ class Node implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return String.format("Node - Move: %s\tChildren: %d", move, listOfChildren.size());
+        return String.format("Node - Move: %s\tChildren: %d wincount: %f  playcount: %f", move, listOfChildren.size(), winCount, playCount);
     }
 }

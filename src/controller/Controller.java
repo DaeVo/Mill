@@ -138,7 +138,7 @@ public class Controller extends Observable implements java.io.Serializable {
         setChanged();
 
         //Wind/Draw
-        if (!gameBoard.isLegalMoveAvailable(Color.white)) {
+          if (!gameBoard.isLegalMoveAvailable(Color.white)) {
             gameBoard.gameEnd = GameEnd.BlackWon;
         }
         else if(!gameBoard.isLegalMoveAvailable(Color.black)){

@@ -56,7 +56,14 @@ public class AiUtils {
                 enemyPieces.add(tmpPoint);
             }
         }
-        return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
+        if (enemyPieces.size() == 0) {
+            for (Piece p : controller.getState().currentPieces) {
+                if (!p.color.equals(abstractPlayer.getColor())) {
+                    Point tmpPoint = new Point(p.field.x, p.field.y);
+                    enemyPieces.add(tmpPoint);
+                }
+            }
+        } return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
     }
 
     public static void updateLists(Controller controller) {
