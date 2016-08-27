@@ -21,6 +21,6 @@ public class Move implements java.io.Serializable {
             mode = "move";
         }
 
-        return String.format("Move - Type %s Src %d  Dst %d", mode, src, dst);
+        return String.format("Move - Type %s Src %s  Dst %s", mode, src, dst);
     }
 }

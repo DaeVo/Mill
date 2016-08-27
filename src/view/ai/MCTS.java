@@ -11,14 +11,15 @@ import java.awt.*;
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-    private Controller currentState = new Controller();  //current gamestate
+    private Controller currentState;  //current gamestate
     private Node root = new Node(); //global root Node
 
     /*
     initializes the tree
      */
-    public MCTS() {
+    public MCTS(Controller cont) {
         root = new Node();
+        currentState = cont;
     }
 
     /*
@@ -34,11 +35,13 @@ public class MCTS {
     }
 
     public void simulation(AbstractPlayer abstractPlayer) {
-        if(moveAlreadyPerformed(root, currentState.getState().currentMove)) {
-            root = getNodeOfAlreadyPerformedMove(root, currentState.getState().currentMove);
-        }
-        else {
-            root = nodeUpdate(root, currentState.getState().currentMove);
+        if (currentState.getState().currentMove != null){
+            if(moveAlreadyPerformed(root, currentState.getState().currentMove)) {
+                root = getNodeOfAlreadyPerformedMove(root, currentState.getState().currentMove);
+            }
+            else {
+                root = nodeUpdate(root, currentState.getState().currentMove);
+            }
         }
         simulationR(abstractPlayer, root);
     }
@@ -138,6 +141,7 @@ public class MCTS {
             sb.append(" ");
         }
         sb.append(node);
+        sb.append("\n");
         for(Node n : node.listOfChildren){
             toStringR(n, sb, ++depth);
         }
