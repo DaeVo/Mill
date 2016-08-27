@@ -4,11 +4,10 @@ import view.AbstractPlayer;
 
 public class SmartAi extends AbstractPlayer {
 
-    private MCTS MCTSobject = new MCTS();
+    private MCTS mctsTree = new MCTS();
 
     @Override
     public void run() {
-        AiUtils.updateLists(millController);
         System.out.println("smartAI: run()");
         switch (millController.getGamePhase())	{
             case Placing:
@@ -27,6 +26,6 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void startSimulation(){
-        MCTSobject.simulation(this);
+        mctsTree.simulation(this);
     }
 }

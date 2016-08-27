@@ -1,21 +1,23 @@
 package view.ai;
 import controller.Controller;
+import model.GameEnd;
+import model.GamePhase;
 import view.AbstractPlayer;
+
+import java.awt.*;
 
 /**
  * Created by Max on 19/08/2016.
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-
-
     private Controller currentState = new Controller();  //current gamestate
-    public Node root = new Node(); //global root Node
+    private Node root = new Node(); //global root Node
 
     /*
     initializes the tree
      */
-    public void initializeMCTS() { //reset with start new game
+    public MCTS() {
         root = new Node();
     }
 
@@ -44,7 +46,7 @@ public class MCTS {
     private int simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
         updateCurrentGameState();
         AiUtils.updateLists(currentState);
-        System.out.println("recursion");
+        System.out.println("\n\n\n\n\nrecursion state \n" + toString());
         Move treeMove = new Move(null, null);
 
         switch (currentState.getGamePhase()) {
@@ -81,14 +83,27 @@ public class MCTS {
                 }
                 break;
         }
+
+        if (currentState.getGamePhase() == GamePhase.Exit){
+            if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor() == Color.white){
+                return 1;
+            } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor() == Color.black){
+                return 1;
+            } else {
+                //Draw/Loss
+                return 0;
+            }
+        }
+
         int i = simulationR(abstractPlayer, currentNode);
-        if (i == 1) currentNode.winCount += i;
+        currentNode.winCount += i;
         return i;
     }
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move == treeMove) return node;
+            if (node.move == treeMove)
+                return node;
         }
         return null;
     }
@@ -106,9 +121,26 @@ public class MCTS {
     private Node nodeUpdate(Node currentNode, Move treeMove) {
         Node tmpNode = new Node();
         tmpNode.move = treeMove;
-        tmpNode.currenstate = this.currentState;
+        tmpNode.currenstate = currentState;
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
+    }
+
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        toStringR(root, sb, 0);
+        return sb.toString();
+    }
+
+    public void toStringR(Node node, StringBuilder sb, int depth){
+        for (int i = 0; i < depth; i++){
+            sb.append(" ");
+        }
+        sb.append(node);
+        for(Node n : node.listOfChildren){
+            toStringR(n, sb, ++depth);
+        }
     }
 }
 

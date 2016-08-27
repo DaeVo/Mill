@@ -10,12 +10,14 @@ import java.awt.Point;
  * Nodes for the MCTS
  */
 class Node {
-    public Node() {
-    }
+    public double winCount;   //if ai  wins the simulated playout  - winCount++;
+    public double playCount;  //if simulated game ends -  playCount++
+    public Move move;
+    public Controller currenstate = new Controller();
+    public LinkedList<Node> listOfChildren = new LinkedList<Node>(); //legalMoves = children
 
-    double winCount;   //if ai  wins the simulated playout  - winCount++;
-    double playCount;  //if simulated game ends -  playCount++
-    Move move;
-    Controller currenstate = new Controller();
-    LinkedList<Node> listOfChildren = new LinkedList<Node>(); //legalMoves = children
+    @Override
+    public String toString() {
+        return String.format("Node - Move: %s\tChildren: %s", move, listOfChildren);
+    }
 }

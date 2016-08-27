@@ -7,6 +7,20 @@ import java.awt.Point;
  */
 public class Move {
     public Move(Point src, Point dst){this.src = src; this.dst = dst;}
-    public Point src;  //null while placing
-    public Point dst;
+    public Point src = null;  //null while placing
+    public Point dst = null;
+
+    @Override
+    public String toString() {
+        String mode = "";
+        if (src != null && dst == null){
+            mode = "remove";
+        } else if (src == null && dst != null) {
+            mode = "placing";
+        } else {
+            mode = "move";
+        }
+
+        return String.format("Move - Type %s Src %d  Dst %d", mode, src, dst);
+    }
 }
