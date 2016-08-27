@@ -99,6 +99,12 @@ public class AiUtils {
        return null;
     }
 
+    public Move pointToMove(Point src, Point dst){
+        if (src == null) return new Move(null, dst);
+        else if (dst == null) return new Move(src, null);
+        else return new Move(src, dst);
+    }
+
     public static Move place(Controller controller){
         Move tmpMove = new Move(null, null);
         tmpMove.dst = selectRandomPlacing(controller);
