@@ -5,6 +5,9 @@ import model.GamePhase;
 import view.AbstractPlayer;
 
 import java.awt.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Max on 19/08/2016.
@@ -13,6 +16,7 @@ import java.awt.*;
 public class MCTS {
     private Controller currentState;  //current gamestate
     private Node root = new Node(); //global root Node
+    private GregorianCalendar expireDate;
 
     /*
     initializes the tree
@@ -30,12 +34,22 @@ public class MCTS {
         // root = selectedNode
     }
 
-    public void updateCurrentGameState() {
-        currentState = currentState.deepCopy();
+    public void updateCurrentGameState(Node currentNode) {
+        if (currentNode == null) {
+            //1. Time Run, inital copy from orginal controler
+            currentState = currentState.deepCopy();
+        } else {
+            //2. Copy on a depth for a new move
+            if (currentNode.currentState != null)
+                currentState = currentNode.currentState.deepCopy();
+        }
     }
 
-    public void simulation(AbstractPlayer abstractPlayer) {
-        updateCurrentGameState();
+    public void simulation(AbstractPlayer abstractPlayer, int timeout) {
+        expireDate = new GregorianCalendar();
+        expireDate.set(Calendar.MILLISECOND, timeout);
+
+        updateCurrentGameState(null);
         if (currentState.getState().currentMove != null){
             if(moveAlreadyPerformed(root, currentState.getState().currentMove)) {
                 root = getNodeOfAlreadyPerformedMove(root, currentState.getState().currentMove);
@@ -47,61 +61,72 @@ public class MCTS {
         simulationR(abstractPlayer, root);
     }
 
-    private int simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
-        updateCurrentGameState();
+    private double simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
+        updateCurrentGameState(currentNode);
         AiUtils.updateLists(currentState);
         System.out.println("\n\n\n\n\nrecursion state \n" + toString());
         Move treeMove = new Move(null, null);
 
-        switch (currentState.getGamePhase()) {
-            case Placing:
-                treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
-                if (moveAlreadyPerformed(currentNode, treeMove)) {  //checks if that move has already been done
-                    currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove); //updates currentNode for the next recursive call
+        while (true) {
+            switch (currentState.getGamePhase()) {
+                case Placing:
+                    treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
+                    if (moveAlreadyPerformed(currentNode, treeMove)) {  //checks if that move has already been done
+                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove); //updates currentNode for the next recursive call
+                        break;
+                    } else {
+                        treeMove = AiUtils.place(currentState);
+                        currentNode = nodeUpdate(currentNode, treeMove);
+                        break;
+                    }
+                case Moving:
+                    treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
+                    if (moveAlreadyPerformed(currentNode, treeMove)) {
+                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
+                        break;
+                    } else {
+                        // todo: this is where i just left to get some fooderino
+                        treeMove = AiUtils.moving(currentState, abstractPlayer);
+                        currentNode = nodeUpdate(currentNode, treeMove);
+                        break;
+                    }
+                case RemovingStone:
+                    treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
+                    if (moveAlreadyPerformed(currentNode, treeMove)) {
+                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
+                        break;
+                    } else {
+                        treeMove = AiUtils.removeStone(currentState, abstractPlayer);
+                        currentNode = nodeUpdate(currentNode, treeMove);
+                    }
                     break;
-                } else {
-                    treeMove = AiUtils.place(currentState);
-                    currentNode = nodeUpdate(currentNode, treeMove);
-                    break;
-                }
-            case Moving:
-                treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
-                if (moveAlreadyPerformed(currentNode, treeMove)) {
-                    currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                    break;
-                } else {
-                    // todo: this is where i just left to get some fooderino
-                    treeMove = AiUtils.moving(currentState, abstractPlayer);
-                    currentNode = nodeUpdate(currentNode, treeMove);
-                    break;
-                }
-            case RemovingStone:
-                treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
-                if (moveAlreadyPerformed(currentNode, treeMove)) {
-                    currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                    break;
-                }
-                else {
-                    treeMove = AiUtils.removeStone(currentState, abstractPlayer);
-                    currentNode = nodeUpdate(currentNode, treeMove);
-                }
-                break;
-        }
-
-        if (currentState.getGamePhase() == GamePhase.Exit){
-            if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor() == Color.white){
-                return 1;
-            } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor() == Color.black){
-                return 1;
-            } else {
-                //Draw/Loss
-                return 0;
             }
+
+            //Exit by win
+            if (currentState.getGamePhase() == GamePhase.Exit) {
+                if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
+                    return 1;
+                } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
+                    return 1;
+                } else {
+                    //Draw/Loss
+                    return 0;
+                }
+            }
+
+            //Exit by time contraint
+            if (expireDate.before(new GregorianCalendar())){
+                //BREAK OR RETURN?!?!?!?!?!
+                //break;
+            }
+
+
+            double i = simulationR(abstractPlayer, currentNode);
+            currentNode.winCount += i;
         }
 
-        int i = simulationR(abstractPlayer, currentNode);
-        currentNode.winCount += i;
-        return i;
+
+        //return currentNode.winCount;
     }
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
@@ -115,7 +140,7 @@ public class MCTS {
     private boolean moveAlreadyPerformed (Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
             if (node.move == treeMove) {
-                currentState = node.currenstate;
+                currentState = node.currentState;
                 return true;
             }
         }
@@ -125,7 +150,7 @@ public class MCTS {
     private Node nodeUpdate(Node currentNode, Move treeMove) {
         Node tmpNode = new Node();
         tmpNode.move = treeMove;
-        tmpNode.currenstate = currentState;
+        tmpNode.currentState = currentState;
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
     }

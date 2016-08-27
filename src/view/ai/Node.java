@@ -13,11 +13,11 @@ class Node implements java.io.Serializable {
     public double winCount;   //if ai  wins the simulated playout  - winCount++;
     public double playCount;  //if simulated game ends -  playCount++
     public Move move;
-    public Controller currenstate = new Controller();
-    public LinkedList<Node> listOfChildren = new LinkedList<Node>(); //legalMoves = children
+    public Controller currentState;
+    public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
     @Override
     public String toString() {
-        return String.format("Node - Move: %s\tChildren: %s", move, listOfChildren);
+        return String.format("Node - Move: %s\tChildren: %d", move, listOfChildren.size());
     }
 }

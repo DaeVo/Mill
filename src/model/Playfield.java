@@ -85,7 +85,7 @@ public class Playfield implements java.io.Serializable {
     public String shortString() {
         if (this.empty)
             return " ";
-        else if (piece.color == Color.black)
+        else if (piece.color.equals(Color.black))
             return "B";
         else
             return "W";
@@ -97,8 +97,11 @@ public class Playfield implements java.io.Serializable {
         if (this.empty)
             color = " field is empty";
         else {
-            if (piece.color == Color.black) color = " - black";
-            else color = "- white";
+            if (piece.color.equals(Color.black)) {
+                color = "- black";
+            } else {
+                color = "- white";
+            }
         }
         return String.format("(%d, %d) %s", x, y, color);
     }

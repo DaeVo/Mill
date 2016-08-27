@@ -43,7 +43,7 @@ public class GuiPlayerInfo extends JPanel implements Observer {
     }
 
     private IPlayer getPlayer(){
-        if (playerColor == Color.black)
+        if (playerColor.equals(Color.black))
             return millController.getBlackPlayer();
         return millController.getWhitePlayer();
     }

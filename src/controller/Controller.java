@@ -84,6 +84,7 @@ public class Controller extends Observable implements java.io.Serializable {
         }
         gameBoard.currentPieces.add(piece);
         gameBoard.board[p.x][p.y].addPiece(piece);
+        gameBoard.board[p.x][p.y].toString();
 
         gameBoard.toPlace--;
         gameBoard.currentMove = new Move(null, p);
@@ -137,10 +138,10 @@ public class Controller extends Observable implements java.io.Serializable {
         setChanged();
 
         //Wind/Draw Checks
-        if (gameBoard.gamePhase != Placing && (winCheck() == Color.black || winCheck() == Color.white)) {
+        if (gameBoard.gamePhase != Placing && Color.black.equals(winCheck()) || Color.white.equals(winCheck())) {
             infoText = "Game ends in a victory for " + Utils.getColorName(winCheck()) + "!";
 
-            if (winCheck() == Color.black)
+            if (Color.black.equals(winCheck()))
                 gameBoard.gameEnd = GameEnd.BlackWon;
             else
                 gameBoard.gameEnd = GameEnd.WhiteWon;
@@ -168,7 +169,7 @@ public class Controller extends Observable implements java.io.Serializable {
         } else {
 
             gameBoard.turn++;
-            if (gameBoard.turnColor == Color.black) {
+            if (gameBoard.turnColor.equals(Color.black)) {
                 gameBoard.turnColor = Color.white;
             } else {
                 gameBoard.turnColor = Color.black;
@@ -176,13 +177,15 @@ public class Controller extends Observable implements java.io.Serializable {
             gameBoard.turnHistory.add(BoardFactory.getBoardString(gameBoard.board));
         }
 
-        if (!simulation) printTurnInfo();
+        if (simulation)
+            return;
 
+        printTurnInfo();
 
         new Thread(() -> {
             try {
                 //Wait for last turn to finish
-                if (oldThread != null) oldThread.join();
+                oldThread.join();
                 //Set actual turn as last turn
                 oldThread = Thread.currentThread();
 
@@ -190,7 +193,7 @@ public class Controller extends Observable implements java.io.Serializable {
                 Thread.sleep(sleepTime);
 
                 //Start actual turn
-                if (gameBoard.turnColor == Color.black) {
+                if (gameBoard.turnColor.equals(Color.black)) {
                     blackPlayer.run();
                 } else {
                     whitePlayer.run();
@@ -248,7 +251,7 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public IPlayer getTurnPlayer() {
-        if (gameBoard.turnColor == Color.white)
+        if (gameBoard.turnColor.equals(Color.white))
             return getWhitePlayer();
         return getBlackPlayer();
     }
