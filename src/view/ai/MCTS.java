@@ -27,7 +27,7 @@ public class MCTS {
     public void selectMove() { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-    }
+}
 
     public void updateCurrentGameState() {
         currentState = currentState.deepCopy();
