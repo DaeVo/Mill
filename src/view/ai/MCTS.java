@@ -150,7 +150,6 @@ public class MCTS {
 }
 
         /*
-
         Controller copyCont = millController.deepCopy();
         if (myColor == Color.black)
             copyCont.setWhitePlayer(new DummyPlayer());
