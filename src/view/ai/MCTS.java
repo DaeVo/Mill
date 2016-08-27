@@ -12,16 +12,16 @@ import java.util.List;
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-    private Node root = new Node(); //global root Node
+    private Node root = null; //global root Node
     private GregorianCalendar expireDate;
     private boolean randomSelection = false;
 
     /*
     initializes the tree
      */
-    public MCTS(Controller cont) {
+    public MCTS(Controller controller) {
         root = new Node();
-        root.state = cont.deepCopy();
+        root.state = controller.deepCopy();
     }
 
     /*
@@ -40,12 +40,17 @@ public class MCTS {
         return root.move;
     }
 
-    public void doForeignMove(Move move) {
+    public void doForeignMove(Controller realController, Move move) {
         //Set root to selected child
-        if (moveAlreadyPerformed(root, move)) {
+        //First move
+        if (root.move == null) {
+            root.move = move;
+            AiUtils.exectuteMove(root.state, root.move);
+        } else if (moveAlreadyPerformed(root, move)) {
             root = getNodeOfAlreadyPerformedMove(root, move);
         } else {
             root = createChildNode(root, move);
+            AiUtils.exectuteMove(root.state, root.move);
         }
     }
 
@@ -69,23 +74,21 @@ public class MCTS {
     }
 
 
-    public void simulation(IPlayer kiPlayer, int timeout) {
+    public void simulation(IPlayer kiPlayer, int timeout, Controller realController) {
         expireDate = new GregorianCalendar();
         expireDate.set(Calendar.MILLISECOND, timeout);
-
-        if (root.state.getState().currentMove != null) {
-            doForeignMove(root.state.getState().currentMove);
-        }
 
         while (true) {
             //Loop to search new üaths
             simulationR(kiPlayer, root);
 
             if (expireDate.before(new GregorianCalendar())) {
-                System.out.println("\n\n\n\n\nrecursion state \n" + toString());
                 break;
             }
         }
+
+        //System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+        System.out.printf("Root tree PlayCount %f WinCount %f %n", root.playCount, root.winCount);
     }
 
     private double simulationR(IPlayer kiPlayer, Node currentNode) {
@@ -97,8 +100,7 @@ public class MCTS {
             Node childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
 
             //Exit by win
-           // if (childNode.state.getState().turn > 100)
-            System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
+            //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
             if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
                 System.out.println("Playout at turn " + childNode.state.getState().turn);
@@ -114,7 +116,6 @@ public class MCTS {
 
             //Exit by time contraint
             if (expireDate.before(new GregorianCalendar())) {
-                System.out.println("\n\n\n\n\nrecursion state \n" + toString());
                 return 0;
             }
 
@@ -130,18 +131,18 @@ public class MCTS {
     }
 
 
-    private boolean moveAlreadyPerformed(Node currentNode, Move treeMove) {
+    private boolean moveAlreadyPerformed(Node currentNode, Move move) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move.equals(treeMove)) {
+            if (node.move.equals(move)) {
                 return true;
             }
         }
         return false;
     }
 
-    private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
+    private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move move) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move.equals(treeMove))
+            if (node.move.equals(move))
                 return node;
         }
         return null;

@@ -51,11 +51,9 @@ public class Playfield implements java.io.Serializable {
 
     public boolean moveFreely(Playfield dst) {
         if (dst.empty && !this.empty) {
-            System.out.println(this + "succesfully moved to" + dst);
             this.conquerField(dst);
             return true;
         }
-        System.out.println(this + " to " + dst + " is no legit move (either moving empty field, or dst isnt empty");
         return false;
     }
 

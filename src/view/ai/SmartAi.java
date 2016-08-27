@@ -1,7 +1,10 @@
 package view.ai;
 
+import controller.Controller;
 import model.Move;
 import model.AbstractPlayer;
+
+import java.awt.*;
 
 public class SmartAi extends AbstractPlayer {
 
@@ -11,11 +14,10 @@ public class SmartAi extends AbstractPlayer {
     public void run() {
         System.out.println("smartAI: run()");
 
-        if (mctsTree == null)
-            mctsTree = new MCTS(millController);
         startSimulation();
 
         Move selectedMove = mctsTree.selectMove();
+        System.out.println("smartAI: Selected move " + selectedMove);
         AiUtils.exectuteMove(millController, selectedMove);
 
         /*
@@ -39,6 +41,20 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void startSimulation() {
-        mctsTree.simulation(this, 5 * 1000);
+        mctsTree.simulation(this, 5 * 1000, millController);
+    }
+
+    public void turnInfo(Color moveColor, Move move){
+        if (move == null){
+            //Notify from controller.startGame()
+            mctsTree = new MCTS(millController);
+            return;
+        }
+
+        if (!moveColor.equals(myColor)) {
+            System.out.println("smartAI: Foreign move: " + move);
+            mctsTree.doForeignMove(millController, move);
+        }
+
     }
 }

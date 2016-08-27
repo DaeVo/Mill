@@ -45,6 +45,9 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.gamePhase = Placing;
         printTurnInfo();
 
+        //notify mcts tree/smartki to make a deepcopy
+        notifyMoveToPlayer(null);
+
         oldThread = new Thread(whitePlayer);
         oldThread.start();
 
@@ -84,7 +87,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.board[p.x][p.y].toString();
 
         gameBoard.toPlace--;
-        gameBoard.currentMove = new Move(null, p);
+        notifyMoveToPlayer(new Move(null, p));
         if (gameBoard.toPlace == 0)
             gameBoard.gamePhase = GamePhase.Moving;
         endTurn();
@@ -93,28 +96,37 @@ public class Controller extends Observable implements java.io.Serializable {
 
 
     public boolean move(Point src, Point dst) {
-        if (!isValidMove(src, dst))
-            return false;
-
-        boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
-        if (success) {
-            gameBoard.currentMove = new Move(src, dst);
-            endTurn();
-        }
-        return success;
+        return moveCommon(src, dst);
     }
 
     public boolean moveFreely(Point src, Point dst) {
+        return moveCommon(src, dst);
+    }
+
+    public boolean moveCommon(Point src, Point dst){
         if (!isValidMove(src, dst))
             return false;
 
-        boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
+        boolean success;
+        if (Utils.freeMoveAllowed(this, getTurnColor())) {
+            success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
+        } else {
+            success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
+        }
+
         if (success) {
-            gameBoard.currentMove = new Move(src, dst);
+            notifyMoveToPlayer(new Move(src, dst));
             endTurn();
+            if (!simulation)
+                System.out.println(this + " succesfully moved to" + dst);
+        } else {
+            if (!simulation)
+                System.out.println(this + " to " + dst + " is no legit move (either moving empty field, or dst isnt empty");
         }
         return success;
     }
+
+
 
     private boolean isValidMove(Point src, Point dst) {
         Playfield srcField = gameBoard.board[src.x][src.y];
@@ -144,7 +156,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
         gameBoard.gamePhase = gameBoard.oldState;
-        gameBoard.currentMove = new Move(p, null);
+        notifyMoveToPlayer(new Move(p, null));
         endTurn();
         return true;
     }
@@ -240,7 +252,7 @@ public class Controller extends Observable implements java.io.Serializable {
     private boolean drawCheck() {
         //Abbort rule 50 round no mill
         if (gameBoard.turn - gameBoard.lastMillTurn > 50) {
-            System.out.println("50 turns without a Mill - game ends in a draw");
+            if (!simulation) System.out.println("50 turns without a Mill - game ends in a draw");
             return true;
         }
 
@@ -252,7 +264,7 @@ public class Controller extends Observable implements java.io.Serializable {
                 count++;
         }
         if (count >= 2) {
-            System.out.println("the exact same situation happened 3times.");
+            if (!simulation) System.out.println("The exact same situation happened three times.");
             return true;
         }
 
@@ -280,8 +292,14 @@ public class Controller extends Observable implements java.io.Serializable {
     private void printTurnInfo() {
         BoardFactory.printBoard(gameBoard.board);
         System.out.println(" ======================================== Turn " + gameBoard.turn);
+        System.out.println("MillList  " + gameBoard.currentMillPieces);
         System.out.println("Next Player " + Utils.getColorName(gameBoard.turnColor));
         System.out.println();
+    }
+
+    private void notifyMoveToPlayer(Move move){
+        whitePlayer.turnInfo(getTurnColor(), move);
+        blackPlayer.turnInfo(getTurnColor(), move);
     }
 
     public Controller deepCopy() {
