@@ -78,7 +78,7 @@ public class GUIBoard extends JPanel implements Observer {
     public void boardClick(MouseEvent e) {
         System.out.println(e);
         //End or not started
-        if (millController.getGamePhase() == GamePhase.Exit || millController.getState() == null)
+        if (millController.getGamePhase() == GamePhase.Exit || millController.getGamePhase() == null)
             return;
 
 

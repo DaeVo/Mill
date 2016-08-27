@@ -53,8 +53,8 @@ public class MCTS {
     }
 
 
-    public Node selection(Node currentNode) {
-        if (currentNode.listOfChildren.size() != currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor).size()) {
+    public Node selection(Node currentNode, IPlayer player) {
+        if (currentNode.listOfChildren.size() !=  AiUtils.getLegalMoves(currentNode.state, player, currentNode).size()) {
             return currentNode;
         } else {
             return root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
@@ -66,7 +66,6 @@ public class MCTS {
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
 
         Node newNode = createChildNode(selectedNode, newMove);
-        newNode.state = selectedNode.state.deepCopy();
         AiUtils.exectuteMove(newNode.state, newNode.move);
 
         return newNode;
@@ -97,15 +96,16 @@ public class MCTS {
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
             AiUtils.updateLists(currentNode.state);
 
-            Node selectedNode = selection(currentNode);
+            Node selectedNode = selection(currentNode, player);
             Node childNode = expansion(selectedNode, player);
 
             //Exit by win
-            if (currentNode.state.getGamePhase() == GamePhase.Exit) {
-                System.out.println("Playout at turn " + currentNode.state.getState().turn);
-                if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && player.getColor().equals(Color.white)) {
+            System.out.println(childNode.state.getGamePhase());
+            if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
+                System.out.println("Playout at turn " + childNode.state.getState().turn);
+                if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && player.getColor().equals(Color.white)) {
                     return 1;
-                } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && player.getColor().equals(Color.black)) {
+                } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && player.getColor().equals(Color.black)) {
                     return 1;
                 } else {
                     //Draw/Loss
@@ -116,7 +116,7 @@ public class MCTS {
             //Exit by time contraint
             if (expireDate.before(new GregorianCalendar())) {
                 System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-                return 0;
+                //return 0;
             }
 
             double i = simulationR(player, childNode);
@@ -151,6 +151,7 @@ public class MCTS {
     private Node createChildNode(Node currentNode, Move move) {
         Node tmpNode = new Node();
         tmpNode.move = move;
+        tmpNode.state = currentNode.state.deepCopy();
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
     }

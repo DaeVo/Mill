@@ -94,7 +94,7 @@ public class AiUtils {
                 }
                 return legalMoves;
             case Placing:
-                List<Move> legalPlacing = new LinkedList<Move>();
+                List<Move> legalPlacing = new LinkedList<>();
                 for (Point p : currentNode.state.getState().legalPlacing) {
                     Move tmpMove = new Move(null, p);
                     legalPlacing.add(tmpMove);
@@ -109,6 +109,15 @@ public class AiUtils {
                 }
                 return legalPlacing;
             case RemovingStone:
+                List<Move> legalRemove = new LinkedList<>();
+                for (Piece p : currentNode.state.getState().currentPieces) {
+                    if (!p.color.equals(player.getColor())) {
+                        Point tmpPoint = new Point(p.field.x, p.field.y);
+                        Move tmpMove = new Move(tmpPoint, null);
+                        legalRemove.add(tmpMove);
+                    }
+                }
+                return legalRemove;
         }
        return null;
     }
@@ -158,10 +167,13 @@ public class AiUtils {
         switch (controller.getGamePhase()) {
             case Placing:
                 controller.place(move.dst);
+                break;
             case Moving:
                 controller.move(move.src, move.dst);
+                break;
             case RemovingStone:
                 controller.removeStone(move.src);
+                break;
         }
     }
 
