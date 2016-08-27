@@ -22,4 +22,8 @@ public abstract class AbstractPlayer implements IPlayer {
 	public Controller getController(){
 		return millController;
 	}
+
+	public void turnInfo(Color moveColor, Move move){
+
+	}
 }
