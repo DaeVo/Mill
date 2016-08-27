@@ -4,11 +4,14 @@ import view.AbstractPlayer;
 
 public class SmartAi extends AbstractPlayer {
 
-    private MCTS mctsTree = new MCTS();
+    private MCTS mctsTree = null;
 
     @Override
     public void run() {
         System.out.println("smartAI: run()");
+
+        if (mctsTree == null)
+            mctsTree = new MCTS(millController);
         startSimulation();
 
         switch (millController.getGamePhase())	{
