@@ -9,6 +9,8 @@ public class SmartAi extends AbstractPlayer {
     @Override
     public void run() {
         System.out.println("smartAI: run()");
+        startSimulation();
+
         switch (millController.getGamePhase())	{
             case Placing:
                 AiUtils.place(millController);
