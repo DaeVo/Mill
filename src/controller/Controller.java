@@ -2,9 +2,12 @@ package controller;
 
 import model.*;
 import view.IPlayer;
+import view.ai.DummyPlayer;
+import view.ai.Move;
 
 import java.awt.*;
 import java.util.Observable;
+import java.util.SimpleTimeZone;
 
 import static model.GamePhase.Exit;
 import static model.GamePhase.Placing;
@@ -14,6 +17,7 @@ public class Controller extends Observable implements java.io.Serializable {
     private IPlayer whitePlayer;
     private Thread oldThread;
     private int sleepTime = 0;
+    private boolean simulation = false;
 
     private Gamestate gameBoard;
 
@@ -25,6 +29,7 @@ public class Controller extends Observable implements java.io.Serializable {
     public Controller(Gamestate gs) {
         gameBoard = gs;
         oldThread = null;
+        simulation = true;
     }
 
     public void startGame(IPlayer whiteP, IPlayer blackP) {
@@ -72,7 +77,6 @@ public class Controller extends Observable implements java.io.Serializable {
 
 
     public boolean place(Point p) {
-        gameBoard.currentMove.dst = p;
         Piece piece = new Piece(gameBoard.turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
             System.out.println("please enter a field that is not occupied by another piece, yet.");
@@ -82,6 +86,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.board[p.x][p.y].addPiece(piece);
 
         gameBoard.toPlace--;
+        gameBoard.currentMove = new Move(null, p);
         if (gameBoard.toPlace == 0)
             gameBoard.gamePhase = GamePhase.Moving;
         endTurn();
@@ -90,27 +95,26 @@ public class Controller extends Observable implements java.io.Serializable {
 
 
     public boolean move(Point src, Point dst) {
-        gameBoard.currentMove.src = src;
-        gameBoard.currentMove.dst = dst;
         boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
 
-        if (success)
+        if (success) {
+            gameBoard.currentMove = new Move(src, dst);
             endTurn();
+        }
         return success;
     }
 
     public boolean moveFreely(Point src, Point dst) {
-        gameBoard.currentMove.src = src;
-        gameBoard.currentMove.dst = dst;
         boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
 
-        if (success)
+        if (success) {
+            gameBoard.currentMove = new Move(src, dst);
             endTurn();
+        }
         return success;
     }
 
     public boolean removeStone(Point p) {
-        gameBoard.currentMove.src = p;
         Piece oldPiece = gameBoard.board[p.x][p.y].piece;
 
         if (oldPiece == null || oldPiece.color == gameBoard.turnColor)
@@ -122,6 +126,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
         gameBoard.gamePhase = gameBoard.oldState;
+        gameBoard.currentMove = new Move (p, null);
         endTurn();
         return true;
     }
@@ -147,8 +152,8 @@ public class Controller extends Observable implements java.io.Serializable {
 
         if (infoText != null){
             gameBoard.gamePhase = Exit;
-            System.out.println(infoText);
-            System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            if (!simulation) System.out.println(infoText);
+            if (!simulation) System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
             notifyObservers(infoText);
             return;
         }
@@ -171,7 +176,7 @@ public class Controller extends Observable implements java.io.Serializable {
             gameBoard.turnHistory.add(BoardFactory.getBoardString(gameBoard.board));
         }
 
-        printTurnInfo();
+        if (!simulation) printTurnInfo();
 
 
         new Thread(() -> {
@@ -264,8 +269,8 @@ public class Controller extends Observable implements java.io.Serializable {
             Controller cCopy = new Controller(gsCopy);
 
             //these fields are copied, oldThread remains null
-            cCopy.setWhitePlayer(whitePlayer);
-            cCopy.setBlackPlayer(blackPlayer);
+            cCopy.setWhitePlayer(new DummyPlayer());
+            cCopy.setBlackPlayer(new DummyPlayer());
             cCopy.setSleep(sleepTime);
 
             return cCopy;
