@@ -12,8 +12,12 @@ public class SmartAi extends AbstractPlayer {
 
         if (mctsTree == null)
             mctsTree = new MCTS(millController);
-        //startSimulation();
+        startSimulation();
 
+        Move selectedMove = mctsTree.selectMove();
+        AiUtils.exectuteMove(millController, selectedMove);
+
+        /*
         //!!!!!!Update on the actual controller. DONT REMOVE
         AiUtils.updateLists(millController);
         switch (millController.getGamePhase()) {
@@ -28,6 +32,7 @@ public class SmartAi extends AbstractPlayer {
                 AiUtils.removeStone(millController, this);
                 break;
         }
+        */
 
         System.out.println("smartAI: exit");
     }

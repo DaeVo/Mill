@@ -145,5 +145,16 @@ public class AiUtils {
         return tmpMove;
     }
 
+    public static void exectuteMove(Controller controller, Move move) {
+        switch (controller.getGamePhase()) {
+            case Placing:
+                controller.place(move.dst);
+            case Moving:
+                controller.move(move.src, move.dst);
+            case RemovingStone:
+                controller.removeStone(move.src);
+        }
+    }
+
 }
 
