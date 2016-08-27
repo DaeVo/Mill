@@ -5,7 +5,7 @@ import java.awt.Point;
  * Created by Max on 19/08/2016.
  * stores the src and dst of a movement to create Move objects that can be stored in the Node
  */
-public class Move {
+public class Move implements java.io.Serializable {
     public Move(Point src, Point dst){this.src = src; this.dst = dst;}
     public Point src = null;  //null while placing
     public Point dst = null;
