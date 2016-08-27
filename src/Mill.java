@@ -28,7 +28,7 @@ public final class Mill {
             blackP.create(c, Color.black);
 
             c.setSleep(50);
-            c.startGame(whiteP, blackP);
+            //c.startGame(whiteP, blackP);
 
 
             while (c.getGamePhase() != GamePhase.Exit) {

@@ -43,7 +43,7 @@ public class GuiController implements Observer {
         whiteP.create(millController, Color.white);
 
         IPlayer blackP = getMode(split[1]);
-        blackP.create(millController, Color.white);
+        blackP.create(millController, Color.black);
 
         millController.startGame(whiteP, blackP);
     }
