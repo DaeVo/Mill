@@ -11,7 +11,7 @@ public class Utils {
     public static String getColorName(Color c){
         if (c.equals(Color.black))
             return "Black";
-        else if (c.equals( Color.white))
+        else if (c.equals(Color.white))
             return "White";
         return "";
     }

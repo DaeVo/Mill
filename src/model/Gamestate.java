@@ -71,7 +71,7 @@ public class Gamestate implements java.io.Serializable {
 
     public boolean isMill(Playfield playfield1, Playfield playfield2, Playfield playfield3) {
         if (!playfield1.empty && !playfield2.empty && !playfield3.empty) {
-            if (playfield1.piece.color == playfield2.piece.color && playfield1.piece.color == playfield3.piece.color) {
+            if (playfield1.piece.color.equals(playfield2.piece.color) && playfield1.piece.color.equals(playfield3.piece.color)) {
                 currentMillPieces.add(playfield1.piece);
                 currentMillPieces.add(playfield2.piece);
                 currentMillPieces.add(playfield3.piece);
@@ -186,7 +186,7 @@ public class Gamestate implements java.io.Serializable {
     public int getPieceCount(Color color) {
         int count = 0;
         for (Piece p : currentPieces) {
-            if (p.field != null && p.color == color)
+            if (p.field != null && p.color.equals(color))
                 count++;
         }
         return count;
