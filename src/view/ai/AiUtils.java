@@ -58,7 +58,14 @@ public class AiUtils {
                 enemyPieces.add(tmpPoint);
             }
         }
-        return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
+        if (enemyPieces.size() == 0) {
+            for (Piece p : controller.getState().currentPieces) {
+                if (!p.color.equals(abstractPlayer.getColor())) {
+                    Point tmpPoint = new Point(p.field.x, p.field.y);
+                    enemyPieces.add(tmpPoint);
+                }
+            }
+        } return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
     }
 
     public static void updateLists(Controller controller) {
@@ -76,20 +83,37 @@ public class AiUtils {
         switch (controller.getGamePhase()) {
             case Moving:
                 List<Move> legalMoves = currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor);
-                moveLoop:
+
                 for (Move tmpMove : new LinkedList<>(legalMoves)) {
                     for (Node tmpNode : currentNode.listOfChildren) {
                         if (tmpNode.move.equals(tmpMove)) {
                             legalMoves.remove(tmpMove);
-                            break moveLoop;
+                            break;
                         }
                     }
                 }
-
                 return legalMoves;
+            case Placing:
+                Move tmpMove = new Move(null, null);
+                List<Move> legalPlacing = new LinkedList<Move>();
+                for (Point p : currentNode.state.getState().legalPlacing) {
+                    tmpMove.dst = p;
+                    legalPlacing.add(tmpMove);
+                }
+                for (Move move : legalPlacing) {
+                    for (Node tmpNode : currentNode.listOfChildren) {
+                        if(tmpNode.move.equals(tmpMove)) {
+                            legalPlacing.remove(move);
+                            break;
+                        }
+                    }
+                }
+                return legalPlacing;
+            case RemovingStone:
         }
        return null;
     }
+
 
     public static Move place(Controller controller){
         Move tmpMove = new Move(null, null);

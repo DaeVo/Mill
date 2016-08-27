@@ -207,6 +207,7 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
+
     public List<Move> getLegelMoveList(Color turnColor){
         List<Move> resultList = new LinkedList<>();
         for (Playfield field : legalMoves.keySet()){
@@ -241,6 +242,17 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
+
+    public boolean isLegalMoveAvailable (Color color) {
+        updateLegalMoves();
+        for (Piece p : currentPieces) {
+            if (p.color.equals(color)) {
+                if (legalMoves.get(p.field).size() > 0) {
+                    return true;
+                }
+            }
+        }return false;
+    }
 
     public void updateLegalPlacing() {
         Playfield tmpField;
