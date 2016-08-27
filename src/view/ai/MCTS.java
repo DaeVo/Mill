@@ -46,7 +46,7 @@ public class MCTS {
     private int simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
         updateCurrentGameState();
         AiUtils.updateLists(currentState);
-        System.out.println("recursion");
+        System.out.println("\n\n\n\n\nrecursion state \n" + toString());
         Move treeMove = new Move(null, null);
 
         switch (currentState.getGamePhase()) {
