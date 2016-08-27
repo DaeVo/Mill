@@ -16,7 +16,7 @@ public class Gamestate implements java.io.Serializable {
     public HashSet<Piece> currentMillPieces = new HashSet<Piece>();  //must be updated after every turn
     public boolean[] millPositions = new boolean[16];
 
-    public Move currentMove = new view.ai.Move(null, null);
+    public Move currentMove = null;
 
     public int[] newMillCheck = new int[16];
     public int[] oldMillCheck = new int[16];

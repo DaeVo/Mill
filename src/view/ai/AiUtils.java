@@ -35,6 +35,9 @@ public class AiUtils {
     }
 
     public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces
+        if (controller.getState().legalPlacing.size() == 0){
+            System.out.println("lol");
+        }
         return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
     }
 

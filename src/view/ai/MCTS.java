@@ -35,6 +35,7 @@ public class MCTS {
     }
 
     public void simulation(AbstractPlayer abstractPlayer) {
+        updateCurrentGameState();
         if (currentState.getState().currentMove != null){
             if(moveAlreadyPerformed(root, currentState.getState().currentMove)) {
                 root = getNodeOfAlreadyPerformedMove(root, currentState.getState().currentMove);

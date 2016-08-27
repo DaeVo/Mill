@@ -14,6 +14,8 @@ public class SmartAi extends AbstractPlayer {
             mctsTree = new MCTS(millController);
         startSimulation();
 
+        //!!!!!!Update on the actual controller. DONT REMOVE
+        AiUtils.updateLists(millController);
         switch (millController.getGamePhase())	{
             case Placing:
                 AiUtils.place(millController);
