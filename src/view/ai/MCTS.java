@@ -7,15 +7,13 @@ import view.AbstractPlayer;
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-
-
     private Controller currentState = new Controller();  //current gamestate
-    public Node root = new Node(); //global root Node
+    private Node root = new Node(); //global root Node
 
     /*
     initializes the tree
      */
-    public void initializeMCTS() { //reset with start new game
+    public MCTS() {
         root = new Node();
     }
 
@@ -41,7 +39,7 @@ public class MCTS {
         simulationR(abstractPlayer, root);
     }
 
-    private int simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
+    private void simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
         updateCurrentGameState();
         AiUtils.updateLists(currentState);
         System.out.println("recursion");
@@ -88,7 +86,8 @@ public class MCTS {
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move == treeMove) return node;
+            if (node.move == treeMove)
+                return node;
         }
         return null;
     }
@@ -106,9 +105,26 @@ public class MCTS {
     private Node nodeUpdate(Node currentNode, Move treeMove) {
         Node tmpNode = new Node();
         tmpNode.move = treeMove;
-        tmpNode.currenstate = this.currentState;
+        tmpNode.currenstate = currentState;
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
+    }
+
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        toStringR(root, sb, 0);
+        return sb.toString();
+    }
+
+    public void toStringR(Node node, StringBuilder sb, int depth){
+        for (int i = 0; i < depth; i++){
+            sb.append(" ");
+        }
+        sb.append(node);
+        for(Node n : node.listOfChildren){
+            toStringR(n, sb, ++depth);
+        }
     }
 }
 
