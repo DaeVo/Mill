@@ -17,10 +17,11 @@ class Node implements java.io.Serializable {
     public Controller state;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
-    public Node getBestChild(){
+    public Node getBestChild() {
+        /*
         double bestRatio = 1; //0-1 1=only wins
         Node bestNode = null;
-        for (Node node : listOfChildren){
+        for (Node node : listOfChildren) {
             double ratio = node.winCount / node.playCount;
             if (ratio < bestRatio) {
                 bestRatio = ratio;
@@ -28,6 +29,21 @@ class Node implements java.io.Serializable {
             }
         }
         return bestNode;
+        */
+
+        double tmpWinCount = 0;
+        double tmpPlayCount = Integer.MAX_VALUE;
+        Node tmpNode = new Node();
+        for (Node children : listOfChildren) {
+            if (children.winCount >= tmpWinCount && children.playCount <= tmpPlayCount) {
+                tmpWinCount = children.winCount;
+                tmpPlayCount = children.playCount;
+                tmpNode = children;
+            }
+        }
+        return tmpNode;
+
+
     }
 
     @Override

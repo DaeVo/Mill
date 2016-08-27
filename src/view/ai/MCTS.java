@@ -56,36 +56,20 @@ public class MCTS {
         if (currentNode.listOfChildren.size() != currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor).size()) {
             return currentNode;
         } else {
-            //TODO: select child - random or by win/play ratio
-            if (randomSelection)
-               return root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
-            else
-               return root.getBestChild();
+            return root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
         }
     }
 
-    public Node expansion(Node selectedNode) {
-        List<Move> legalMoves = selectedNode.state.getState().getLegelMoveList(selectedNode.state.getState().turnColor);
-        moveLoop:
-        for (Move tmpMove : new LinkedList<>(legalMoves)) {
-            for (Node tmpNode : selectedNode.listOfChildren) {
-                if (tmpNode.move.equals(tmpMove)) {
-                    legalMoves.remove(tmpMove);
-                    break moveLoop;
-                }
-            }
-        }
-
+    public Node expansion(Node selectedNode, IPlayer player) {
+        List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode);
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
 
-        //TODO: FUCK THIS
         Node newNode = createChildNode(selectedNode, newMove);
         newNode.state = selectedNode.state.deepCopy();
         AiUtils.exectuteMove(newNode.state, newNode.move);
 
         return newNode;
     }
-
 
 
     public void simulation(IPlayer abstractPlayer, int timeout) {
@@ -99,23 +83,28 @@ public class MCTS {
         while (true) {
             //Loop to search new üaths
             simulationR(abstractPlayer, root);
+
+            if (expireDate.before(new GregorianCalendar())) {
+                System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+                break;
+            }
         }
     }
 
-    private double simulationR(IPlayer abstractPlayer, Node currentNode) {
+    private double simulationR(IPlayer player, Node currentNode) {
         try {
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
             AiUtils.updateLists(currentNode.state);
 
             Node selectedNode = selection(currentNode);
-            Node childNode = expansion(selectedNode);
+            Node childNode = expansion(selectedNode, player);
 
             //Exit by win
             if (currentNode.state.getGamePhase() == GamePhase.Exit) {
                 System.out.println("Playout at turn " + currentNode.state.getState().turn);
-                if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
+                if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && player.getColor().equals(Color.white)) {
                     return 1;
-                } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
+                } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && player.getColor().equals(Color.black)) {
                     return 1;
                 } else {
                     //Draw/Loss
@@ -129,8 +118,7 @@ public class MCTS {
                 return 0;
             }
 
-
-            double i = simulationR(abstractPlayer, childNode);
+            double i = simulationR(player, childNode);
             currentNode.playCount += 1;
             currentNode.winCount += i;
 
