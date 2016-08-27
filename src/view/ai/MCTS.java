@@ -1,10 +1,7 @@
 package view.ai;
 
 import controller.Controller;
-import model.GameEnd;
-import model.GamePhase;
-import model.Move;
-import model.IPlayer;
+import model.*;
 
 import java.awt.*;
 import java.util.*;
@@ -72,7 +69,7 @@ public class MCTS {
     }
 
 
-    public void simulation(IPlayer abstractPlayer, int timeout) {
+    public void simulation(IPlayer kiPlayer, int timeout) {
         expireDate = new GregorianCalendar();
         expireDate.set(Calendar.MILLISECOND, timeout);
 
@@ -82,7 +79,7 @@ public class MCTS {
 
         while (true) {
             //Loop to search new üaths
-            simulationR(abstractPlayer, root);
+            simulationR(kiPlayer, root);
 
             if (expireDate.before(new GregorianCalendar())) {
                 System.out.println("\n\n\n\n\nrecursion state \n" + toString());
@@ -91,21 +88,23 @@ public class MCTS {
         }
     }
 
-    private double simulationR(IPlayer player, Node currentNode) {
+    private double simulationR(IPlayer kiPlayer, Node currentNode) {
         try {
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
             AiUtils.updateLists(currentNode.state);
 
-            Node selectedNode = selection(currentNode, player);
-            Node childNode = expansion(selectedNode, player);
+            Node selectedNode = selection(currentNode, currentNode.state.getTurnPlayer());
+            Node childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
 
             //Exit by win
-            System.out.println(childNode.state.getGamePhase());
+           // if (childNode.state.getState().turn > 100)
+            System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
+            //BoardFactory.printBoard(childNode.state.getState().board);
             if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
                 System.out.println("Playout at turn " + childNode.state.getState().turn);
-                if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && player.getColor().equals(Color.white)) {
+                if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
                     return 1;
-                } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && player.getColor().equals(Color.black)) {
+                } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
                     return 1;
                 } else {
                     //Draw/Loss
@@ -116,10 +115,10 @@ public class MCTS {
             //Exit by time contraint
             if (expireDate.before(new GregorianCalendar())) {
                 System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-                //return 0;
+                return 0;
             }
 
-            double i = simulationR(player, childNode);
+            double i = simulationR(kiPlayer, childNode);
             currentNode.playCount += 1;
             currentNode.winCount += i;
 
