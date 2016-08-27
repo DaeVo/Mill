@@ -76,12 +76,11 @@ public class MCTS {
         newNode.state = selectedNode.state.deepCopy();
         exectuteMove(newNode);
 
-
-        return null;
+        return newNode;
     }
 
-    public void exectuteMove(Node currentNode){
-        switch (currentNode.state.getGamePhase()){
+    public void exectuteMove(Node currentNode) {
+        switch (currentNode.state.getGamePhase()) {
             case Placing:
                 currentNode.state.place(currentNode.move.dst);
             case Moving:
@@ -100,42 +99,43 @@ public class MCTS {
             doForeignMove(root.state.getState().currentMove);
         }
 
-        simulationR(abstractPlayer, root);
+        while (true){
+            //Loop to search new üaths
+            simulationR(abstractPlayer, root);
+        }
     }
 
     private double simulationR(IPlayer abstractPlayer, Node currentNode) {
         try {
-
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+            AiUtils.updateLists(currentNode.state);
 
-            while (true) {
-                AiUtils.updateLists(currentNode.state);
+            Node selectedNode = selection(currentNode);
+            Node childNode = expansion(selectedNode);
 
-                Node selectedNode;
-
-                //Exit by win
-                if (currentNode.state.getGamePhase() == GamePhase.Exit) {
-                    if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
-                        return 1;
-                    } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
-                        return 1;
-                    } else {
-                        //Draw/Loss
-                        return 0;
-                    }
+            //Exit by win
+            if (currentNode.state.getGamePhase() == GamePhase.Exit) {
+                if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
+                    return 1;
+                } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
+                    return 1;
+                } else {
+                    //Draw/Loss
+                    return 0;
                 }
-
-                //Exit by time contraint
-                if (expireDate.before(new GregorianCalendar())) {
-                    //BREAK OR RETURN?!?!?!?!?!
-                    System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-                    break;
-                }
-
-
-                double i = simulationR(abstractPlayer, currentNode);
-                currentNode.winCount += i;
             }
+
+            //Exit by time contraint
+            if (expireDate.before(new GregorianCalendar())) {
+                System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+                return 0;
+            }
+
+
+            double i = simulationR(abstractPlayer, childNode);
+            currentNode.playCount += 1;
+            currentNode.winCount += i;
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -143,13 +143,7 @@ public class MCTS {
         return currentNode.winCount;
     }
 
-    private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
-        for (Node node : currentNode.listOfChildren) {
-            if (node.move.equals(treeMove))
-                return node;
-        }
-        return null;
-    }
+
 
     private boolean moveAlreadyPerformed(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
@@ -158,6 +152,14 @@ public class MCTS {
             }
         }
         return false;
+    }
+
+    private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
+        for (Node node : currentNode.listOfChildren) {
+            if (node.move.equals(treeMove))
+                return node;
+        }
+        return null;
     }
 
     private Node createChildNode(Node currentNode, Move move) {
