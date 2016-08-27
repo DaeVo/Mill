@@ -84,26 +84,37 @@ public class AiUtils {
         switch (controller.getGamePhase()) {
             case Moving:
                 List<Move> legalMoves = currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor);
-                moveLoop:
+
                 for (Move tmpMove : new LinkedList<>(legalMoves)) {
                     for (Node tmpNode : currentNode.listOfChildren) {
                         if (tmpNode.move.equals(tmpMove)) {
                             legalMoves.remove(tmpMove);
-                            break moveLoop;
+                            break;
                         }
                     }
                 }
-
                 return legalMoves;
+            case Placing:
+                Move tmpMove = new Move(null, null);
+                List<Move> legalPlacing = new LinkedList<Move>();
+                for (Point p : currentNode.state.getState().legalPlacing) {
+                    tmpMove.dst = p;
+                    legalPlacing.add(tmpMove);
+                }
+                for (Move move : legalPlacing) {
+                    for (Node tmpNode : currentNode.listOfChildren) {
+                        if(tmpNode.move.equals(tmpMove)) {
+                            legalPlacing.remove(move);
+                            break;
+                        }
+                    }
+                }
+                return legalPlacing;
+            case RemovingStone:
         }
        return null;
     }
 
-    public Move pointToMove(Point src, Point dst){
-        if (src == null) return new Move(null, dst);
-        else if (dst == null) return new Move(src, null);
-        else return new Move(src, dst);
-    }
 
     public static Move place(Controller controller){
         Move tmpMove = new Move(null, null);

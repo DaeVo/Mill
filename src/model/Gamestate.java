@@ -209,6 +209,7 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
+
     public List<Move> getLegelMoveList(Color turnColor){
         List<Move> resultList = new LinkedList<>();
         for (Playfield field : legalMoves.keySet()){
