@@ -209,6 +209,20 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
+    public List<Move> getLegelMoveList(Color turnColor){
+        List<Move> resultList = new LinkedList<>();
+        for (Playfield field : legalMoves.keySet()){
+            if (field.empty || !field.piece.color.equals(turnColor))
+                continue;
+
+            List<Point> tmpMoveList = legalMoves.get(field);
+            for (Point toPoint : tmpMoveList){
+                resultList.add(new Move(field.getPoint(), toPoint));
+            }
+        }
+        return resultList;
+    }
+
     /*
     method to update all legal moves if there are less than 4 pieces for the player that is moving
     and store them in a HashMap

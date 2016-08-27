@@ -4,6 +4,7 @@ import controller.Controller;
 import model.GamePhase;
 import model.Piece;
 import view.AbstractPlayer;
+import view.IPlayer;
 
 import java.awt.*;
 import java.util.*;
@@ -21,7 +22,9 @@ public class AiUtils {
         return Math.abs(rn.nextInt());
     }
 
-    public static Point randomMoveSource (Controller controller, AbstractPlayer abstractPlayer) { //selects a random piece to move this round
+
+
+    public static Point randomMoveSource (Controller controller, IPlayer abstractPlayer) { //selects a random piece to move this round
         List<Point> tmpList = new LinkedList<>();
         for (Piece p : controller.getState().currentPieces) {
             if (abstractPlayer.getColor().equals(p.color) && controller.getState().legalMoves.containsKey(p.field)) {
@@ -41,14 +44,14 @@ public class AiUtils {
         return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
     }
 
-    public static Move selectRandomMove(Controller controller, AbstractPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
+    public static Move selectRandomMove(Controller controller, IPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
         Point tmpSrc = randomMoveSource(controller, abstractPlayer);
         List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
         Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
         return new Move(tmpSrc, tmpDst);
     }
 
-    public static Point selectRandomRemove(Controller controller, AbstractPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
+    public static Point selectRandomRemove(Controller controller, IPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
         List<Point> enemyPieces = new LinkedList<Point>();
         for (Piece p : controller.getState().currentPieces) {
             if (!p.color.equals(abstractPlayer.getColor()) && !controller.getState().isInMill(p)) {
@@ -77,6 +80,25 @@ public class AiUtils {
         controller.getState().updateLegalPlacing();
     }
 
+    public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode){
+        switch (controller.getGamePhase()) {
+            case Moving:
+                List<Move> legalMoves = currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor);
+                moveLoop:
+                for (Move tmpMove : new LinkedList<>(legalMoves)) {
+                    for (Node tmpNode : currentNode.listOfChildren) {
+                        if (tmpNode.move.equals(tmpMove)) {
+                            legalMoves.remove(tmpMove);
+                            break moveLoop;
+                        }
+                    }
+                }
+
+                return legalMoves;
+        }
+       return null;
+    }
+
     public static Move place(Controller controller){
         Move tmpMove = new Move(null, null);
         tmpMove.dst = selectRandomPlacing(controller);
@@ -98,7 +120,7 @@ public class AiUtils {
         //make real call to controller
     }
 
-    public static Move moving(Controller controller, AbstractPlayer abstractPlayer) {
+    public static Move moving(Controller controller, IPlayer abstractPlayer) {
         Move tmpMove = selectRandomMove(controller, abstractPlayer);
         if (!freeMoveAllowed(controller, controller.getTurnColor())){
             controller.move(tmpMove.src, tmpMove.dst);
@@ -110,7 +132,7 @@ public class AiUtils {
         }
     }
 
-    public static Move removeStone(Controller controller, AbstractPlayer abstractPlayer) {
+    public static Move removeStone(Controller controller, IPlayer abstractPlayer) {
         Move tmpMove = new Move(null, null);
         tmpMove.src = selectRandomRemove(controller, abstractPlayer);
         controller.removeStone(tmpMove.src);  //using src =value, dst = null to differ from placing Moves

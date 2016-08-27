@@ -96,8 +96,10 @@ public class Controller extends Observable implements java.io.Serializable {
 
 
     public boolean move(Point src, Point dst) {
-        boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
+        if (!isValidMove(src, dst))
+            return false;
 
+        boolean success = gameBoard.board[src.x][src.y].move(gameBoard.board[dst.x][dst.y]);
         if (success) {
             gameBoard.currentMove = new Move(src, dst);
             endTurn();
@@ -106,13 +108,26 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
     public boolean moveFreely(Point src, Point dst) {
-        boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
+        if (!isValidMove(src, dst))
+            return false;
 
+        boolean success = gameBoard.board[src.x][src.y].moveFreely(gameBoard.board[dst.x][dst.y]);
         if (success) {
             gameBoard.currentMove = new Move(src, dst);
             endTurn();
         }
         return success;
+    }
+
+    private boolean isValidMove(Point src, Point dst){
+        Playfield srcField = gameBoard.board[src.x][src.y];
+        Playfield dstField = gameBoard.board[dst.x][dst.y];
+
+        if (!srcField.piece.color.equals(getTurnColor()))
+            return false;
+        if (!dstField.empty)
+            return false;
+        return true;
     }
 
     public boolean removeStone(Point p) {

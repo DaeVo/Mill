@@ -24,11 +24,11 @@ public final class Mill {
             IPlayer whiteP = new SmartAi();
             whiteP.create(c, Color.white);
 
-            IPlayer blackP = new SmartAi();
+            IPlayer blackP = new StupidAi();
             blackP.create(c, Color.black);
 
-            c.setSleep(100);
-            c.startGame(whiteP, blackP);
+            c.setSleep(50);
+            //c.startGame(whiteP, blackP);
 
 
             while (c.getGamePhase() != GamePhase.Exit) {
