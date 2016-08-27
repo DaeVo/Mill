@@ -73,7 +73,6 @@ public class Gamestate implements java.io.Serializable {
                 currentMillPieces.add(playfield1.piece);
                 currentMillPieces.add(playfield2.piece);
                 currentMillPieces.add(playfield3.piece);
-                System.out.println("MillList:: " + currentMillPieces);
                 return true;
             }
         }
@@ -82,6 +81,15 @@ public class Gamestate implements java.io.Serializable {
 
     public boolean isInMill(Piece piece){
         return (currentMillPieces.contains(piece));
+    }
+
+    public int getMillPieceCount(Color color){
+        int count = 0;
+        for (Piece p : currentMillPieces){
+            if (p.color.equals(color))
+                count++;
+        }
+        return count;
     }
 
     public void clearMillList() {
@@ -110,6 +118,7 @@ public class Gamestate implements java.io.Serializable {
             }
         }
         oldMillCheck = Arrays.copyOf(newMillCheck, newMillCheck.length);
+        System.out.println("MillList:: " + currentMillPieces);
         return false;
     }
 

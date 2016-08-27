@@ -16,6 +16,12 @@ public class Utils {
         return "";
     }
 
+    public static Color getOppositeColor(Color color){
+        if (color.equals(Color.black))
+            return Color.white;
+        return Color.black;
+    }
+
     public static boolean freeMoveAllowed(Controller millController, Color c){
         return millController.getState().getPieceCount(c) < 4 && millController.getGamePhase() == GamePhase.Moving;
     }

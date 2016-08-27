@@ -20,6 +20,7 @@ public class GUI extends JFrame {
 
         GuiController gc = new GuiController(millController);
         leftPanel.add(gc.getControllerPanel());
+        leftPanel.add(new JLabel(""));
         millController.addObserver(gc);
 
         //Info Boxes

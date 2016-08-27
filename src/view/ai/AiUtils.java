@@ -95,7 +95,7 @@ public class AiUtils {
                 return legalMoves;
             case Placing:
                 Move tmpMove = new Move(null, null);
-                List<Move> legalPlacing = new LinkedList<Move>();
+                List<Move> legalPlacing = new LinkedList<>();
                 for (Point p : currentNode.state.getState().legalPlacing) {
                     tmpMove.dst = p;
                     legalPlacing.add(tmpMove);

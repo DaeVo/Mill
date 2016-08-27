@@ -73,8 +73,6 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
 
-
-
     public boolean place(Point p) {
         Piece piece = new Piece(gameBoard.turnColor);
         if (!gameBoard.board[p.x][p.y].empty) {
@@ -118,7 +116,7 @@ public class Controller extends Observable implements java.io.Serializable {
         return success;
     }
 
-    private boolean isValidMove(Point src, Point dst){
+    private boolean isValidMove(Point src, Point dst) {
         Playfield srcField = gameBoard.board[src.x][src.y];
         Playfield dstField = gameBoard.board[dst.x][dst.y];
 
@@ -134,14 +132,19 @@ public class Controller extends Observable implements java.io.Serializable {
 
         if (oldPiece == null || oldPiece.color == gameBoard.turnColor)
             return false;
-        if (gameBoard.isInMill(oldPiece))
-            return false;
+        if (gameBoard.isInMill(oldPiece)) {
+            Color enemyColor = Utils.getOppositeColor(getTurnColor());
+            //If every enemy piece is in a mill, it is allowed to remove a stone from a mill
+            if (gameBoard.getMillPieceCount(enemyColor) != gameBoard.getPieceCount(enemyColor))
+                return false;
+        }
+
 
         gameBoard.currentPieces.remove(oldPiece);
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
         gameBoard.gamePhase = gameBoard.oldState;
-        gameBoard.currentMove = new Move (p, null);
+        gameBoard.currentMove = new Move(p, null);
         endTurn();
         return true;
     }
@@ -152,10 +155,9 @@ public class Controller extends Observable implements java.io.Serializable {
         setChanged();
 
         //Wind/Draw
-          if (!gameBoard.isLegalMoveAvailable(Color.white)) {
+        if (!gameBoard.isLegalMoveAvailable(Color.white)) {
             gameBoard.gameEnd = GameEnd.BlackWon;
-        }
-        else if(!gameBoard.isLegalMoveAvailable(Color.black)){
+        } else if (!gameBoard.isLegalMoveAvailable(Color.black)) {
             gameBoard.gameEnd = GameEnd.WhiteWon;
         }
         if (gameBoard.gamePhase != Placing && (Color.black.equals(winCheck()) || Color.white.equals(winCheck()))) {
@@ -171,10 +173,11 @@ public class Controller extends Observable implements java.io.Serializable {
 
         }
 
-        if (infoText != null){
+        if (infoText != null) {
             gameBoard.gamePhase = Exit;
             if (!simulation) System.out.println(infoText);
-            if (!simulation) System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
+            if (!simulation)
+                System.out.printf("Remaining pieces: Black %d, White %d %n", gameBoard.getPieceCount(Color.black), gameBoard.getPieceCount(Color.white));
             notifyObservers(infoText);
             return;
         }
@@ -226,8 +229,6 @@ public class Controller extends Observable implements java.io.Serializable {
 
         notifyObservers();
     }
-
-
 
 
     private Color winCheck() {
