@@ -95,15 +95,14 @@ public class AiUtils {
                 }
                 return legalMoves;
             case Placing:
-                Move tmpMove = new Move(null, null);
                 List<Move> legalPlacing = new LinkedList<Move>();
                 for (Point p : currentNode.state.getState().legalPlacing) {
-                    tmpMove.dst = p;
+                    Move tmpMove = new Move(null, p);
                     legalPlacing.add(tmpMove);
                 }
                 for (Move move : legalPlacing) {
                     for (Node tmpNode : currentNode.listOfChildren) {
-                        if(tmpNode.move.equals(tmpMove)) {
+                        if(tmpNode.move.equals(move)) {
                             legalPlacing.remove(move);
                             break;
                         }
