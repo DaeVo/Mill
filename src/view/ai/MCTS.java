@@ -1,20 +1,19 @@
 package view.ai;
+
 import controller.Controller;
 import model.GameEnd;
 import model.GamePhase;
-import view.AbstractPlayer;
+import view.IPlayer;
 
 import java.awt.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by Max on 19/08/2016.
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-    private Controller currentState;  //current gamestate
     private Node root = new Node(); //global root Node
     private GregorianCalendar expireDate;
 
@@ -23,91 +22,102 @@ public class MCTS {
      */
     public MCTS(Controller cont) {
         root = new Node();
-        currentState = cont;
+        root.state = cont.deepCopy();
     }
 
     /*
     chose the best Node
      */
-    public void selectMove() { //finally decides for a move and sets the root to the next move
+    public Move selectMove() { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-}
+        Node child = root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
+        root = child;
+        return root.move;
+    }
 
-    public void updateCurrentGameState(Node currentNode) {
-        if (currentNode == null) {
-            //1. Time Run, inital copy from orginal controler
-            currentState = currentState.deepCopy();
+    public void doForeignMove(Move move) {
+        //Set root to selected child
+        if (moveAlreadyPerformed(root, move)) {
+            root = getNodeOfAlreadyPerformedMove(root, move);
         } else {
-            //2. Copy on a depth for a new move
-            if (currentNode.currentState != null)
-                currentState = currentNode.currentState.deepCopy();
+            root = createChildNode(root, move);
         }
     }
 
-    public void simulation(AbstractPlayer abstractPlayer, int timeout) {
+
+    public Node selection(Node currentNode) {
+        if (currentNode.listOfChildren.size() != currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor).size()) {
+            return currentNode;
+        } else {
+            //TODO: select child - random or by win/play ratio
+            currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+        }
+
+        return null;
+    }
+
+    public Node expansion(Node selectedNode) {
+        List<Move> legalMoves = selectedNode.state.getState().getLegelMoveList(selectedNode.state.getState().turnColor);
+        moveLoop:
+        for (Move tmpMove : new LinkedList<>(legalMoves)) {
+            for (Node tmpNode : selectedNode.listOfChildren) {
+                if (tmpNode.move.equals(tmpMove)) {
+                    legalMoves.remove(tmpMove);
+                    break moveLoop;
+                }
+            }
+        }
+
+        Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
+
+        //TODO: FUCK THIS
+        Node newNode = createChildNode(selectedNode, newMove);
+        newNode.state = selectedNode.state.deepCopy();
+        exectuteMove(newNode);
+
+
+        return null;
+    }
+
+    public void exectuteMove(Node currentNode){
+        switch (currentNode.state.getGamePhase()){
+            case Placing:
+                currentNode.state.place(currentNode.move.dst);
+            case Moving:
+                currentNode.state.move(currentNode.move.src, currentNode.move.dst);
+            case RemovingStone:
+                currentNode.state.removeStone(currentNode.move.src);
+        }
+    }
+
+
+    public void simulation(IPlayer abstractPlayer, int timeout) {
         expireDate = new GregorianCalendar();
         expireDate.set(Calendar.MILLISECOND, timeout);
 
-        updateCurrentGameState(null);
-        if (currentState.getState().currentMove != null){
-            if(moveAlreadyPerformed(root, currentState.getState().currentMove)) {
-                root = getNodeOfAlreadyPerformedMove(root, currentState.getState().currentMove);
-            }
-            else {
-                root = nodeUpdate(root, currentState.getState().currentMove);
-            }
+        if (root.state.getState().currentMove != null) {
+            doForeignMove(root.state.getState().currentMove);
         }
+
         simulationR(abstractPlayer, root);
     }
 
-    private double simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
+    private double simulationR(IPlayer abstractPlayer, Node currentNode) {
         try {
-            updateCurrentGameState(currentNode);
-            AiUtils.updateLists(currentState);
+
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-            Move treeMove = new Move(null, null);
 
             while (true) {
-                switch (currentState.getGamePhase()) {
-                    case Placing:
-                        treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
-                        if (moveAlreadyPerformed(currentNode, treeMove)) {  //checks if that move has already been done
-                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove); //updates currentNode for the next recursive call
-                            break;
-                        } else {
-                            treeMove = AiUtils.place(currentState);
-                            currentNode = nodeUpdate(currentNode, treeMove);
-                            break;
-                        }
-                    case Moving:
-                        treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
-                        if (moveAlreadyPerformed(currentNode, treeMove)) {
-                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                            break;
-                        } else {
-                            // todo: this is where i just left to get some fooderino
-                            treeMove = AiUtils.moving(currentState, abstractPlayer);
-                            currentNode = nodeUpdate(currentNode, treeMove);
-                            break;
-                        }
-                    case RemovingStone:
-                        treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
-                        if (moveAlreadyPerformed(currentNode, treeMove)) {
-                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                            break;
-                        } else {
-                            treeMove = AiUtils.removeStone(currentState, abstractPlayer);
-                            currentNode = nodeUpdate(currentNode, treeMove);
-                        }
-                        break;
-                }
+                AiUtils.updateLists(currentNode.state);
+
+                Node selectedNode;
 
                 //Exit by win
-                if (currentState.getGamePhase() == GamePhase.Exit) {
-                    if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
+                if (currentNode.state.getGamePhase() == GamePhase.Exit) {
+                    if (currentNode.state.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
                         return 1;
-                    } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
+                    } else if (currentNode.state.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
                         return 1;
                     } else {
                         //Draw/Loss
@@ -126,7 +136,7 @@ public class MCTS {
                 double i = simulationR(abstractPlayer, currentNode);
                 currentNode.winCount += i;
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -135,59 +145,43 @@ public class MCTS {
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move == treeMove)
+            if (node.move.equals(treeMove))
                 return node;
         }
         return null;
     }
 
-    private boolean moveAlreadyPerformed (Node currentNode, Move treeMove) {
+    private boolean moveAlreadyPerformed(Node currentNode, Move treeMove) {
         for (Node node : currentNode.listOfChildren) {
-            if (node.move == treeMove) {
-                currentState = node.currentState;
+            if (node.move.equals(treeMove)) {
                 return true;
             }
         }
         return false;
     }
 
-    private Node nodeUpdate(Node currentNode, Move treeMove) {
+    private Node createChildNode(Node currentNode, Move move) {
         Node tmpNode = new Node();
-        tmpNode.move = treeMove;
-        tmpNode.currentState = currentState;
+        tmpNode.move = move;
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
     }
 
 
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         toStringR(root, sb, 0);
         return sb.toString();
     }
 
-    public void toStringR(Node node, StringBuilder sb, int depth){
-        for (int i = 0; i < depth; i++){
+    public void toStringR(Node node, StringBuilder sb, int depth) {
+        for (int i = 0; i < depth; i++) {
             sb.append(" ");
         }
         sb.append(node);
         sb.append("\n");
-        for(Node n : node.listOfChildren){
+        for (Node n : node.listOfChildren) {
             toStringR(n, sb, ++depth);
         }
     }
 }
-
-        /*
-        Controller copyCont = millController.deepCopy();
-        if (myColor == Color.black)
-            copyCont.setWhitePlayer(new DummyPlayer());
-        else
-            copyCont.setBlackPlayer(new DummyPlayer());
-            */
-
-//init mtcs
-
-//simulate
-
-//make real call to controller
