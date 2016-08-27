@@ -62,71 +62,75 @@ public class MCTS {
     }
 
     private double simulationR(AbstractPlayer abstractPlayer, Node currentNode) {
-        updateCurrentGameState(currentNode);
-        AiUtils.updateLists(currentState);
-        System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-        Move treeMove = new Move(null, null);
+        try {
+            updateCurrentGameState(currentNode);
+            AiUtils.updateLists(currentState);
+            // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+            Move treeMove = new Move(null, null);
 
-        while (true) {
-            switch (currentState.getGamePhase()) {
-                case Placing:
-                    treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
-                    if (moveAlreadyPerformed(currentNode, treeMove)) {  //checks if that move has already been done
-                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove); //updates currentNode for the next recursive call
+            while (true) {
+                switch (currentState.getGamePhase()) {
+                    case Placing:
+                        treeMove.dst = AiUtils.selectRandomPlacing(currentState);  //dst for placing
+                        if (moveAlreadyPerformed(currentNode, treeMove)) {  //checks if that move has already been done
+                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove); //updates currentNode for the next recursive call
+                            break;
+                        } else {
+                            treeMove = AiUtils.place(currentState);
+                            currentNode = nodeUpdate(currentNode, treeMove);
+                            break;
+                        }
+                    case Moving:
+                        treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
+                        if (moveAlreadyPerformed(currentNode, treeMove)) {
+                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
+                            break;
+                        } else {
+                            // todo: this is where i just left to get some fooderino
+                            treeMove = AiUtils.moving(currentState, abstractPlayer);
+                            currentNode = nodeUpdate(currentNode, treeMove);
+                            break;
+                        }
+                    case RemovingStone:
+                        treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
+                        if (moveAlreadyPerformed(currentNode, treeMove)) {
+                            currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
+                            break;
+                        } else {
+                            treeMove = AiUtils.removeStone(currentState, abstractPlayer);
+                            currentNode = nodeUpdate(currentNode, treeMove);
+                        }
                         break;
-                    } else {
-                        treeMove = AiUtils.place(currentState);
-                        currentNode = nodeUpdate(currentNode, treeMove);
-                        break;
-                    }
-                case Moving:
-                    treeMove = AiUtils.selectRandomMove(currentState, abstractPlayer);
-                    if (moveAlreadyPerformed(currentNode, treeMove)) {
-                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                        break;
-                    } else {
-                        // todo: this is where i just left to get some fooderino
-                        treeMove = AiUtils.moving(currentState, abstractPlayer);
-                        currentNode = nodeUpdate(currentNode, treeMove);
-                        break;
-                    }
-                case RemovingStone:
-                    treeMove.src = AiUtils.selectRandomRemove(currentState, abstractPlayer);  //src for removing
-                    if (moveAlreadyPerformed(currentNode, treeMove)) {
-                        currentNode = getNodeOfAlreadyPerformedMove(currentNode, treeMove);
-                        break;
-                    } else {
-                        treeMove = AiUtils.removeStone(currentState, abstractPlayer);
-                        currentNode = nodeUpdate(currentNode, treeMove);
-                    }
-                    break;
-            }
-
-            //Exit by win
-            if (currentState.getGamePhase() == GamePhase.Exit) {
-                if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
-                    return 1;
-                } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
-                    return 1;
-                } else {
-                    //Draw/Loss
-                    return 0;
                 }
+
+                //Exit by win
+                if (currentState.getGamePhase() == GamePhase.Exit) {
+                    if (currentState.getState().gameEnd == GameEnd.WhiteWon && abstractPlayer.getColor().equals(Color.white)) {
+                        return 1;
+                    } else if (currentState.getState().gameEnd == GameEnd.BlackWon && abstractPlayer.getColor().equals(Color.black)) {
+                        return 1;
+                    } else {
+                        //Draw/Loss
+                        return 0;
+                    }
+                }
+
+                //Exit by time contraint
+                if (expireDate.before(new GregorianCalendar())) {
+                    //BREAK OR RETURN?!?!?!?!?!
+                    System.out.println("\n\n\n\n\nrecursion state \n" + toString());
+                    break;
+                }
+
+
+                double i = simulationR(abstractPlayer, currentNode);
+                currentNode.winCount += i;
             }
-
-            //Exit by time contraint
-            if (expireDate.before(new GregorianCalendar())){
-                //BREAK OR RETURN?!?!?!?!?!
-                //break;
-            }
-
-
-            double i = simulationR(abstractPlayer, currentNode);
-            currentNode.winCount += i;
+        } catch (Exception ex){
+            ex.printStackTrace();
         }
 
-
-        //return currentNode.winCount;
+        return currentNode.winCount;
     }
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move treeMove) {

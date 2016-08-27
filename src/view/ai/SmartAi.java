@@ -10,13 +10,13 @@ public class SmartAi extends AbstractPlayer {
     public void run() {
         System.out.println("smartAI: run()");
 
-    //    if (mctsTree == null)
-  //          mctsTree = new MCTS(millController);
-//        startSimulation();
+        if (mctsTree == null)
+            mctsTree = new MCTS(millController);
+        //startSimulation();
 
         //!!!!!!Update on the actual controller. DONT REMOVE
         AiUtils.updateLists(millController);
-        switch (millController.getGamePhase())	{
+        switch (millController.getGamePhase()) {
             case Placing:
                 AiUtils.place(millController);
                 break;
@@ -32,7 +32,7 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("smartAI: exit");
     }
 
-    private void startSimulation(){
-        mctsTree.simulation(this, 15 * 1000);
+    private void startSimulation() {
+        mctsTree.simulation(this, 5 * 1000);
     }
 }
