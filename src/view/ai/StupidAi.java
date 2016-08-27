@@ -36,7 +36,7 @@ public class StupidAi extends AbstractPlayer {
 
 	private void moving(){
 		for (Piece p : millController.getState().currentPieces) {
-			if (p.color == myColor){
+			if (p.color.equals(myColor)){
                 System.out.println("Ki: Trying to move " + p.field);
                 for (Playfield toMove : millController.getState().getNeighbours(p.field)){
                     System.out.println("Ki: Target " + toMove);
@@ -51,7 +51,7 @@ public class StupidAi extends AbstractPlayer {
         System.out.println("Ki: Trying to remove ich");
         List<Piece> listCopy = new LinkedList<>(millController.getState().currentPieces);
         for (Piece p : listCopy) {
-            if (p.color != myColor) {
+            if (p.color.equals(myColor)) {
                 System.out.println("Ki: Trying to remove " + p.field);
                 if (millController.removeStone(p.field.getPoint()))
                 	return;
