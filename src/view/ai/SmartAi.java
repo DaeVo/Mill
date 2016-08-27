@@ -26,8 +26,7 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("smartAI: exit");
     }
 
-   /* private void startSimulation(){
+    private void startSimulation(){
         MCTSobject.simulation(this);
     }
-    */
 }
