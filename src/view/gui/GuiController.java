@@ -43,7 +43,7 @@ public class GuiController implements Observer {
         whiteP.create(millController, Color.white);
 
         IPlayer blackP = getMode(split[1]);
-        blackP.create(millController, Color.white);
+        blackP.create(millController, Color.black);
 
         millController.startGame(whiteP, blackP);
     }
@@ -57,7 +57,7 @@ public class GuiController implements Observer {
                 return new SmartAi();
             }
         } else {
-            millController.setSleep(0);
+            millController.setSleep(100);
             return new GuiPlayer();
         }
     }

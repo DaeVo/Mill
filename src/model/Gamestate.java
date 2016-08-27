@@ -230,6 +230,17 @@ public class Gamestate implements java.io.Serializable {
     }
 
 
+    public boolean isLegalMoveAvailable (Color color) {
+        updateLegalMoves();
+        for (Piece p : currentPieces) {
+            if (p.color.equals(color)) {
+                if (legalMoves.get(p.field).size() > 0) {
+                    return true;
+                }
+            }
+        }return false;
+    }
+
     public void updateLegalPlacing() {
         Playfield tmpField;
         for(int i = 0; i < 8; i++) {
