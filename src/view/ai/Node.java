@@ -76,7 +76,6 @@ class Node implements java.io.Serializable {
         }
         return tmpNode;
 */
-
     }
 
     public byte getMillCount(Color c){
