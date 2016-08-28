@@ -22,7 +22,7 @@ class Node implements java.io.Serializable {
     public Node getBestChild(Color myColor, Controller state) {
         byte currentStonesInMill = getMillCount(myColor);
 
-        double bestRatio = 0; //0-1 1=only wins
+    /*    double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         for (Node node : listOfChildren) {
             double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
@@ -31,6 +31,19 @@ class Node implements java.io.Serializable {
                 bestRatio = ratio;
                 bestNode = node;
             }
+            */
+
+        double tmpWinCount = 0;
+        double tmpPlayCount = 9999999;
+        Node bestNode = null;
+        for (Node node : listOfChildren) {
+            if (node.winCount >= tmpWinCount && node.playCount <= tmpPlayCount) {
+                tmpWinCount = node.winCount;
+                tmpPlayCount = node.playCount;
+                bestNode = node;
+            }
+
+
 
             //Close Mill Heuristic
             int childStonesInMill = node.getMillCount(myColor);
