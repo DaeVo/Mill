@@ -312,8 +312,13 @@ public class Controller extends Observable implements java.io.Serializable {
             Controller cCopy = new Controller(gsCopy);
 
             //these fields are copied, oldThread remains null
-            cCopy.setWhitePlayer(new DummyPlayer());
-            cCopy.setBlackPlayer(new DummyPlayer());
+            DummyPlayer wp = new DummyPlayer();
+            wp.create(null, Color.white);
+            cCopy.setWhitePlayer(wp);
+
+            DummyPlayer bp = new DummyPlayer();
+            bp.create(null, Color.black);
+            cCopy.setBlackPlayer(bp);
             cCopy.setSleep(sleepTime);
 
             return cCopy;
