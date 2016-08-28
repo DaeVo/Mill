@@ -59,6 +59,9 @@ public class MCTS {
 
     public Node selection(Node currentNode, IPlayer player, Controller state) {
         AiUtils.updateLists(state);
+        currentNode.millCountBlack = state.getState().getMillPieceCount(Color.black);
+        currentNode.millCountWhite = state.getState().getMillPieceCount(Color.white);
+
         int moveCount = AiUtils.getLegalMovesCount(state, player);
         if (moveCount == 0) {
             System.out.println("Selection; No moves available (using backup path) node:" + currentNode);

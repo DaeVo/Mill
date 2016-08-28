@@ -47,13 +47,18 @@ public class GuiController implements Observer {
             String diff = boxDifficulty.getSelectedItem().toString();
             if (diff.startsWith("Stupid")){
                 return new StupidAi();
-            } else {
-                return new SmartAi();
+            } else if (diff.startsWith("Easy")) {
+                return new SmartAi(5 * 1000);
+            } else if (diff.startsWith("Medium")) {
+                return new SmartAi(15 * 1000);
+            } else if (diff.startsWith("Hard")) {
+                return new SmartAi(30 * 1000);
             }
         } else {
             millController.setSleep(100);
             return new GuiPlayer();
         }
+        return null;
     }
 
     public JPanel getControllerPanel(){

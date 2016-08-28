@@ -21,7 +21,7 @@ public final class Mill {
         new GUI(c);
 
         try {
-            IPlayer whiteP = new SmartAi();
+            IPlayer whiteP = new SmartAi(5 * 1000);
             whiteP.create(c, Color.white);
 
             IPlayer blackP = new StupidAi();

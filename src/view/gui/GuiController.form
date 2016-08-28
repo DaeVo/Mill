@@ -26,9 +26,9 @@
         </constraints>
         <properties>
           <model>
-            <item value="Easy (x secs)"/>
-            <item value="Medium (x secs)"/>
-            <item value="Hard (x secs)"/>
+            <item value="Easy (5 secs)"/>
+            <item value="Medium (15 secs)"/>
+            <item value="Hard (30 secs)"/>
             <item value="Stupid"/>
           </model>
         </properties>

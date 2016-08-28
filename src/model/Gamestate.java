@@ -81,8 +81,8 @@ public class Gamestate implements java.io.Serializable {
         return (currentMillPieces.contains(piece));
     }
 
-    public int getMillPieceCount(Color color){
-        int count = 0;
+    public byte getMillPieceCount(Color color){
+        byte count = 0;
         for (Piece p : currentMillPieces){
             if (p.color.equals(color))
                 count++;

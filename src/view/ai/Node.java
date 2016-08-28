@@ -14,16 +14,18 @@ import java.util.LinkedList;
 class Node implements java.io.Serializable {
     public double winCount;   //if ai  wins the simulated playout  - winCount++;
     public double playCount;  //if simulated game ends -  playCount++
+    public byte millCountWhite;
+    public byte millCountBlack;
     public Move move;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
     public Node getBestChild(Color myColor, Controller state) {
-        int currentStonesInMill = state.getState().getMillPieceCount(myColor);
+        byte currentStonesInMill = getMillCount(myColor);
 
         double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         for (Node node : listOfChildren) {
-            double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 2 * node.winCount);
+            double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
             //node.winCount / node.playCount;
             if (ratio > bestRatio) {
                 bestRatio = ratio;
@@ -31,14 +33,13 @@ class Node implements java.io.Serializable {
             }
 
             //Close Mill Heuristic
-            /*
-            int childStonesInMill = node.state.getState().getMillPieceCount(myColor);
+            int childStonesInMill = node.getMillCount(myColor);
 
             if (childStonesInMill > currentStonesInMill) {
                 bestNode = node;
                 break;
             }
-            */
+
         }
         //Random selection if everything fails
         if (bestNode == null) {
@@ -63,6 +64,12 @@ class Node implements java.io.Serializable {
         return tmpNode;
 */
 
+    }
+
+    public byte getMillCount(Color c){
+        if (c.equals(Color.WHITE))
+            return millCountWhite;
+        return millCountBlack;
     }
 
     @Override
