@@ -39,8 +39,11 @@ class Node implements java.io.Serializable {
             }
         }
         //Random selection if everything fails
-        if (bestNode == null)
+        if (bestNode == null) {
+            if (listOfChildren.size() == 0)
+                return null;
             bestNode = listOfChildren.get(AiUtils.getRandomNumber() % listOfChildren.size());
+        }
         return bestNode;
 
 
