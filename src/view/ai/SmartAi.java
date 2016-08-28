@@ -53,7 +53,7 @@ public class SmartAi extends AbstractPlayer {
 
         if (!moveColor.equals(myColor)) {
             System.out.println("smartAI: Foreign move: " + move);
-            mctsTree.doForeignMove(millController, move);
+            mctsTree.doForeignMove(move);
         }
 
     }

@@ -6,6 +6,8 @@ import view.ai.DummyPlayer;
 import model.Move;
 
 import java.awt.*;
+import java.awt.image.ByteLookupTable;
+import java.util.Arrays;
 import java.util.Observable;
 
 import static model.GamePhase.Exit;
@@ -167,6 +169,7 @@ public class Controller extends Observable implements java.io.Serializable {
 
     private void endTurn() {
         String infoText = null;
+        int turnBoard = BoardFactory.getBoardArray(gameBoard.board);
         setChanged();
 
         //Wind/Draw
@@ -181,7 +184,7 @@ public class Controller extends Observable implements java.io.Serializable {
                 gameBoard.gameEnd = GameEnd.BlackWon;
             else
                 gameBoard.gameEnd = GameEnd.WhiteWon;
-        } else if (drawCheck()) {
+        } else if (drawCheck(turnBoard)) {
             infoText = "Game ends in a draw!";
             gameBoard.gameEnd = GameEnd.Draw;
 
@@ -211,7 +214,7 @@ public class Controller extends Observable implements java.io.Serializable {
             } else {
                 gameBoard.turnColor = Color.black;
             }
-            gameBoard.turnHistory.add(BoardFactory.getBoardString(gameBoard.board));
+            gameBoard.turnHistory.add(turnBoard);
         }
 
         if (simulation)
@@ -251,7 +254,7 @@ public class Controller extends Observable implements java.io.Serializable {
         else return null;
     }
 
-    private boolean drawCheck() {
+    private boolean drawCheck(int turnBoard) {
         //Abbort rule 50 round no mill
         if (gameBoard.turn - gameBoard.lastMillTurn > 50) {
             if (!simulation) System.out.println("50 turns without a Mill - game ends in a draw");
@@ -259,10 +262,9 @@ public class Controller extends Observable implements java.io.Serializable {
         }
 
         //3 times the same setup
-        String actualBoard = BoardFactory.getBoardString(gameBoard.board);
         int count = 0;
-        for (String board : gameBoard.turnHistory) {
-            if (actualBoard.equals(board))
+        for (int board : gameBoard.turnHistory) {
+            if (board == turnBoard)
                 count++;
         }
         if (count >= 2) {

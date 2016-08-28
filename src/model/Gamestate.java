@@ -30,7 +30,7 @@ public class Gamestate implements java.io.Serializable {
     public GamePhase gamePhase;
     public GamePhase oldState;
     public GameEnd gameEnd;
-    public List<String> turnHistory = new LinkedList<>();
+    public List<Integer> turnHistory = new LinkedList<>();
 
     public Gamestate() {
         board = BoardFactory.createBoard();
@@ -214,7 +214,7 @@ public class Gamestate implements java.io.Serializable {
     }
 
 
-    public List<Move> getLegelMoveList(Color turnColor){
+    public List<Move> getLegalMoveList(Color turnColor){
         List<Move> resultList = new LinkedList<>();
         for (Playfield field : legalMoves.keySet()){
             if (field.empty || !field.piece.color.equals(turnColor))

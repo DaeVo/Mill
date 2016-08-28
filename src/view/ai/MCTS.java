@@ -14,7 +14,8 @@ import java.util.List;
 public class MCTS {
     private Node root = null; //global root Node
     private GregorianCalendar expireDate;
-    private boolean randomSelection = false;
+    private boolean treeDone = false;
+    private static final int RUNFACTOR = 3;
 
     /*
     initializes the tree
@@ -30,14 +31,9 @@ public class MCTS {
     public Move selectMove(Color myColor) { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-        Node child;
-        if (randomSelection)
-            child = root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
-        else
-            child = root.getBestChild(myColor);
-
+        Node child  = root.getBestChild(myColor);
         if (child == null || child.move == null) {
-            System.out.print(1);
+            System.out.println("Select bestChild failed root: " + root);
             child = root.getBestChild(myColor);
         }
 
@@ -47,7 +43,7 @@ public class MCTS {
 
     }
 
-    public void doForeignMove(Controller realController, Move move) {
+    public void doForeignMove(Move move) {
         //Set root to selected child
         //First move
         if (root.move == null) {
@@ -66,20 +62,34 @@ public class MCTS {
         AiUtils.updateLists(currentNode.state);
         int moveCount = AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
         if (moveCount == 0) {
-            System.out.print(1);
+            System.out.println("Selection; No moves available (using backup path) node:" + currentNode);
             AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
         }
 
         if (currentNode.listOfChildren.size() !=  moveCount) {
             return currentNode;
         } else {
-            //return selection(currentNode.getBestChild(player.getColor()), player);
-            Node tmpNode ;
+            Node tmpNode;
+            Node resultNode;
+            int outerRunCount = 0;
             do {
-                tmpNode= currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
-                //deadlock?
-            } while (tmpNode.state.getGamePhase() == GamePhase.Exit);
-            return selection(tmpNode, player);
+                outerRunCount++;
+                int runCount = 0;
+                do {
+                    //Select childs, check for if they are in exit state
+                    tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+                    runCount++;
+                }
+                while (tmpNode.state.getGamePhase() == GamePhase.Exit && runCount < currentNode.listOfChildren.size() * RUNFACTOR);
+                if (tmpNode.state.getGamePhase() == GamePhase.Exit) {
+                    //No non-exit child found!
+                    return null;
+                }
+
+                resultNode = selection(tmpNode, player);
+                //Loop if in the se
+            } while (resultNode == null && outerRunCount < currentNode.listOfChildren.size() * RUNFACTOR);
+            return resultNode;
         }
     }
 
@@ -100,8 +110,9 @@ public class MCTS {
     public void simulation(IPlayer kiPlayer, int timeout, Controller realController) {
         expireDate = new GregorianCalendar();
         expireDate.set(Calendar.MILLISECOND, timeout);
+        treeDone = false;
 
-        while (true) {
+        while (!treeDone) {
             //Loop to search new üaths
             double result = simulationR(kiPlayer, root, 0);
             root.playCount += 1;
@@ -116,48 +127,56 @@ public class MCTS {
     private double simulationR(IPlayer kiPlayer, Node currentNode, int depth) {
         Node selectedNode = null;
         Node childNode = null;
+        double result = 0;
 
         try {
             if (depth > 500)
                 System.out.print(1);
-            // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
 
             selectedNode = selection(currentNode, currentNode.state.getTurnPlayer());
+            if (selectedNode == null) {
+                //Found no unplayed end.
+                //End searhc
+                treeDone = true;
+                return 0;
+            }
+
             childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
 
             //Exit by win
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
             if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
-                selectedNode.playCount = 1;
-                childNode.playCount = 1;
                 //System.out.println("Playout at turn " + childNode.state.getState().turn);
                 if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
-                    return 1.0;
+                    result = 1;
                 } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
-                    return 1.0;
+                    result = 1;
                 } else {
                     //Draw/Loss
-                    return 0.0;
+                    result = 0;
                 }
+                //Start update phase :)
+                selectedNode.playCount += 1;
+                selectedNode.winCount += result;
+                childNode.playCount = 1;
+                childNode.winCount = result;
+                return  result;
             }
 
-            //Exit by time contraint
+            //Exit by time constraint
             if (expireDate.before(new GregorianCalendar())) {
                 return 0.0;
             }
 
-            double result = simulationR(kiPlayer, childNode, ++depth);
+            result = simulationR(kiPlayer, childNode, ++depth);
             selectedNode.playCount += 1;
             selectedNode.winCount += result;
-
-            if (childNode.listOfChildren.size() > childNode.playCount)
-                System.out.print(1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return selectedNode.winCount;
+        return result;
     }
 
 
