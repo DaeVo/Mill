@@ -50,7 +50,7 @@ public class GuiController implements Observer {
             } else if (diff.startsWith("Easy")) {
                 return new SmartAi(5 * 1000);
             } else if (diff.startsWith("Medium")) {
-                return new SmartAi(15 * 1000);
+                return new SmartAi(10 * 1000);
             } else if (diff.startsWith("Hard")) {
                 return new SmartAi(30 * 1000);
             }
