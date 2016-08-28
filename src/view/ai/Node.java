@@ -3,6 +3,7 @@ package view.ai;
 import controller.Controller;
 import model.Move;
 
+import java.awt.*;
 import java.util.LinkedList;
 
 /**
@@ -16,20 +17,32 @@ class Node implements java.io.Serializable {
     public Controller state;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
-    public Node getBestChild() {
-        /*
-        double bestRatio = 1; //0-1 1=only wins
+    public Node getBestChild(Color myColor) {
+        int currentStonesInMill = state.getState().getMillPieceCount(myColor);
+        double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         for (Node node : listOfChildren) {
-            double ratio = node.winCount / node.playCount;
-            if (ratio < bestRatio) {
+            double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
+            //node.winCount / node.playCount;
+            if (ratio > bestRatio) {
                 bestRatio = ratio;
                 bestNode = node;
             }
-        }
-        return bestNode;
-        */
 
+            //Close Mill Heuristic
+            int childStonesInMill = node.state.getState().getMillPieceCount(myColor);
+            if (childStonesInMill > currentStonesInMill) {
+                bestNode = node;
+                break;
+            }
+        }
+        //Random selection if everything fails
+        if (bestNode == null)
+            bestNode = listOfChildren.get(AiUtils.getRandomNumber() % listOfChildren.size());
+        return bestNode;
+
+
+        /*
         double tmpWinCount = 0;
         double tmpPlayCount = Integer.MAX_VALUE;
         Node tmpNode = new Node();
@@ -41,7 +54,7 @@ class Node implements java.io.Serializable {
             }
         }
         return tmpNode;
-
+*/
 
     }
 
