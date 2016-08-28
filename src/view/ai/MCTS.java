@@ -37,7 +37,9 @@ public class MCTS {
             child = root.getBestChild();
 
         root = child;
+        System.out.printf("pc %f, wc %f ", root.playCount, root.winCount);
         return root.move;
+
     }
 
     public void doForeignMove(Controller realController, Move move) {
@@ -66,7 +68,6 @@ public class MCTS {
     public Node expansion(Node selectedNode, IPlayer player) {
         List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode);
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
-
         Node newNode = createChildNode(selectedNode, newMove);
         AiUtils.exectuteMove(newNode.state, newNode.move);
 
@@ -88,7 +89,7 @@ public class MCTS {
         }
 
         //System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-        System.out.printf("Root tree PlayCount %f WinCount %f %n", root.playCount, root.winCount);
+        System.out.printf("Root tree PlayCount %f WinCount %f " ,root.playCount, root.winCount);
     }
 
     private double simulationR(IPlayer kiPlayer, Node currentNode) {
