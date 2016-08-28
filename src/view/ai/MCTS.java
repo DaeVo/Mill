@@ -65,20 +65,23 @@ public class MCTS {
         if (currentNode.listOfChildren.size() !=  AiUtils.getLegalMovesCount(currentNode.state, player, currentNode)) {
             return currentNode;
         } else {
-            //return root.getBestChild(player.getColor());
-            return currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            return root.getBestChild(player.getColor());
+            //return currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
         }
     }
 
     public Node expansion(Node selectedNode, IPlayer player) {
-        List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode);
+        List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, true);
         if (legalMoves.size() == 0) {
-            System.out.print(1);
-            AiUtils.getLegalMovesCount(selectedNode.state, player, selectedNode);
+            legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, false);
         }
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
         Node newNode = createChildNode(selectedNode, newMove);
         AiUtils.exectuteMove(newNode.state, newNode.move);
+        if (selectedNode.state.getState().turn == newNode.state.getState().turn && selectedNode.state.getGamePhase() == newNode.state.getGamePhase() ){
+            System.out.print(1);
+            AiUtils.exectuteMove(newNode.state, newNode.move);
+        }
 
         return newNode;
     }
@@ -90,7 +93,7 @@ public class MCTS {
 
         while (true) {
             //Loop to search new üaths
-            simulationR(kiPlayer, root);
+            simulationR(kiPlayer, root, 0);
 
             if (expireDate.before(new GregorianCalendar())) {
                 break;
@@ -101,8 +104,10 @@ public class MCTS {
         System.out.printf("Root tree PlayCount %f WinCount %f " ,root.playCount, root.winCount);
     }
 
-    private double simulationR(IPlayer kiPlayer, Node currentNode) {
+    private double simulationR(IPlayer kiPlayer, Node currentNode, int depth) {
         try {
+            if (depth > 500)
+                System.out.print(1);
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
             AiUtils.updateLists(currentNode.state);
 
@@ -129,7 +134,7 @@ public class MCTS {
                 return 0;
             }
 
-            double i = simulationR(kiPlayer, childNode);
+            double i = simulationR(kiPlayer, childNode, ++depth);
             currentNode.playCount += 1;
             currentNode.winCount += i;
 

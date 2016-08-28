@@ -65,7 +65,8 @@ public class AiUtils {
                     enemyPieces.add(tmpPoint);
                 }
             }
-        } return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
+        }
+        return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
     }
 
     public static void updateLists(Controller controller) {
@@ -98,11 +99,12 @@ public class AiUtils {
         return 0;
     }
 
-    public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode){
+    public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode, boolean remove){
         switch (controller.getGamePhase()) {
             case Moving:
                 List<Move> legalMoves = currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor);
 
+                if (!remove) return legalMoves;
                 for (Move tmpMove : new LinkedList<>(legalMoves)) {
                     for (Node tmpNode : currentNode.listOfChildren) {
                         if (tmpNode.move.equals(tmpMove)) {
@@ -118,6 +120,7 @@ public class AiUtils {
                     Move tmpMove = new Move(null, p);
                     legalPlacing.add(tmpMove);
                 }
+                if (!remove) return legalPlacing;
                 for (Move move : new LinkedList<>(legalPlacing)) {
                     for (Node tmpNode : currentNode.listOfChildren) {
                         if(tmpNode.move.equals(move)) {
@@ -130,12 +133,23 @@ public class AiUtils {
             case RemovingStone:
                 List<Move> legalRemove = new LinkedList<>();
                 for (Piece p : currentNode.state.getState().currentPieces) {
-                    if (!p.color.equals(player.getColor())) {
+                    if (!p.color.equals(player.getColor()) && !controller.getState().isInMill(p)) {
                         Point tmpPoint = new Point(p.field.x, p.field.y);
                         Move tmpMove = new Move(tmpPoint, null);
                         legalRemove.add(tmpMove);
                     }
                 }
+                //Everything in mill check
+                if (legalRemove.size() == 0) {
+                    for (Piece p : controller.getState().currentPieces) {
+                        if (!p.color.equals(player.getColor())) {
+                            Point tmpPoint = new Point(p.field.x, p.field.y);
+                            Move tmpMove = new Move(tmpPoint, null);
+                            legalRemove.add(tmpMove);
+                        }
+                    }
+                }
+
                 return legalRemove;
         }
        return null;
