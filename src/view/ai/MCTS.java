@@ -75,7 +75,8 @@ public class MCTS {
             Node resultNode;
 
             //Select childs, check for if they are in exit state
-            tmpNode = currentNode.getBestChild(player.getColor(), state);
+            //tmpNode = currentNode.getBestChild(player.getColor(), state);
+            tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
             AiUtils.exectuteMove(state, tmpNode.move);
 
             if (state.getGamePhase() == GamePhase.Exit) {

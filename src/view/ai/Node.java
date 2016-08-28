@@ -25,8 +25,8 @@ class Node implements java.io.Serializable {
         double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         for (Node node : listOfChildren) {
-            double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
-            //node.winCount / node.playCount;
+            //double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
+            double ratio = node.winCount / node.playCount;
             if (ratio > bestRatio) {
                 bestRatio = ratio;
                 bestNode = node;
