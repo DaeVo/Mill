@@ -1,5 +1,9 @@
 package model;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Max on 16/08/2016.
  * create or print a board.
@@ -40,4 +44,25 @@ public class BoardFactory implements java.io.Serializable{
         sb.append(String.format(line1, board[6][0].shortString(), board[5][0].shortString(), board[4][0].shortString()));
         return sb.toString();
     }
+
+    //To reduce memory usage of the board history for the draw check
+    public static int getBoardArray(Playfield[][] board){
+        byte[] boardArray = new byte[board.length * board[0].length];
+        for(int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                byte state;
+                if (board[i][j].empty)
+                    state = 0;
+                else if (board[i][j].piece.color.equals(Color.white))
+                    state = 1;
+                else
+                    state = 2;
+
+                boardArray[i * board[0].length + j] = state;
+            }
+        }
+        return Arrays.hashCode(boardArray);
+    }
+
+
 }

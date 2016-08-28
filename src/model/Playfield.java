@@ -21,6 +21,11 @@ public class Playfield implements java.io.Serializable {
     public Playfield(boolean empty) {
         this.empty = empty;
     }
+    public Playfield(boolean empty, int x, int y) {
+        this.empty = empty;
+        this.x = x;
+        this.y = y;
+    }
 
 
     public boolean isNeighbour(Playfield dst) {

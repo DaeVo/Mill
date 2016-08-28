@@ -1,6 +1,7 @@
 package view.ai;
 
 import controller.Controller;
+import model.GamePhase;
 import model.Move;
 import model.Piece;
 import model.IPlayer;
@@ -21,69 +22,24 @@ public class AiUtils {
         return Math.abs(rn.nextInt());
     }
 
-
-
-    public static Point randomMoveSource (Controller controller, IPlayer abstractPlayer) { //selects a random piece to move this round
-        List<Point> tmpList = new LinkedList<>();
-        for (Piece p : controller.getState().currentPieces) {
-            if (abstractPlayer.getColor().equals(p.color) && controller.getState().legalMoves.containsKey(p.field)) {
-                if (controller.getState().legalMoves.get(p.field).size() > 0) {
-                    Point tmpPoint = new Point(p.field.x, p.field.y);
-                    tmpList.add(tmpPoint);
-                }
-            }
-        }
-        return tmpList.get(getRandomNumber() % tmpList.size());
-    }
-
-    public static Point selectRandomPlacing(Controller controller) { //random move while placing Pieces
-        if (controller.getState().legalPlacing.size() == 0){
-            System.out.println("lol");
-        }
-        return controller.getState().legalPlacing.get(getRandomNumber() % controller.getState().legalPlacing.size());
-    }
-
-    public static Move selectRandomMove(Controller controller, IPlayer abstractPlayer) { //random move while moving with more than 3 Pieces.
-        Point tmpSrc = randomMoveSource(controller, abstractPlayer);
-        List<Point> dstList = controller.getState().legalMoves.get(controller.getState().board[tmpSrc.x][tmpSrc.y]);
-        Point tmpDst = new Point(dstList.get(getRandomNumber() % dstList.size()));
-        return new Move(tmpSrc, tmpDst);
-    }
-
-    public static Point selectRandomRemove(Controller controller, IPlayer abstractPlayer) { //randomly selected field of an enemy field to remove the piece.
-        List<Point> enemyPieces = new LinkedList<Point>();
-        for (Piece p : controller.getState().currentPieces) {
-            if (!p.color.equals(abstractPlayer.getColor()) && !controller.getState().isInMill(p)) {
-                Point tmpPoint = new Point(p.field.x, p.field.y);
-                enemyPieces.add(tmpPoint);
-            }
-        }
-        if (enemyPieces.size() == 0) {
-            for (Piece p : controller.getState().currentPieces) {
-                if (!p.color.equals(abstractPlayer.getColor())) {
-                    Point tmpPoint = new Point(p.field.x, p.field.y);
-                    enemyPieces.add(tmpPoint);
-                }
-            }
-        }
-        return new Point(enemyPieces.get(getRandomNumber() % enemyPieces.size()));
-    }
-
     public static void updateLists(Controller controller) {
         controller.getState().legalPlacing.clear();
         controller.getState().legalMoves.clear();
-        if (!freeMoveAllowed(controller, controller.getTurnColor())){
-            controller.getState().updateLegalMoves();
+        if (controller.getGamePhase() == GamePhase.Placing){
+            controller.getState().updateLegalPlacing();
         } else {
-            controller.getState().updateFreeMovementLegalMoves();
+            if (!freeMoveAllowed(controller, controller.getTurnColor())){
+                controller.getState().updateLegalMoves();
+            } else {
+                controller.getState().updateFreeMovementLegalMoves();
+            }
         }
-        controller.getState().updateLegalPlacing();
     }
 
     public static int getLegalMovesCount(Controller controller, IPlayer player, Node currentNode){
         switch (controller.getGamePhase()) {
             case Moving:
-                return currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor).size();
+                return currentNode.state.getState().getLegalMoveList(currentNode.state.getState().turnColor).size();
             case Placing:
                 return currentNode.state.getState().legalPlacing.size();
 
@@ -102,7 +58,7 @@ public class AiUtils {
     public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode, boolean remove){
         switch (controller.getGamePhase()) {
             case Moving:
-                List<Move> legalMoves = currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor);
+                List<Move> legalMoves = currentNode.state.getState().getLegalMoveList(currentNode.state.getState().turnColor);
 
                 if (!remove) return legalMoves;
                 for (Move tmpMove : new LinkedList<>(legalMoves)) {
@@ -153,47 +109,6 @@ public class AiUtils {
                 return legalRemove;
         }
        return null;
-    }
-
-
-    public static Move place(Controller controller){
-        Move tmpMove = new Move(null, null);
-        tmpMove.dst = selectRandomPlacing(controller);
-        controller.place(tmpMove.dst);
-        return tmpMove;
-        //Copy State
-        /*
-        Controller copyCont = millController.deepCopy();
-        if (myColor == Color.black)
-            copyCont.setWhitePlayer(new DummyPlayer());
-        else
-            copyCont.setBlackPlayer(new DummyPlayer());
-            */
-
-        //init mtcs
-
-        //simulate
-
-        //make real call to controller
-    }
-
-    public static Move moving(Controller controller, IPlayer abstractPlayer) {
-        Move tmpMove = selectRandomMove(controller, abstractPlayer);
-        if (!freeMoveAllowed(controller, controller.getTurnColor())){
-            controller.move(tmpMove.src, tmpMove.dst);
-            return tmpMove;
-        } else {
-            controller.setSleep(1);
-            controller.moveFreely(tmpMove.src, tmpMove.dst);
-            return tmpMove;
-        }
-    }
-
-    public static Move removeStone(Controller controller, IPlayer abstractPlayer) {
-        Move tmpMove = new Move(null, null);
-        tmpMove.src = selectRandomRemove(controller, abstractPlayer);
-        controller.removeStone(tmpMove.src);  //using src =value, dst = null to differ from placing Moves
-        return tmpMove;
     }
 
     public static void exectuteMove(Controller controller, Move move) {
