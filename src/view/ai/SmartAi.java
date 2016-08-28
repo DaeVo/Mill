@@ -14,9 +14,9 @@ public class SmartAi extends AbstractPlayer {
     public void run() {
         System.out.println("smartAI: run()");
 
-        startSimulation();
+        mctsTree.simulation(this, 5 * 1000, millController);
 
-        Move selectedMove = mctsTree.selectMove(myColor);
+        Move selectedMove = mctsTree.selectMove(myColor, millController.deepCopy());
         System.out.println("smartAI: Selected move " + selectedMove);
         AiUtils.exectuteMove(millController, selectedMove);
 
@@ -40,9 +40,6 @@ public class SmartAi extends AbstractPlayer {
         System.out.println("smartAI: exit");
     }
 
-    private void startSimulation() {
-        mctsTree.simulation(this, 1 * 1000, millController);
-    }
 
     public void turnInfo(Color moveColor, Move move){
         if (move == null){

@@ -36,16 +36,16 @@ public class AiUtils {
         }
     }
 
-    public static int getLegalMovesCount(Controller controller, IPlayer player, Node currentNode){
-        switch (controller.getGamePhase()) {
+    public static int getLegalMovesCount(Controller state, IPlayer player){
+        switch (state.getGamePhase()) {
             case Moving:
-                return currentNode.state.getState().getLegalMoveList(currentNode.state.getState().turnColor).size();
+                return state.getState().getLegalMoveList(state.getState().turnColor).size();
             case Placing:
-                return currentNode.state.getState().legalPlacing.size();
+                return state.getState().legalPlacing.size();
 
             case RemovingStone:
                 int count = 0;
-                for (Piece p : currentNode.state.getState().currentPieces) {
+                for (Piece p : state.getState().currentPieces) {
                     if (!p.color.equals(player.getColor())) {
                         count++;
                     }
@@ -55,10 +55,10 @@ public class AiUtils {
         return 0;
     }
 
-    public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode, boolean remove){
-        switch (controller.getGamePhase()) {
+    public static List<Move> getLegalMoves(Controller state, IPlayer player, Node currentNode, boolean remove){
+        switch (state.getGamePhase()) {
             case Moving:
-                List<Move> legalMoves = currentNode.state.getState().getLegalMoveList(currentNode.state.getState().turnColor);
+                List<Move> legalMoves = state.getState().getLegalMoveList(state.getState().turnColor);
 
                 if (!remove) return legalMoves;
                 for (Move tmpMove : new LinkedList<>(legalMoves)) {
@@ -72,7 +72,7 @@ public class AiUtils {
                 return legalMoves;
             case Placing:
                 List<Move> legalPlacing = new LinkedList<>();
-                for (Point p : currentNode.state.getState().legalPlacing) {
+                for (Point p : state.getState().legalPlacing) {
                     Move tmpMove = new Move(null, p);
                     legalPlacing.add(tmpMove);
                 }
@@ -88,8 +88,8 @@ public class AiUtils {
                 return legalPlacing;
             case RemovingStone:
                 List<Move> legalRemove = new LinkedList<>();
-                for (Piece p : currentNode.state.getState().currentPieces) {
-                    if (!p.color.equals(player.getColor()) && !controller.getState().isInMill(p)) {
+                for (Piece p : state.getState().currentPieces) {
+                    if (!p.color.equals(player.getColor()) && !state.getState().isInMill(p)) {
                         Point tmpPoint = new Point(p.field.x, p.field.y);
                         Move tmpMove = new Move(tmpPoint, null);
                         legalRemove.add(tmpMove);
@@ -97,7 +97,7 @@ public class AiUtils {
                 }
                 //Everything in mill check
                 if (legalRemove.size() == 0) {
-                    for (Piece p : controller.getState().currentPieces) {
+                    for (Piece p : state.getState().currentPieces) {
                         if (!p.color.equals(player.getColor())) {
                             Point tmpPoint = new Point(p.field.x, p.field.y);
                             Move tmpMove = new Move(tmpPoint, null);

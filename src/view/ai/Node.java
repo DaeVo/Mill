@@ -15,10 +15,9 @@ class Node implements java.io.Serializable {
     public double winCount;   //if ai  wins the simulated playout  - winCount++;
     public double playCount;  //if simulated game ends -  playCount++
     public Move move;
-    public Controller state;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
-    public Node getBestChild(Color myColor) {
+    public Node getBestChild(Color myColor, Controller state) {
         int currentStonesInMill = state.getState().getMillPieceCount(myColor);
 
         double bestRatio = 0; //0-1 1=only wins
@@ -32,12 +31,14 @@ class Node implements java.io.Serializable {
             }
 
             //Close Mill Heuristic
+            /*
             int childStonesInMill = node.state.getState().getMillPieceCount(myColor);
 
             if (childStonesInMill > currentStonesInMill) {
                 bestNode = node;
                 break;
             }
+            */
         }
         //Random selection if everything fails
         if (bestNode == null) {
@@ -66,6 +67,6 @@ class Node implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return String.format("Node - Turn: %d Move: %s\tChildren: %d", state.getState().turn, move, listOfChildren.size());
+        return String.format("Node - Turn: %d Move: %s\tChildren: %d", 0, move, listOfChildren.size());
     }
 }

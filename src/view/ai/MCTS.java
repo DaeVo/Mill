@@ -22,22 +22,21 @@ public class MCTS {
      */
     public MCTS(Controller controller) {
         root = new Node();
-        root.state = controller.deepCopy();
     }
 
     /*
     chose the best Node
      */
-    public Move selectMove(Color myColor) { //finally decides for a move and sets the root to the next move
+    public Move selectMove(Color myColor, Controller state) { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-        Node child  = root.getBestChild(myColor);
+        Node child = root.getBestChild(myColor, state);
         if (child == null || child.move == null) {
             System.out.println("Select bestChild failed root: " + root);
-            child = root.getBestChild(myColor);
+            child = root.getBestChild(myColor, state);
         }
 
-        System.out.printf("Root tree PlayCount %f WinCount %f pc %f, wc %f " ,root.playCount, root.winCount, child.playCount, child.winCount);
+        System.out.printf("Root tree PlayCount %f WinCount %f pc %f, wc %f ", root.playCount, root.winCount, child.playCount, child.winCount);
         root = child;
         return root.move;
 
@@ -48,61 +47,54 @@ public class MCTS {
         //First move
         if (root.move == null) {
             root.move = move;
-            AiUtils.exectuteMove(root.state, root.move);
+            //AiUtils.exectuteMove(root.state, root.move);
         } else if (moveAlreadyPerformed(root, move)) {
             root = getNodeOfAlreadyPerformedMove(root, move);
         } else {
             root = createChildNode(root, move);
-            AiUtils.exectuteMove(root.state, root.move);
+            //AiUtils.exectuteMove(root.state, root.move);
         }
     }
 
 
-    public Node selection(Node currentNode, IPlayer player) {
-        AiUtils.updateLists(currentNode.state);
-        int moveCount = AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
+    public Node selection(Node currentNode, IPlayer player, Controller state) {
+        AiUtils.updateLists(state);
+        int moveCount = AiUtils.getLegalMovesCount(state, player);
         if (moveCount == 0) {
             System.out.println("Selection; No moves available (using backup path) node:" + currentNode);
-            AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
+            AiUtils.getLegalMovesCount(state, player);
         }
 
-        if (currentNode.listOfChildren.size() !=  moveCount) {
+        if (currentNode.listOfChildren.size() != moveCount) {
             return currentNode;
         } else {
             Node tmpNode;
             Node resultNode;
-            int outerRunCount = 0;
-            do {
-                outerRunCount++;
-                int runCount = 0;
-                do {
-                    //Select childs, check for if they are in exit state
-                    tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
-                    runCount++;
-                }
-                while (tmpNode.state.getGamePhase() == GamePhase.Exit && runCount < currentNode.listOfChildren.size() * RUNFACTOR);
-                if (tmpNode.state.getGamePhase() == GamePhase.Exit) {
-                    //No non-exit child found!
-                    return null;
-                }
 
-                resultNode = selection(tmpNode, player);
-                //Loop if in the se
-            } while (resultNode == null && outerRunCount < currentNode.listOfChildren.size() * RUNFACTOR);
-            return currentNode.getBestChild(player.getColor());
+            //Select childs, check for if they are in exit state
+            tmpNode = currentNode.getBestChild(player.getColor(), state);
+            AiUtils.exectuteMove(state, tmpNode.move);
+
+            if (state.getGamePhase() == GamePhase.Exit) {
+                //exit child found!
+                return null;
+            }
+            resultNode = selection(tmpNode, player, state);
+            return resultNode;
         }
     }
 
-    public Node expansion(Node selectedNode, IPlayer player) {
-        AiUtils.updateLists(selectedNode.state);
-        List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, true);
+    public Node expansion(Node selectedNode, IPlayer player, Controller state) {
+        AiUtils.updateLists(state);
+        List<Move> legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, true);
 
         if (legalMoves.size() == 0) {
-            legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, false);
+            System.out.println("legalMoves.size() == 0 " + selectedNode);
+            legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, false);
         }
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
         Node newNode = createChildNode(selectedNode, newMove);
-        AiUtils.exectuteMove(newNode.state, newNode.move);
+        AiUtils.exectuteMove(state, newNode.move);
         return newNode;
     }
 
@@ -114,9 +106,14 @@ public class MCTS {
 
         while (!treeDone) {
             //Loop to search new üaths
-            double result = simulationR(kiPlayer, root, 0);
-            root.playCount += 1;
-            root.winCount += result;
+            Controller c = realController.deepCopy();
+            double result = simulationR(kiPlayer, root, c, 0);
+            //-1 dead end, 0 draw/loss, 1 win
+            if (result >= 0){
+                root.playCount += 1;
+                root.winCount += result;
+            }
+
 
             if (expireDate.before(new GregorianCalendar())) {
                 break;
@@ -124,7 +121,7 @@ public class MCTS {
         }
     }
 
-    private double simulationR(IPlayer kiPlayer, Node currentNode, int depth) {
+    private double simulationR(IPlayer kiPlayer, Node currentNode, Controller state, int depth) {
         Node selectedNode = null;
         Node childNode = null;
         double result = 0;
@@ -133,24 +130,24 @@ public class MCTS {
             if (depth > 500)
                 System.out.print(1);
 
-            selectedNode = selection(currentNode, currentNode.state.getTurnPlayer());
+            selectedNode = selection(currentNode, state.getTurnPlayer(), state);
             if (selectedNode == null) {
-                //Found no unplayed end.
-                //End searhc
-                treeDone = true;
-                return 0;
+                //Selection run to dead end.
+                //Rerun
+                treeDone = false;
+                return -1;
             }
 
-            childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
+            childNode = expansion(selectedNode, state.getTurnPlayer(), state);
 
             //Exit by win
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
-            if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
+            if (state.getGamePhase().equals(GamePhase.Exit)) {
                 //System.out.println("Playout at turn " + childNode.state.getState().turn);
-                if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
+                if (state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
                     result = 1;
-                } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
+                } else if (state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
                     result = 1;
                 } else {
                     //Draw/Loss
@@ -161,7 +158,7 @@ public class MCTS {
                 selectedNode.winCount += result;
                 childNode.playCount = 1;
                 childNode.winCount = result;
-                return  result;
+                return result;
             }
 
             //Exit by time constraint
@@ -169,7 +166,7 @@ public class MCTS {
                 return 0.0;
             }
 
-            result = simulationR(kiPlayer, childNode, ++depth);
+            result = simulationR(kiPlayer, childNode, state, ++depth);
             selectedNode.playCount += 1;
             selectedNode.winCount += result;
         } catch (Exception ex) {
@@ -200,7 +197,7 @@ public class MCTS {
     private Node createChildNode(Node currentNode, Move move) {
         Node tmpNode = new Node();
         tmpNode.move = move;
-        tmpNode.state = currentNode.state.deepCopy();
+        //tmpNode.state = currentNode.state.deepCopy();
         currentNode.listOfChildren.add(tmpNode);
         return tmpNode;
     }
