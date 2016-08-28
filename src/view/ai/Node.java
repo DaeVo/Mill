@@ -19,9 +19,7 @@ class Node implements java.io.Serializable {
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
     public Node getBestChild(Color myColor) {
-        Color enemyColor = Utils.getOppositeColor(myColor);
         int currentStonesInMill = state.getState().getMillPieceCount(myColor);
-        int currentStonesInMillEnemy = state.getState().getMillPieceCount(enemyColor);
 
         double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
@@ -36,13 +34,7 @@ class Node implements java.io.Serializable {
             //Close Mill Heuristic
             int childStonesInMill = node.state.getState().getMillPieceCount(myColor);
 
-            int childStonesInMillEnemey = node.state.getState().getMillPieceCount(enemyColor);
-
             if (childStonesInMill > currentStonesInMill) {
-                bestNode = node;
-                break;
-            }
-            if (childStonesInMillEnemey > currentStonesInMillEnemy) {
                 bestNode = node;
                 break;
             }

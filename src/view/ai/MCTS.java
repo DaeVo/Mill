@@ -74,7 +74,11 @@ public class MCTS {
             return currentNode;
         } else {
             //return selection(currentNode.getBestChild(player.getColor()), player);
-            Node tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            Node tmpNode ;
+            do {
+                tmpNode= currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+                //deadlock?
+            } while (tmpNode.state.getGamePhase() == GamePhase.Exit);
             return selection(tmpNode, player);
         }
     }

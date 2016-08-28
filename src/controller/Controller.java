@@ -120,10 +120,10 @@ public class Controller extends Observable implements java.io.Serializable {
             notifyMoveToPlayer(new Move(src, dst));
             endTurn();
             if (!simulation)
-                System.out.println(this + " succesfully moved to" + dst);
+                System.out.println(src + " succesfully moved to " + dst);
         } else {
             if (!simulation)
-                System.out.println(this + " to " + dst + " is no legit move (either moving empty field, or dst isnt empty");
+                System.out.println(src + " to " + dst + " is no legit move (either moving empty field, or dst isnt empty");
         }
         return success;
     }
