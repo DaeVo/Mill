@@ -76,7 +76,6 @@ public class GUIBoard extends JPanel implements Observer {
 
 
     public void boardClick(MouseEvent e) {
-        System.out.println(e);
         //End or not started
         if (millController.getGamePhase() == GamePhase.Exit || millController.getGamePhase() == null)
             return;
@@ -113,7 +112,7 @@ public class GUIBoard extends JPanel implements Observer {
                         } else {
                             millController.moveFreely(sourceStone.stone, sp.stone);
                         }
-                        System.out.println("Tryed movement to  " + sp.stone);
+                        System.out.println("Tried movement to  " + sp.stone);
                         sourceStone.highlighted = false;
                         sourceStone = null;
                     }

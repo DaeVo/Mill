@@ -20,6 +20,7 @@ class Node implements java.io.Serializable {
 
     public Node getBestChild(Color myColor) {
         int currentStonesInMill = state.getState().getMillPieceCount(myColor);
+
         double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         for (Node node : listOfChildren) {
