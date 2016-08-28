@@ -257,7 +257,8 @@ public class Gamestate implements java.io.Serializable {
                     return true;
                 }
             }
-        }return false;
+        }
+        return false;
     }
 
     public void updateLegalPlacing() {
@@ -286,5 +287,10 @@ public class Gamestate implements java.io.Serializable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return BoardFactory.getBoardString(board);
     }
 }

@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.Observable;
 
 import static model.GamePhase.Exit;
+import static model.GamePhase.Moving;
 import static model.GamePhase.Placing;
 
 public class Controller extends Observable implements java.io.Serializable {
@@ -43,6 +44,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.lastMillTurn = 0;
         gameBoard.turnColor = Color.white;
         gameBoard.gamePhase = Placing;
+        gameBoard.gameEnd = GameEnd.None;
         printTurnInfo();
 
         //notify mcts tree/smartki to make a deepcopy
@@ -168,12 +170,11 @@ public class Controller extends Observable implements java.io.Serializable {
         setChanged();
 
         //Wind/Draw
-        if (!gameBoard.isLegalMoveAvailable(Color.white)) {
+        if (!gameBoard.isLegalMoveAvailable(Color.white) && gameBoard.gamePhase == Moving) {
             gameBoard.gameEnd = GameEnd.BlackWon;
-        } else if (!gameBoard.isLegalMoveAvailable(Color.black)) {
+        } else if (!gameBoard.isLegalMoveAvailable(Color.black) && gameBoard.gamePhase == Moving) {
             gameBoard.gameEnd = GameEnd.WhiteWon;
-        }
-        if (gameBoard.gamePhase != Placing && (Color.black.equals(winCheck()) || Color.white.equals(winCheck()))) {
+        } else if (gameBoard.gamePhase != Placing && (Color.black.equals(winCheck()) || Color.white.equals(winCheck()))) {
             infoText = "Game ends in a victory for " + Utils.getColorName(winCheck()) + "!";
 
             if (Color.black.equals(winCheck()))
@@ -186,7 +187,7 @@ public class Controller extends Observable implements java.io.Serializable {
 
         }
 
-        if (infoText != null) {
+        if (gameBoard.gameEnd != GameEnd.None) {
             gameBoard.gamePhase = Exit;
             if (!simulation) System.out.println(infoText);
             if (!simulation)

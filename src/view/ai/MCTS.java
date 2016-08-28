@@ -40,8 +40,9 @@ public class MCTS {
             System.out.print(1);
             child = root.getBestChild(myColor);
         }
+
+        System.out.printf("Root tree PlayCount %f WinCount %f pc %f, wc %f " ,root.playCount, root.winCount, child.playCount, child.winCount);
         root = child;
-        System.out.printf("pc %f, wc %f ", root.playCount, root.winCount);
         return root.move;
 
     }
@@ -62,27 +63,32 @@ public class MCTS {
 
 
     public Node selection(Node currentNode, IPlayer player) {
-        if (currentNode.listOfChildren.size() !=  AiUtils.getLegalMovesCount(currentNode.state, player, currentNode)) {
+        AiUtils.updateLists(currentNode.state);
+        int moveCount = AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
+        if (moveCount == 0) {
+            System.out.print(1);
+            AiUtils.getLegalMovesCount(currentNode.state, player, currentNode);
+        }
+
+        if (currentNode.listOfChildren.size() !=  moveCount) {
             return currentNode;
         } else {
-            return root.getBestChild(player.getColor());
-            //return currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            //return selection(currentNode.getBestChild(player.getColor()), player);
+            Node tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            return selection(tmpNode, player);
         }
     }
 
     public Node expansion(Node selectedNode, IPlayer player) {
+        AiUtils.updateLists(selectedNode.state);
         List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, true);
+
         if (legalMoves.size() == 0) {
             legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode, false);
         }
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
         Node newNode = createChildNode(selectedNode, newMove);
         AiUtils.exectuteMove(newNode.state, newNode.move);
-        if (selectedNode.state.getState().turn == newNode.state.getState().turn && selectedNode.state.getGamePhase() == newNode.state.getGamePhase() ){
-            System.out.print(1);
-            AiUtils.exectuteMove(newNode.state, newNode.move);
-        }
-
         return newNode;
     }
 
@@ -93,56 +99,61 @@ public class MCTS {
 
         while (true) {
             //Loop to search new üaths
-            simulationR(kiPlayer, root, 0);
+            double result = simulationR(kiPlayer, root, 0);
+            root.playCount += 1;
+            root.winCount += result;
 
             if (expireDate.before(new GregorianCalendar())) {
                 break;
             }
         }
-
-        //System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-        System.out.printf("Root tree PlayCount %f WinCount %f " ,root.playCount, root.winCount);
     }
 
     private double simulationR(IPlayer kiPlayer, Node currentNode, int depth) {
+        Node selectedNode = null;
+        Node childNode = null;
+
         try {
             if (depth > 500)
                 System.out.print(1);
             // System.out.println("\n\n\n\n\nrecursion state \n" + toString());
-            AiUtils.updateLists(currentNode.state);
 
-            Node selectedNode = selection(currentNode, currentNode.state.getTurnPlayer());
-            Node childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
+            selectedNode = selection(currentNode, currentNode.state.getTurnPlayer());
+            childNode = expansion(selectedNode, currentNode.state.getTurnPlayer());
 
             //Exit by win
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
             if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
+                selectedNode.playCount = 1;
+                childNode.playCount = 1;
                 //System.out.println("Playout at turn " + childNode.state.getState().turn);
                 if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
-                    return 1;
+                    return 1.0;
                 } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
-                    return 1;
+                    return 1.0;
                 } else {
                     //Draw/Loss
-                    return 0;
+                    return 0.0;
                 }
             }
 
             //Exit by time contraint
             if (expireDate.before(new GregorianCalendar())) {
-                return 0;
+                return 0.0;
             }
 
-            double i = simulationR(kiPlayer, childNode, ++depth);
-            currentNode.playCount += 1;
-            currentNode.winCount += i;
+            double result = simulationR(kiPlayer, childNode, ++depth);
+            selectedNode.playCount += 1;
+            selectedNode.winCount += result;
 
+            if (childNode.listOfChildren.size() > childNode.playCount)
+                System.out.print(1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return currentNode.winCount;
+        return selectedNode.winCount;
     }
 
 

@@ -41,7 +41,7 @@ public class SmartAi extends AbstractPlayer {
     }
 
     private void startSimulation() {
-        mctsTree.simulation(this, 2 * 1000, millController);
+        mctsTree.simulation(this, 5 * 1000, millController);
     }
 
     public void turnInfo(Color moveColor, Move move){
