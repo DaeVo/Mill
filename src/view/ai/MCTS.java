@@ -89,7 +89,7 @@ public class MCTS {
                 resultNode = selection(tmpNode, player);
                 //Loop if in the se
             } while (resultNode == null && outerRunCount < currentNode.listOfChildren.size() * RUNFACTOR);
-            return resultNode;
+            return currentNode.getBestChild(player.getColor());
         }
     }
 
