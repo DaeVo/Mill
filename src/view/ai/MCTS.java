@@ -27,15 +27,19 @@ public class MCTS {
     /*
     chose the best Node
      */
-    public Move selectMove() { //finally decides for a move and sets the root to the next move
+    public Move selectMove(Color myColor) { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
         Node child;
         if (randomSelection)
             child = root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
         else
-            child = root.getBestChild();
+            child = root.getBestChild(myColor);
 
+        if (child == null || child.move == null) {
+            System.out.print(1);
+            child = root.getBestChild(myColor);
+        }
         root = child;
         return root.move;
     }
@@ -56,15 +60,20 @@ public class MCTS {
 
 
     public Node selection(Node currentNode, IPlayer player) {
-        if (currentNode.listOfChildren.size() !=  AiUtils.getLegalMoves(currentNode.state, player, currentNode).size()) {
+        if (currentNode.listOfChildren.size() !=  AiUtils.getLegalMovesCount(currentNode.state, player, currentNode)) {
             return currentNode;
         } else {
-            return root.listOfChildren.get(AiUtils.getRandomNumber() % root.listOfChildren.size());
+            //return root.getBestChild(player.getColor());
+            return currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
         }
     }
 
     public Node expansion(Node selectedNode, IPlayer player) {
         List<Move> legalMoves = AiUtils.getLegalMoves(selectedNode.state, player, selectedNode);
+        if (legalMoves.size() == 0) {
+            System.out.print(1);
+            AiUtils.getLegalMovesCount(selectedNode.state, player, selectedNode);
+        }
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
 
         Node newNode = createChildNode(selectedNode, newMove);
@@ -103,7 +112,7 @@ public class MCTS {
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
             if (childNode.state.getGamePhase().equals(GamePhase.Exit)) {
-                System.out.println("Playout at turn " + childNode.state.getState().turn);
+                //System.out.println("Playout at turn " + childNode.state.getState().turn);
                 if (childNode.state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
                     return 1;
                 } else if (childNode.state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {

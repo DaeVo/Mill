@@ -156,6 +156,7 @@ public class Controller extends Observable implements java.io.Serializable {
         gameBoard.board[p.x][p.y].conquerField(new Playfield(false));
 
         gameBoard.gamePhase = gameBoard.oldState;
+        gameBoard.turnHistory.clear();
         notifyMoveToPlayer(new Move(p, null));
         endTurn();
         return true;

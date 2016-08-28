@@ -79,6 +79,25 @@ public class AiUtils {
         controller.getState().updateLegalPlacing();
     }
 
+    public static int getLegalMovesCount(Controller controller, IPlayer player, Node currentNode){
+        switch (controller.getGamePhase()) {
+            case Moving:
+                return currentNode.state.getState().getLegelMoveList(currentNode.state.getState().turnColor).size();
+            case Placing:
+                return currentNode.state.getState().legalPlacing.size();
+
+            case RemovingStone:
+                int count = 0;
+                for (Piece p : currentNode.state.getState().currentPieces) {
+                    if (!p.color.equals(player.getColor())) {
+                        count++;
+                    }
+                }
+                return count;
+        }
+        return 0;
+    }
+
     public static List<Move> getLegalMoves(Controller controller, IPlayer player, Node currentNode){
         switch (controller.getGamePhase()) {
             case Moving:
@@ -99,7 +118,7 @@ public class AiUtils {
                     Move tmpMove = new Move(null, p);
                     legalPlacing.add(tmpMove);
                 }
-                for (Move move : legalPlacing) {
+                for (Move move : new LinkedList<>(legalPlacing)) {
                     for (Node tmpNode : currentNode.listOfChildren) {
                         if(tmpNode.move.equals(move)) {
                             legalPlacing.remove(move);
