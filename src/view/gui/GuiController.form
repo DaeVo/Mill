@@ -14,7 +14,7 @@
         </constraints>
         <properties>
           <model>
-            <item value="Player-Ai"/>
+            <item value="Ai-Player"/>
             <item value="Player-Player"/>
             <item value="Ai-Ai"/>
           </model>
