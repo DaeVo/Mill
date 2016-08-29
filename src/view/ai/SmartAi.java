@@ -9,7 +9,7 @@ import java.awt.*;
 public class SmartAi extends AbstractPlayer {
 
     private MCTS mctsTree = null;
-    private int thinkTime = 0;
+    private int thinkTime = 5000;
 
     public SmartAi(int thinkTime){
         this.thinkTime = thinkTime;
@@ -20,8 +20,8 @@ public class SmartAi extends AbstractPlayer {
     public void run() {
         System.out.println("smartAI: run()");
 
-        mctsTree.simulation(this, thinkTime, millController);
-
+        //mctsTree.simulation(this, thinkTime, millController);
+       mctsTree.MCTSrun(thinkTime, millController, this);
         Move selectedMove = mctsTree.selectMove(myColor, millController.deepCopy());
         System.out.println("smartAI: Selected move " + selectedMove);
         AiUtils.exectuteMove(millController, selectedMove);

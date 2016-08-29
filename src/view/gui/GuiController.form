@@ -29,7 +29,6 @@
             <item value="Easy (5 secs)"/>
             <item value="Medium (10 secs)"/>
             <item value="Hard (30 secs)"/>
-            <item value="Stupid"/>
           </model>
         </properties>
       </component>

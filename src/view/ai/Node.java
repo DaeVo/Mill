@@ -16,6 +16,7 @@ class Node implements java.io.Serializable {
     public double playCount;  //if simulated game ends -  playCount++
     public byte millCountWhite;
     public byte millCountBlack;
+    public Node parent;
     public Move move;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
