@@ -134,7 +134,15 @@ public class MCTS {
             if (depth > 500)
                 System.out.print(1);
 
-            selectedNode = selection(currentNode, state.getTurnPlayer(), state);
+               do {
+                   selectedNode = selection(currentNode, state.getTurnPlayer(), state);
+                   if(selectedNode.listOfChildren.size() == 0) {
+                       List<Move> legalMoves = AiUtils.getLegalMoves(state, kiPlayer, null, false);
+                       AiUtils.exectuteMove(state, legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size()));
+                   }
+               } while (state.getState().gameEnd.equals(GameEnd.WhiteWon) || state.getState().gameEnd.equals(GameEnd.BlackWon));
+
+          //  selectedNode = selection(currentNode, state.getBlackPlayer(),state);
             if (selectedNode == null) {
                 //Selection run to dead end.
                 //Rerun
@@ -150,10 +158,13 @@ public class MCTS {
             if (state.getGamePhase().equals(GamePhase.Exit)) {
                 //System.out.println("Playout at turn " + childNode.state.getState().turn);
                 if (state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
+
                     result = 1;
                 } else if (state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
+
                     result = 1;
                 } else {
+
                     //Draw/Loss
                     result = 0;
                 }
