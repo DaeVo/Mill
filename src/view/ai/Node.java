@@ -19,7 +19,7 @@ class Node implements java.io.Serializable {
     public Move move;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
 
-    public Node getBestChild(Color myColor, Controller state) {
+  /*  public Node getBestChild(Color myColor, Controller state) {
         byte currentStonesInMill = getMillCount(myColor);
 
     /*    double bestRatio = 0; //0-1 1=only wins
@@ -31,7 +31,7 @@ class Node implements java.io.Serializable {
                 bestRatio = ratio;
                 bestNode = node;
             }
-            */
+
 
         double tmpWinCount = 0;
         double tmpPlayCount = 9999999;
@@ -61,7 +61,7 @@ class Node implements java.io.Serializable {
             bestNode = listOfChildren.get(AiUtils.getRandomNumber() % listOfChildren.size());
         }
         return bestNode;
-
+*/
 
         /*
         double tmpWinCount = 0;
@@ -75,8 +75,9 @@ class Node implements java.io.Serializable {
             }
         }
         return tmpNode;
-*/
+
     }
+    */
 
     public byte getMillCount(Color c){
         if (c.equals(Color.WHITE))

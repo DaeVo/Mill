@@ -30,10 +30,10 @@ public class MCTS {
     public Move selectMove(Color myColor, Controller state) { //finally decides for a move and sets the root to the next move
         //logic to select e.g. highest win rate or highest win count node
         // root = selectedNode
-        Node child = root.getBestChild(myColor, state);
+        Node child = getBestChild(myColor, state, root);
         if (child == null || child.move == null) {
             System.out.println("Select bestChild failed root: " + root);
-            child = root.getBestChild(myColor, state);
+            child = getBestChild(myColor, state, root);
         }
 
         System.out.printf("Root tree PlayCount %f WinCount %f pc %f, wc %f ", root.playCount, root.winCount, child.playCount, child.winCount);
@@ -76,7 +76,8 @@ public class MCTS {
 
             //Select childs, check for if they are in exit state
             //tmpNode = currentNode.getBestChild(player.getColor(), state);
-            tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+           // tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+            tmpNode = getBestChild(player.getColor(), state, currentNode);
             AiUtils.exectuteMove(state, tmpNode.move);
 
             if (state.getGamePhase() == GamePhase.Exit) {
@@ -113,7 +114,7 @@ public class MCTS {
             Controller c = realController.deepCopy();
             double result = simulationR(kiPlayer, root, c, 0);
             //-1 dead end, 0 draw/loss, 1 win
-            if (result >= 0){
+            if (result >= 0) {
                 root.playCount += 1;
                 root.winCount += result;
             }
@@ -135,15 +136,15 @@ public class MCTS {
                 System.out.print(1);
 
             selectedNode = selection(currentNode, state.getTurnPlayer(), state);
+
             if (selectedNode == null) {
                 //Selection run to dead end.
                 //Rerun
                 treeDone = false;
                 return -1;
             }
-
+            selectedNode.playCount++;
             childNode = expansion(selectedNode, state.getTurnPlayer(), state);
-
             //Exit by win
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
             //BoardFactory.printBoard(childNode.state.getState().board);
@@ -223,4 +224,65 @@ public class MCTS {
             toStringR(n, sb, ++depth);
         }
     }
+
+    public Node getBestChild(Color myColor, Controller state, Node currentNode) {
+        byte currentStonesInMill = currentNode.getMillCount(myColor);
+
+         double bestRatio = 0; //0-1 1=only wins
+        /*Node bestNode = null;
+        for (Node node : currentNode.listOfChildren) {
+              //double ratio = node.winCount + Math.sqrt(Math.log(playCount)/ 5 * node.winCount);
+           double ratio = node.winCount / node.playCount;
+            if (ratio > bestRatio) {
+                bestRatio = ratio;
+                bestNode = node;
+            }
+            */
+
+        double tmpWinCount = 0;
+        double tmpPlayCount = 9999999;
+        Node bestNode = null;
+        for (Node node : currentNode.listOfChildren) {
+            if (node.winCount >= tmpWinCount && node.playCount <= tmpPlayCount) {
+                tmpWinCount = node.winCount;
+                tmpPlayCount = node.playCount;
+                bestNode = node;
+            }
+
+
+
+            //Close Mill Heuristic
+            int childStonesInMill = node.getMillCount(myColor);
+
+            if (childStonesInMill > currentStonesInMill) {
+                bestNode = node;
+                break;
+            }
+
+        }
+        //Random selection if everything fails
+        if (bestNode == null) {
+            if (currentNode.listOfChildren.size() == 0)
+                return null;
+            System.out.println("everything failed");
+            bestNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+        }
+        return bestNode;
+    }
 }
+
+        /*
+        double tmpWinCount = 0;
+        double tmpPlayCount = Integer.MAX_VALUE;
+        Node tmpNode = new Node();
+        for (Node children : listOfChildren) {
+            if (children.winCount >= tmpWinCount && children.playCount <= tmpPlayCount) {
+                tmpWinCount = children.winCount;
+                tmpPlayCount = children.playCount;
+                tmpNode = children;
+            }
+        }
+        return tmpNode;
+
+}
+*/

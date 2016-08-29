@@ -229,7 +229,7 @@ public class Gamestate implements java.io.Serializable {
     }
 
     /*
-    method to update all legal moves if there are less than 4 pieces for the player that is moving
+    method to update all  moves if there are less than 4 pieces for the player that is moving
     and store them in a HashMap
      */
     public void updateFreeMovementLegalMoves() { //
@@ -249,8 +249,10 @@ public class Gamestate implements java.io.Serializable {
     }
 
 
-    public boolean isLegalMoveAvailable (Color color) {
+    public boolean isLegalMoveAvailable (Color color, boolean t) {
+        if (t)
         updateLegalMoves();
+        else updateFreeMovementLegalMoves();
         for (Piece p : currentPieces) {
             if (p.color.equals(color)) {
                 if (legalMoves.get(p.field).size() > 0) {
