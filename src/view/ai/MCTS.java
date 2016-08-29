@@ -150,6 +150,7 @@ public class MCTS {
                 return -1;
             }
 
+            // bla
             childNode = expansion(selectedNode, state.getTurnPlayer(), state);
 
             //Exit by win
