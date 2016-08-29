@@ -68,11 +68,12 @@ public class MCTS {
             AiUtils.getLegalMovesCount(state, player);
         }
 
-        if (currentNode.listOfChildren.size() != moveCount) {
+        if (currentNode.listOfChildren.size() == 0) {
             System.out.println("returning old node");
             return currentNode;
         } else {
             Node tmpNode;
+            Node resultNode;
             //Select childs, check for if they are in exit state
             //tmpNode = currentNode.getBestChild(player.getColor(), state);
             tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
@@ -80,11 +81,11 @@ public class MCTS {
             AiUtils.exectuteMove(state, tmpNode.move);
 
             if (state.getGamePhase() == GamePhase.Exit) {
+                currentNode.fullyExploredPath = true;
                 System.out.println("exit child found in selection!");
-                return null;
+                return currentNode;
             }
-            System.out.println("selected node: " + tmpNode);
-            return tmpNode;
+            return resultNode = selection(tmpNode, player, state);
             // resultNode = selection(tmpNode, player, state);
             // return resultNode;
             //return getBestChild(player.getColor() ,state, currentNode);
@@ -163,10 +164,9 @@ public class MCTS {
             if(count < 50)
             System.out.println("moved + " + count + " - move " + currentNode.move);
 
-
             if (expireDate.before(new GregorianCalendar())) {
                 System.out.print("breaking through inner timeconstraint");
-                return 100;
+                return 1;
             }
             stopcheck++;
             //if(stopcheck > 100) return 0;
@@ -174,14 +174,16 @@ public class MCTS {
 
                 if (c.getState().gameEnd.equals(GameEnd.WhiteWon) && player.getColor().equals(Color.white)) {
                     result = 1;
+                    System.out.print("whitewin!");
                 } else if (c.getState().gameEnd.equals(GameEnd.BlackWon) && player.getColor().equals(Color.black)) {
                     System.out.print("blackwin");
                     result = 1;
                 } else {
+                    System.out.print("draw!");
                     //Draw/Loss
                     result = 0;
                 }
-            }
+            } break;
         }
         return result;
     }

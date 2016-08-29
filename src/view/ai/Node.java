@@ -19,6 +19,7 @@ class Node implements java.io.Serializable {
     public Node parent;
     public Move move;
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
+    boolean fullyExploredPath;
 
   /*  public Node getBestChild(Color myColor, Controller state) {
         byte currentStonesInMill = getMillCount(myColor);
