@@ -12,7 +12,7 @@ import java.util.List;
  * An implemtation of a Monte Carlo Tree Search algorithm to determine the SmartAI's next step.
  */
 public class MCTS {
-    private Node root = null; //global root Node
+    public static Node root = null; //global root Node
     private GregorianCalendar expireDate;
     private boolean treeDone = false;
     private static final int RUNFACTOR = 3;
@@ -37,6 +37,18 @@ public class MCTS {
         }
 
         System.out.printf("Root tree PlayCount %f WinCount %f pc %f, wc %f ", root.playCount, root.winCount, child.playCount, child.winCount);
+     /*   System.out.println("------------------" + root.getPieceCount(Color.black) + " - " + root.getPieceCount(Color.white));
+     //   System.out.println("------------------" + root.getPieceCount(Color.black) + " - " + root.getPieceCount(Color.white));
+        for (Node node : root.listOfChildren) {
+            System.out.println("------------------children" + node.getPieceCount(Color.black) + " - " + node.getPieceCount(Color.white));
+            for (Node nodeNode : node.listOfChildren) {
+                System.out.println("------------------childrenchildren              " + nodeNode.getPieceCount(Color.black) + " - " + nodeNode.getPieceCount(Color.white));
+                for (Node nodeNodeNode : nodeNode.listOfChildren) {
+                    System.out.println("------------------childrenchildrenchildren                          " + nodeNodeNode.getPieceCount(Color.black) + " - " + nodeNodeNode.getPieceCount(Color.white));
+                }
+            }
+        }*/
+
         root = child;
         return root.move;
 
@@ -56,11 +68,14 @@ public class MCTS {
         }
     }
 
-
+    public int selectionCount;
     public Node selection(Node currentNode, IPlayer player, Controller state) {
+        selectionCount++;
         AiUtils.updateLists(state);
         currentNode.millCountBlack = state.getState().getMillPieceCount(Color.black);
         currentNode.millCountWhite = state.getState().getMillPieceCount(Color.white);
+      //  currentNode.pieceCountB = state.getState().getPieceCountColor(Color.black);
+      //  currentNode.pieceCountW = state.getState().getPieceCountColor(Color.white);
 
         int moveCount = AiUtils.getLegalMovesCount(state, player);
         if (moveCount == 0) {
@@ -68,22 +83,39 @@ public class MCTS {
             AiUtils.getLegalMovesCount(state, player);
         }
 
+
         if (currentNode.listOfChildren.size() != moveCount) {
             return currentNode;
         } else {
-            Node tmpNode;
+          //  Node tmpNode;
             Node resultNode;
 
             //Select childs, check for if they are in exit state
-            //tmpNode = currentNode.getBestChild(player.getColor(), state);
-            tmpNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
-            AiUtils.exectuteMove(state, tmpNode.move);
+            if(selectionCount % 2 == 0)
+            resultNode = currentNode.getBestChild(player.getColor(), state);
+            else
+            resultNode = currentNode.listOfChildren.get(AiUtils.getRandomNumber() % currentNode.listOfChildren.size());
+
+
+            List<Move> legalMoves = AiUtils.getLegalMoves(state, player, currentNode, true);
+            Move legalMove;
+            if (legalMoves.size() == 0) {
+             //   System.out.println("legalMoves.size() == 0 " + currentNode);
+                legalMoves = AiUtils.getLegalMoves(state, player, currentNode, false);
+
+                legalMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
+              //  for (int i = 0; i < selectionCount; i++)
+                //    AiUtils.exectuteMove(state, legalMove);
+            }
+
+            //else
+                AiUtils.exectuteMove(state, resultNode.move);
 
             if (state.getGamePhase() == GamePhase.Exit) {
                 //exit child found!
                 return null;
             }
-            resultNode = selection(tmpNode, player, state);
+            //resultNode = selection(resultNode, player, state);
             return resultNode;
         }
     }
@@ -93,15 +125,15 @@ public class MCTS {
         List<Move> legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, true);
 
         if (legalMoves.size() == 0) {
-            System.out.println("legalMoves.size() == 0 " + selectedNode);
+          //  System.out.println("legalMoves.size() == 0 " + selectedNode);
             legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, false);
         }
+
         Move newMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
         Node newNode = createChildNode(selectedNode, newMove);
         AiUtils.exectuteMove(state, newNode.move);
         return newNode;
     }
-
 
     public void simulation(IPlayer kiPlayer, int timeout, Controller realController) {
         expireDate = new GregorianCalendar();
@@ -124,25 +156,27 @@ public class MCTS {
             }
         }
     }
-
+    public boolean selection;
     private double simulationR(IPlayer kiPlayer, Node currentNode, Controller state, int depth) {
         Node selectedNode = null;
         Node childNode = null;
         double result = 0;
 
-        try {
-            if (depth > 500)
-                System.out.print(1);
+     try {
+        if (depth > 500)
+            System.out.print(1);
 
-            selectedNode = selection(currentNode, state.getTurnPlayer(), state);
-            if (selectedNode == null) {
+         selection = true;
+         if (!state.getGamePhase().equals(GameEnd.BlackWon) || !state.getGamePhase().equals(GameEnd.WhiteWon) || !state.getGamePhase().equals(GameEnd.Draw))
+              selectedNode = selection(currentNode, state.getTurnPlayer(), state);
+         childNode = expansion(selectedNode, state.getTurnPlayer(), state);
+               if (selectedNode == null) {
                 //Selection run to dead end.
                 //Rerun
-                treeDone = false;
-                return -1;
+                   treeDone = false;
+                   selectionCount = 0;
+                   return -1;
             }
-
-            childNode = expansion(selectedNode, state.getTurnPlayer(), state);
 
             //Exit by win
             //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
@@ -167,6 +201,7 @@ public class MCTS {
 
             //Exit by time constraint
             if (expireDate.before(new GregorianCalendar())) {
+                selectionCount = 0;
                 return 0.0;
             }
 
@@ -176,7 +211,7 @@ public class MCTS {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        selectionCount = 0;
         return result;
     }
 

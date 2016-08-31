@@ -111,6 +111,7 @@ public class AiUtils {
        return null;
     }
 
+
     public static void exectuteMove(Controller controller, Move move) {
         switch (controller.getGamePhase()) {
             case Placing:

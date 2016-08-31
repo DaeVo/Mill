@@ -90,6 +90,15 @@ public class Gamestate implements java.io.Serializable {
         return count;
     }
 
+    public byte getPieceCountColor(Color color) {
+        byte count = 0;
+            for (Piece p : currentPieces) {
+                if(p.color.equals(color))
+                    count++;
+            }
+        return count;
+    }
+
     public void clearMillList() {
         currentMillPieces.clear();
     }

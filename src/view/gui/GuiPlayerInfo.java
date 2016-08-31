@@ -24,7 +24,7 @@ public class GuiPlayerInfo extends JPanel implements Observer {
         this.setLayout(new FlowLayout());
         this.setBorder(BorderFactory.createTitledBorder(Utils.getColorName(playerColor)));
 
-        remainingPieces = new JLabel("Remaining Piece: 9");
+        remainingPieces = new JLabel("Remaining Pieces: 9");
         this.add(remainingPieces);
         this.setMaximumSize(this.getPreferredSize());
 
@@ -35,7 +35,7 @@ public class GuiPlayerInfo extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if (getPlayer() != null) {
-            remainingPieces.setText("Remaining Piece: " + millController.getState().getPieceCount(playerColor));
+            remainingPieces.setText("Remaining Pieces: " + millController.getState().getPieceCount(playerColor));
         }
     }
 

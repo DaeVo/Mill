@@ -174,8 +174,10 @@ public class Controller extends Observable implements java.io.Serializable {
 
         //Wind/Draw
         if (!gameBoard.isLegalMoveAvailable(Color.white) && gameBoard.gamePhase == Moving) {
+            if(gameBoard.getPieceCount(Color.white) != 3)
             gameBoard.gameEnd = GameEnd.BlackWon;
         } else if (!gameBoard.isLegalMoveAvailable(Color.black) && gameBoard.gamePhase == Moving) {
+            if(gameBoard.getPieceCount(Color.black) != 3)
             gameBoard.gameEnd = GameEnd.WhiteWon;
         } else if (gameBoard.gamePhase != Placing && (Color.black.equals(winCheck()) || Color.white.equals(winCheck()))) {
             infoText = "Game ends in a victory for " + Utils.getColorName(winCheck()) + "!";

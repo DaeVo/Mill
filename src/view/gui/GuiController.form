@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.gui.GuiController">
-  <grid id="27dc6" binding="controllerPanel" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="controllerPanel" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="194" height="148"/>
+      <xy x="20" y="20" width="194" height="168"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -20,19 +20,6 @@
           </model>
         </properties>
       </component>
-      <component id="adf95" class="javax.swing.JComboBox" binding="boxDifficulty">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <model>
-            <item value="Easy (5 secs)"/>
-            <item value="Medium (10 secs)"/>
-            <item value="Hard (30 secs)"/>
-            <item value="Stupid"/>
-          </model>
-        </properties>
-      </component>
       <component id="766e5" class="javax.swing.JButton" binding="btnStartGame">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -43,7 +30,7 @@
       </component>
       <component id="9ed95" class="javax.swing.JLabel" binding="lblNextTurn">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Next Turn: -"/>
@@ -51,12 +38,34 @@
       </component>
       <component id="6b999" class="javax.swing.JLabel" binding="lblTodo">
         <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="-"/>
         </properties>
       </component>
+      <component id="adf95" class="javax.swing.JComboBox" binding="boxDifficulty">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Easy (5 secs)"/>
+            <item value="Medium (10 secs)"/>
+            <item value="Hard (15 secs)&#9;(might freeze)"/>
+            <item value="1Hard (20 secs) (might freeze)"/>
+            <item value="2Hard 25 (secs)&#9;(might freeze)"/>
+            <item value="3Hard 30 (secs) (might freeze)"/>
+            <item value="4Hard 40 (secs) (might freeze)"/>
+            <item value="5Hard 60 (secs) (might freeze)"/>
+          </model>
+        </properties>
+      </component>
+      <vspacer id="40c41">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
     </children>
   </grid>
 </form>

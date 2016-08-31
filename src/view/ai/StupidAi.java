@@ -7,7 +7,9 @@ import model.AbstractPlayer;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
-
+/**
+ * Created by Max on 19/08/2016.
+ */
 public class StupidAi extends AbstractPlayer {
 	@Override
 	public void run() {
