@@ -8,12 +8,13 @@ package model;
 public class Piece implements java.io.Serializable {
     public Playfield field;
     public Color color;
-    public Integer millCount = null;
-    public int number;
     public Piece(Color color){
         this.color = color;
     }
 
+    /*
+    adds a playfield to the piece, so the piece knows where it's standing.
+     */
     public void addPlayfield(Playfield field){
         this.field = field;
     }

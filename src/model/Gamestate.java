@@ -49,6 +49,9 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
+    /*
+    returns how many closed mills are currently on the field
+     */
     public int getMillCheckCount(int[] count) {
         int m = 0;
         for (int i = 0; i < 16; i++) {
@@ -56,7 +59,9 @@ public class Gamestate implements java.io.Serializable {
         }
         return m;
     }
-
+    /*
+    helping method to check if currently closed mills are more closed mills than in the move before (to trigger a removeStone)
+     */
     public void millToInt() {
         for (int i = 0; i < 16; i++) {
             if (millPositions[i]) newMillCheck[i] = 1;
@@ -64,7 +69,9 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
-
+    /*
+    takes 3 arguments of playfield which are in legal mill positions and checks if they re all the same color.
+     */
     public boolean isMill(Playfield playfield1, Playfield playfield2, Playfield playfield3) {
         if (!playfield1.empty && !playfield2.empty && !playfield3.empty) {
             if (playfield1.piece.color.equals(playfield2.piece.color) && playfield1.piece.color.equals(playfield3.piece.color)) {
@@ -77,10 +84,16 @@ public class Gamestate implements java.io.Serializable {
         return false;
     }
 
+    /*
+    returns all pieces currently in a mill (must not be removed, unless the player has only 3 pieces left.
+     */
     public boolean isInMill(Piece piece){
         return (currentMillPieces.contains(piece));
     }
 
+    /*
+    returns the number of pieces in a mill.
+     */
     public byte getMillPieceCount(Color color){
         byte count = 0;
         for (Piece p : currentMillPieces){
@@ -90,6 +103,9 @@ public class Gamestate implements java.io.Serializable {
         return count;
     }
 
+    /*
+    returns the number of pieces from one player
+     */
     public byte getPieceCountColor(Color color) {
         byte count = 0;
             for (Piece p : currentPieces) {
@@ -98,7 +114,9 @@ public class Gamestate implements java.io.Serializable {
             }
         return count;
     }
-
+    /*
+    clears the list of pieces currently in a mill.
+     */
     public void clearMillList() {
         currentMillPieces.clear();
     }
@@ -129,7 +147,7 @@ public class Gamestate implements java.io.Serializable {
     }
 
     /*
-    easier to read and understand than dyamic statements to check for mills
+    easier to read and understand and change than dyamic statements to check for mills
     stores which of the possible 16 mill positions are currently active.
      */
     public void millCheck() {
@@ -157,7 +175,9 @@ public class Gamestate implements java.io.Serializable {
         millPositions[15] = isMill(board[1][0], board[1][1], board[1][2]);
     }
 
-
+    /*
+    returns the first empty playfield (was useful for the first super simple ai version to test things, might come in handy again one day, who knows.
+     */
     public Point findFreePlayfield() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
@@ -168,6 +188,9 @@ public class Gamestate implements java.io.Serializable {
         return null;
     }
 
+    /*
+    creates a map of all fields that are neighbourfields.
+     */
     private void createNeighbors() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
@@ -187,6 +210,8 @@ public class Gamestate implements java.io.Serializable {
             }
         }
     }
+
+
 
     public List<Playfield> getNeighbours(Playfield field) {
         return playfieldNeighbors.get(field);
@@ -222,7 +247,9 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
-
+    /*
+    creates a list with legal moves.
+     */
     public List<Move> getLegalMoveList(Color turnColor){
         List<Move> resultList = new LinkedList<>();
         for (Playfield field : legalMoves.keySet()){
@@ -257,7 +284,9 @@ public class Gamestate implements java.io.Serializable {
         }
     }
 
-
+    /*
+    checks if there is a legal move available to perform.
+     */
     public boolean isLegalMoveAvailable (Color color) {
         updateLegalMoves();
         for (Piece p : currentPieces) {
@@ -269,7 +298,9 @@ public class Gamestate implements java.io.Serializable {
         }
         return false;
     }
-
+    /*
+    updates a list that contains legal fields during the placing phase
+     */
     public void updateLegalPlacing() {
         Playfield tmpField;
         for(int i = 0; i < 8; i++) {
@@ -282,7 +313,9 @@ public class Gamestate implements java.io.Serializable {
             }
         }
     }
-
+    /*
+    deep copy for the simulations
+     */
     public Gamestate deepCopy() {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -6,6 +6,7 @@ import java.awt.*;
 
 /**
  * Created by Max on 16/08/2016.
+ * basic methods to structure the board and make movements (by real players) possible
  */
 
 public class Playfield implements java.io.Serializable {
@@ -28,6 +29,9 @@ public class Playfield implements java.io.Serializable {
     }
 
 
+    /*
+    decides if a given field is a neighbour to another field
+     */
     public boolean isNeighbour(Playfield dst) {
         if (this.x % 2 == 1) {
             if (Math.abs(this.y - dst.y) == 1 && this.x == dst.x)
@@ -42,18 +46,19 @@ public class Playfield implements java.io.Serializable {
     }
 
 
-    /*
-    if the field whose piece is to be moved must not be empty, destination must be empty, destination must be a direct
-     "allowed" neighbour of the field whose piece is to be moved.
-     */
 
+    /*
+    moving to a neighbourfield if it's empty
+     */
     public boolean move(Playfield dst) {
         if (this.isNeighbour(dst)) {
             return moveFreely(dst);
         }
         return false;
     }
-
+    /*
+    returns true if the destination is emtpy
+     */
     public boolean moveFreely(Playfield dst) {
         if (dst.empty && !this.empty) {
             this.conquerField(dst);

@@ -14,7 +14,7 @@ import java.util.Observer;
 import static model.Utils.freeMoveAllowed;
 
 /**
- * Created by Henry on 24.08.2016.
+ * Created by Max on 24.08.2016.
  */
 public class GuiController implements Observer {
     private JComboBox boxMode;

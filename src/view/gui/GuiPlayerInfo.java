@@ -10,7 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by Henry on 24.08.2016.
+ * Created by Max on 24.08.2016.
  */
 public class GuiPlayerInfo extends JPanel implements Observer {
     private Color playerColor;

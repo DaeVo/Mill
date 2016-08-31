@@ -14,6 +14,7 @@ import static model.Utils.freeMoveAllowed;
 
 /**
  * Created by Max on 25/08/2016.
+ * contains utility classes for the Ai to chose legal moves etc
  */
 public class AiUtils {
 
@@ -22,6 +23,9 @@ public class AiUtils {
         return Math.abs(rn.nextInt());
     }
 
+    /*
+    updates the lists for legal moves etc. for a given controller
+     */
     public static void updateLists(Controller controller) {
         controller.getState().legalPlacing.clear();
         controller.getState().legalMoves.clear();
@@ -36,6 +40,9 @@ public class AiUtils {
         }
     }
 
+    /*
+    returns the amount of legal moves left for the play at a given turn
+     */
     public static int getLegalMovesCount(Controller state, IPlayer player){
         switch (state.getGamePhase()) {
             case Moving:
@@ -54,7 +61,9 @@ public class AiUtils {
         }
         return 0;
     }
-
+    /*
+    puts together a list of legal moves for the Ai
+    */
     public static List<Move> getLegalMoves(Controller state, IPlayer player, Node currentNode, boolean remove){
         switch (state.getGamePhase()) {
             case Moving:
@@ -111,7 +120,9 @@ public class AiUtils {
        return null;
     }
 
-
+    /*
+    performs a chosen move on the controller
+     */
     public static void exectuteMove(Controller controller, Move move) {
         switch (controller.getGamePhase()) {
             case Placing:

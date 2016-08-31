@@ -18,7 +18,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by Henry on 23.08.2016.
+ * Created by Max on 23.08.2016.
  */
 public class GUIBoard extends JPanel implements Observer {
     private Controller millController;

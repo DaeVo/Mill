@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Henry on 23.08.2016.
+ * Created by Max on 23.08.2016.
  */
 public class GUI extends JFrame {
     private Controller millController;

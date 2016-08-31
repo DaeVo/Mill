@@ -33,7 +33,9 @@ public class Controller extends Observable implements java.io.Serializable {
         oldThread = null;
         simulation = true;
     }
-
+    /*
+    starts the game
+     */
     public void startGame(IPlayer whiteP, IPlayer blackP) {
         //notfiy first player
         setWhitePlayer(whiteP);
@@ -131,7 +133,9 @@ public class Controller extends Observable implements java.io.Serializable {
     }
 
 
-
+    /*
+    returns a boolean true if a move is valid.
+     */
     private boolean isValidMove(Point src, Point dst) {
         Playfield srcField = gameBoard.board[src.x][src.y];
         Playfield dstField = gameBoard.board[dst.x][dst.y];
@@ -142,7 +146,9 @@ public class Controller extends Observable implements java.io.Serializable {
             return false;
         return true;
     }
-
+    /*
+    returns a boolean if a piece may be removed from a field.
+     */
     public boolean removeStone(Point p) {
         Piece oldPiece = gameBoard.board[p.x][p.y].piece;
 
@@ -166,7 +172,9 @@ public class Controller extends Observable implements java.io.Serializable {
         return true;
     }
 
-
+    /*
+    checks a lot of necesary stuff after a turn has ended.
+     */
     private void endTurn() {
         String infoText = null;
         int turnBoard = BoardFactory.getBoardArray(gameBoard.board);
@@ -189,7 +197,6 @@ public class Controller extends Observable implements java.io.Serializable {
         } else if (drawCheck(turnBoard)) {
             infoText = "Game ends in a draw!";
             gameBoard.gameEnd = GameEnd.Draw;
-
         }
 
         if (gameBoard.gameEnd != GameEnd.None) {
@@ -249,13 +256,17 @@ public class Controller extends Observable implements java.io.Serializable {
         notifyObservers();
     }
 
-
+    /*
+    checking who the winner is.
+     */
     private Color winCheck() {
         if (gameBoard.getPieceCount(Color.black) < 3) return Color.white;
         else if (gameBoard.getPieceCount(Color.white) < 3) return Color.black;
         else return null;
     }
-
+    /*
+    returns true if draw.
+     */
     private boolean drawCheck(int turnBoard) {
         //Abbort rule 50 round no mill
         if (gameBoard.turn - gameBoard.lastMillTurn > 50) {
@@ -263,7 +274,7 @@ public class Controller extends Observable implements java.io.Serializable {
             return true;
         }
 
-        //3 times the same setup
+        //3 times the same situation
         int count = 0;
         for (int board : gameBoard.turnHistory) {
             if (board == turnBoard)
@@ -308,6 +319,9 @@ public class Controller extends Observable implements java.io.Serializable {
         blackPlayer.turnInfo(getTurnColor(), move);
     }
 
+    /*
+    deepcopy of the controller for simulations
+     */
     public Controller deepCopy() {
         try {
             Gamestate gsCopy = null;

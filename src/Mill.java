@@ -12,7 +12,6 @@ import view.gui.GUI;
 import java.awt.*;
 
 public final class Mill {
-    public static final boolean DEBUG = true;
 
     public static void main(final String[] args) {
         Controller c = new Controller();

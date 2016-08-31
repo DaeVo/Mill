@@ -28,6 +28,9 @@ public class BoardFactory implements java.io.Serializable{
         System.out.print(getBoardString(board));
     }
 
+    /*
+    console output of the board
+     */
     public static String getBoardString(Playfield[][] board) {
         StringBuilder sb = new StringBuilder();
         sb.append("");
@@ -45,7 +48,9 @@ public class BoardFactory implements java.io.Serializable{
         return sb.toString();
     }
 
-    //To reduce memory usage of the board history for the draw check
+/*
+initially stored string histor of the gameboard to check if an exact situation has happened 3x now stored in a better performing way..
+ */
     public static int getBoardArray(Playfield[][] board){
         byte[] boardArray = new byte[board.length * board[0].length];
         for(int i = 0; i < board.length; i++) {

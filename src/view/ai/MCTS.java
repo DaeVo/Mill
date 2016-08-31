@@ -62,9 +62,6 @@ public class MCTS {
         AiUtils.updateLists(state);
         currentNode.millCountBlack = state.getState().getMillPieceCount(Color.black);
         currentNode.millCountWhite = state.getState().getMillPieceCount(Color.white);
-        //  currentNode.pieceCountB = state.getState().getPieceCountColor(Color.black);
-        //  currentNode.pieceCountW = state.getState().getPieceCountColor(Color.white);
-
         int moveCount = AiUtils.getLegalMovesCount(state, player);
         if (moveCount == 0) {
             System.out.println("Selection; No moves available (using backup path) node:" + currentNode);
@@ -75,10 +72,8 @@ public class MCTS {
         if (currentNode.listOfChildren.size() != moveCount) {
             return currentNode;
         } else {
-            //  Node tmpNode;
-            Node resultNode;
 
-            //Select childs, check for if they are in exit state
+            Node resultNode;
             if (selectionCount % 15 == 0)
                 resultNode = currentNode.getBestChild(player.getColor(), state);
             else
@@ -86,16 +81,11 @@ public class MCTS {
 
 
             List<Move> legalMoves = AiUtils.getLegalMoves(state, player, currentNode, true);
-            Move legalMove;
             if (legalMoves.size() == 0) {
-                //   System.out.println("legalMoves.size() == 0 " + currentNode);
                 legalMoves = AiUtils.getLegalMoves(state, player, currentNode, false);
-
-                legalMove = legalMoves.get(AiUtils.getRandomNumber() % legalMoves.size());
                 AiUtils.exectuteMove(state, resultNode.move);
 
                 if (state.getGamePhase() == GamePhase.Exit) {
-                    //exit child found!
                     return null;
                 }
                 //resultNode = selection(resultNode, player, state);
@@ -109,7 +99,6 @@ public class MCTS {
         List<Move> legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, true);
 
         if (legalMoves.size() == 0) {
-          //  System.out.println("legalMoves.size() == 0 " + selectedNode);
         legalMoves = AiUtils.getLegalMoves(state, player, selectedNode, false);
     }
 
@@ -125,10 +114,8 @@ public class MCTS {
         treeDone = false;
 
         while (!treeDone) {
-            //Loop to search new üaths
             Controller c = realController.deepCopy();
             double result = simulationR(kiPlayer, root, c, 0);
-            //-1 dead end, 0 draw/loss, 1 win
             if (result >= 0){
                 root.playCount += 1;
                 root.winCount += result;
@@ -162,10 +149,7 @@ public class MCTS {
             }
 
             //Exit by win
-            //System.out.println(selectedNode.state.getState().turn + " " + selectedNode.state.getGamePhase() + " " + childNode.move);
-            //BoardFactory.printBoard(childNode.state.getState().board);
             if (state.getGamePhase().equals(GamePhase.Exit)) {
-                //System.out.println("Playout at turn " + childNode.state.getState().turn);
                 if (state.getState().gameEnd.equals(GameEnd.WhiteWon) && kiPlayer.getColor().equals(Color.white)) {
                     result = 1;
                 } else if (state.getState().gameEnd.equals(GameEnd.BlackWon) && kiPlayer.getColor().equals(Color.black)) {
@@ -174,7 +158,7 @@ public class MCTS {
                     //Draw/Loss
                     result = 0;
                 }
-                //Start update phase :)
+                //Start update phase
                 selectedNode.playCount += 1;
                 selectedNode.winCount += result;
                 childNode.playCount = 1;
@@ -207,6 +191,8 @@ public class MCTS {
         }
         return false;
     }
+
+
 
     private Node getNodeOfAlreadyPerformedMove(Node currentNode, Move move) {
         for (Node node : currentNode.listOfChildren) {
