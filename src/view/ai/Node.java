@@ -1,7 +1,9 @@
 package view.ai;
 
 import controller.Controller;
+import model.GamePhase;
 import model.Move;
+import model.Piece;
 import model.Utils;
 
 import java.awt.*;
@@ -20,12 +22,11 @@ class Node implements java.io.Serializable {
     public LinkedList<Node> listOfChildren = new LinkedList<>(); //legalMoves = children
  //   public byte pieceCountW;
  //   public byte pieceCountB;
-
+    Move enemyMillMove = null;
     public Node getBestChild(Color myColor, Controller state) {
         byte currentStonesInMill = getMillCount(myColor);
         //  byte currentPiecesColor = getPieceCount(myColor);
         byte currentStonesInMillEnemy = getMillCount(getEnemyColor(myColor));
-
         double bestRatio = 0; //0-1 1=only wins
         Node bestNode = null;
         Node ratioNode = null;
@@ -39,12 +40,12 @@ class Node implements java.io.Serializable {
             }
 */
 
-           double tmpWinCount = 0;
+            double tmpWinCount = 0;
             double tmpPlayCount = Integer.MAX_VALUE;
             for (Node children : listOfChildren) {
-                if (children.winCount >= tmpWinCount) {
+                if (children.winCount >= tmpWinCount && children.playCount < tmpPlayCount) {
                     tmpWinCount = children.winCount;
-                    //tmpPlayCount = children.playCount;
+                    tmpPlayCount = children.playCount;
                     bestNode = children;
                 }
             }
@@ -55,14 +56,36 @@ class Node implements java.io.Serializable {
                 bestNode = node;
             }
             */
-                //Close Mill Heuristic
-                int childStonesInMill = node.getMillCount(myColor);
-                if (childStonesInMill > currentStonesInMill) {
-                    bestNode = node;
-                    System.out.println("--------------------------------CLOSEMILL");
+            //Close Mill Heuristic
+            int childStonesInMill = node.getMillCount(myColor);
+            if (childStonesInMill > currentStonesInMill) {
+                bestNode = node;
+                System.out.println("--------------------------------CLOSEMILL");
+                return bestNode;
+            }
 
-                    break;
+
+            //prohibit enemy from closing a mill if possible (only with less than 6 pieces (includes placing)
+            int currentPieces = state.getState().getPieceCountColor(myColor);
+            if (currentPieces < 6) {
+                for (Node subchildren : node.listOfChildren) {
+                    byte subchildStonesInMillEnemy = subchildren.getMillCount(getEnemyColor(myColor));
+
+                    if (subchildStonesInMillEnemy > currentStonesInMillEnemy) {
+                        enemyMillMove = subchildren.move;
+                    }
                 }
+                if (enemyMillMove != null && enemyMillMove.dst != null && !state.getGamePhase().equals(GamePhase.RemovingStone)) {
+                    if (node.move.dst.equals(enemyMillMove.dst)) {
+                        bestNode = node;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
 
 
        /*     int childStonesCount = node.getPieceCount(myColor);
@@ -92,7 +115,7 @@ class Node implements java.io.Serializable {
             */
 
 
-            }
+
             //Random selection if everything fails
             if (bestNode == null) {
                 if (listOfChildren.size() == 0)
@@ -101,6 +124,7 @@ class Node implements java.io.Serializable {
             }
             return bestNode;
         }
+
 
 
 

@@ -48,13 +48,13 @@ public class GuiController implements Observer {
             if (diff.startsWith("Stupid")) {
                 return new StupidAi();
             } else if (diff.startsWith("Easy")) {
-                return new SmartAi(5 * 1000);
+                return new SmartAi(2 * 1000);
             } else if (diff.startsWith("Medium")) {
-                return new SmartAi(10 * 1000);
+                return new SmartAi(5 * 1000);
             } else if (diff.startsWith("Hard")) {
-                return new SmartAi(15 * 1000);
+                return new SmartAi(10 * 1000);
             } else if (diff.startsWith("1"))
-                return new SmartAi(20 * 1000);
+                return new SmartAi(15 * 1000);
             else if (diff.startsWith("2"))
                 return new SmartAi(25 * 1000);
             else if (diff.startsWith("3"))
@@ -63,9 +63,6 @@ public class GuiController implements Observer {
                 return new SmartAi(40 * 1000);
             else if (diff.startsWith("5"))
                 return new SmartAi(60 * 1000);
-            else if (diff.startsWith("6")){
-                return new SmartAi((200*1000);
-            }
 
         } else {
             millController.setSleep(100);
